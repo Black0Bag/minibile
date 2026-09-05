@@ -23,7 +23,7 @@ class ScreenCaptureService : Service() {
         private const val TAG = "ScreenCaptureService"
         private const val CHANNEL_ID = "ScreenCaptureChannel"
         private const val NOTIFICATION_ID = 2001
-        private const val ACTION_START = "com.ai.assistance.operit.action.SCREEN_CAPTURE_FGS_START"
+        private const val ACTION_START = "io.github.black0bag.minibile.action.SCREEN_CAPTURE_FGS_START"
 
         @Volatile
         var isMediaProjectionForegroundReady: Boolean = false

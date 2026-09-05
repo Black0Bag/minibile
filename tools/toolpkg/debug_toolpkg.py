@@ -15,8 +15,8 @@ import zipfile
 from dataclasses import dataclass
 from pathlib import Path
 
-DEBUG_APP_PACKAGE = "com.ai.assistance.operit.debug"
-RELEASE_APP_PACKAGE = "com.ai.assistance.operit"
+DEBUG_APP_PACKAGE = "io.github.black0bag.minibile.debug"
+RELEASE_APP_PACKAGE = "io.github.black0bag.minibile"
 SUPPORTED_APP_PACKAGES = (DEBUG_APP_PACKAGE, RELEASE_APP_PACKAGE)
 APP_PACKAGE_ENV = "OPERIT_APP_PACKAGE"
 MANIFEST_FILENAMES = ("manifest.json", "manifest.hjson")
@@ -306,9 +306,9 @@ def install_toolpkg(
     reset_subpackage_states: bool,
     log_wait_seconds: int,
 ) -> None:
-    action_debug_install_toolpkg = f"{app_package}.DEBUG_INSTALL_TOOLPKG"
+    action_debug_install_toolpkg = "io.github.black0bag.minibile.DEBUG_INSTALL_TOOLPKG"
     receiver_component = (
-        f"{app_package}/.core.tools.packTool.ToolPkgDebugInstallReceiver"
+        f"{app_package}/com.ai.assistance.operit.core.tools.packTool.ToolPkgDebugInstallReceiver"
     )
     remote_packages_dir = f"/sdcard/Android/data/{app_package}/files/packages"
     remote_file = f"{remote_packages_dir}/{safe_remote_file_name(source.package_id)}"
@@ -389,8 +389,8 @@ def parse_args() -> argparse.Namespace:
         dest="app_package",
         default=None,
         help=(
-            "Operit applicationId to debug. Supports com.ai.assistance.operit.debug and "
-            "com.ai.assistance.operit; defaults to OPERIT_APP_PACKAGE or automatic Debug-first detection."
+            "minibile applicationId to debug. Supports io.github.black0bag.minibile.debug and "
+            "io.github.black0bag.minibile; defaults to OPERIT_APP_PACKAGE or automatic Debug-first detection."
         ),
     )
     parser.add_argument(

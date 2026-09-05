@@ -392,7 +392,7 @@ function buildConversionTests() {
     test('application context is exposed as Java proxy', () => {
       const context = Java.getApplicationContext();
       assert(String(context.className).length > 0, 'application context className should not be empty');
-      assertEq(String(context.getPackageName()), 'com.ai.assistance.operit');
+      assertEq(String(context.getPackageName()), 'io.github.black0bag.minibile.debug');
     }),
     test('NativeInterface javaClassExists matches high-level bridge', () => {
       assertEq(String(NativeInterface.javaClassExists('java.lang.String')), 'true');

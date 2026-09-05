@@ -407,7 +407,7 @@ class WorkflowViewModel(application: Application) : AndroidViewModel(application
             name = context.getString(R.string.workflow_trigger_intent),
             triggerType = "intent",
             triggerConfig = mapOf(
-                "action" to "com.ai.assistance.operit.TRIGGER_WORKFLOW"
+                "action" to "io.github.black0bag.minibile.TRIGGER_WORKFLOW"
             ),
             position = templateNodePosition(0)
         )
@@ -461,7 +461,7 @@ class WorkflowViewModel(application: Application) : AndroidViewModel(application
             name = context.getString(R.string.workflow_action_send_broadcast),
             actionType = "send_broadcast",
             actionConfig = mapOf(
-                "action" to ParameterValue.StaticValue("com.ai.assistance.operit.WORKFLOW_RESULT"),
+                "action" to ParameterValue.StaticValue("io.github.black0bag.minibile.WORKFLOW_RESULT"),
                 "extra_key" to ParameterValue.StaticValue("result"),
                 "extra_value" to ParameterValue.NodeReference(sendId)
             ),

@@ -1,0 +1,657 @@
+
+=== DIRECTORY TREE (max depth 3, source files only) ===
+.github
+.github/FUNDING.yml
+.github/ISSUE_TEMPLATE
+.github/ISSUE_TEMPLATE/bug_report.yml
+.github/ISSUE_TEMPLATE/config.yml
+.github/ISSUE_TEMPLATE/feature_request.yml
+.github/ISSUE_TEMPLATE/plugin_tool_mcp.yml
+.github/ISSUE_TEMPLATE/question.yml
+.github/PULL_REQUEST_TEMPLATE.md
+.github/workflows
+.github/workflows/android-build.yml
+.github/workflows/android-tests.yml
+.github/workflows/close-title-only-issues.yml
+.github/workflows/pr-check.yml
+.gitignore
+.gitmodules
+AGENTS.md
+LICENSE
+README(E).md
+README.md
+Repo_Arch_Basic.md
+app
+app/.gitignore
+app/build.gradle.kts
+app/config
+app/config/stt-model-assets.properties
+app/libs
+app/libs/.keep
+app/objectbox-models
+app/objectbox-models/default.json
+app/objectbox-models/default.json.bak
+app/proguard-rules.pro
+app/src
+app/src/androidTest
+app/src/androidTest/java
+app/src/androidTest/js
+app/src/debug
+app/src/debug/res
+app/src/main
+app/src/main/AndroidManifest.xml
+app/src/main/aidl
+app/src/main/assets
+app/src/main/cpp
+app/src/main/java
+app/src/main/jniLibs
+app/src/main/res
+app/src/test
+app/src/test/java
+avator
+avator/dragonbones
+avator/dragonbones/.gitignore
+avator/dragonbones/CMakeLists.txt
+avator/dragonbones/README.md
+avator/dragonbones/build.gradle.kts
+avator/dragonbones/cpp
+avator/dragonbones/cpp/JniBridge.cpp
+avator/dragonbones/cpp/JniBridge.h
+avator/dragonbones/cpp/opengl
+avator/dragonbones/src
+avator/dragonbones/src/main
+avator/fbx
+avator/fbx/.gitignore
+avator/fbx/CMakeLists.txt
+avator/fbx/build.gradle.kts
+avator/fbx/consumer-rules.pro
+avator/fbx/src
+avator/fbx/src/main
+avator/mmd
+avator/mmd/.gitignore
+avator/mmd/CMakeLists.txt
+avator/mmd/UPSTREAM_SABA_VIEWER_MAPPING.md
+avator/mmd/build.gradle.kts
+avator/mmd/consumer-rules.pro
+avator/mmd/src
+avator/mmd/src/main
+build.gradle.kts
+ci
+ci/README.md
+ci/script
+ci/script/build_apps
+ci/script/build_apps/.gitkeep
+ci/script/check_localizations.py
+ci/script/check_markdown_links.py
+ci/script/check_output.py
+ci/script/check_repo_hygiene.py
+ci/script/debug_test
+ci/script/debug_test/.gitkeep
+ci/script/download_android_dependencies.sh
+ci/script/pr_check.py
+ci/script/prepare_android_dependencies.py
+ci/script/repair_repo_enviroment
+ci/script/repair_repo_enviroment/windows
+ci/test
+ci/test/test_android_dependencies.py
+ci/test/test_localizations.py
+ci/test/test_markdown_links.py
+ci/test/test_pr_check.py
+ci/test/test_repo_hygiene.py
+ci/test/test_toolpkg_sync.py
+ci/tools
+ci/tools/.gitkeep
+cmake
+cmake/operit_git_source.cmake
+docs
+docs/.META
+docs/.META/Legacy
+docs/.META/Legacy/TODO
+docs/README.md
+docs/SCRIPT_DEV_GUIDE.md
+docs/SCRIPT_DEV_SKILL.md
+docs/TODO
+docs/TODO/README.md
+docs/TODO/a2a_server_20260807
+docs/TODO/a2a_server_20260807/01_protocol_boundary.md
+docs/TODO/a2a_server_20260807/02_task_lifecycle.md
+docs/TODO/a2a_server_20260807/03_documentation_and_verification.md
+docs/TODO/a2a_server_20260807/index.md
+docs/TODO/agreement_version_confirmation
+docs/TODO/agreement_version_confirmation/1_AgreementVersionGate.md
+docs/TODO/agreement_version_confirmation/2_AgreementTextDraft.md
+docs/TODO/agreement_version_confirmation/index.md
+docs/TODO/android_ci_cache_optimization_20260815
+docs/TODO/android_ci_cache_optimization_20260815/index.md
+docs/TODO/api_key_onboarding
+docs/TODO/api_key_onboarding/1_QuickConfiguration.md
+docs/TODO/api_key_onboarding/2_CustomConfigurationReturn.md
+docs/TODO/api_key_onboarding/3_StaticReviewAndDelivery.md
+docs/TODO/api_key_onboarding/index.md
+docs/TODO/apk_v3_signing_rotation
+docs/TODO/apk_v3_signing_rotation/01_NightlyAndReleaseDualSigning.md
+docs/TODO/apk_v3_signing_rotation/02_DebugPackageAndTestKey.md
+docs/TODO/apk_v3_signing_rotation/index.md
+docs/TODO/calculator_qualified_api_repair_20260809
+docs/TODO/calculator_qualified_api_repair_20260809/1_QualifiedApiImplementation.md
+docs/TODO/calculator_qualified_api_repair_20260809/index.md
+docs/TODO/character_card_software_settings_20260805
+docs/TODO/character_card_software_settings_20260805/1_NativeCharacterCardTools.md
+docs/TODO/character_card_software_settings_20260805/2_ScriptApiAndOperitEditor.md
+docs/TODO/character_card_software_settings_20260805/3_VerificationAndDelivery.md
+docs/TODO/character_card_software_settings_20260805/index.md
+docs/TODO/character_card_uuid_binding_rollback_20260805
+docs/TODO/character_card_uuid_binding_rollback_20260805/1_KotlinChatBindingRollback.md
+docs/TODO/character_card_uuid_binding_rollback_20260805/2_RustAndToolPkgRollback.md
+docs/TODO/character_card_uuid_binding_rollback_20260805/3_VerificationAndDelivery.md
+docs/TODO/character_card_uuid_binding_rollback_20260805/index.md
+docs/TODO/chat_large_message_io_20260806
+docs/TODO/chat_large_message_io_20260806/index.md
+docs/TODO/chat_record_export_selection
+docs/TODO/chat_record_export_selection/01-selection-and-export.md
+docs/TODO/chat_record_export_selection/index.md
+docs/TODO/ci_remove_android_lint_20260729
+docs/TODO/ci_remove_android_lint_20260729/index.md
+docs/TODO/ci_skip_android_lint_20260806
+docs/TODO/ci_skip_android_lint_20260806/index.md
+docs/TODO/codex_settings_quota_pdf_20260823
+docs/TODO/codex_settings_quota_pdf_20260823/1_settings_and_usage.md
+docs/TODO/codex_settings_quota_pdf_20260823/2_pdf_input_file.md
+docs/TODO/codex_settings_quota_pdf_20260823/3_verification_and_release.md
+docs/TODO/codex_settings_quota_pdf_20260823/4_usage_window_mapping_and_persistence.md
+docs/TODO/codex_settings_quota_pdf_20260823/index.md
+docs/TODO/compose_file_picker_modes_20260809
+docs/TODO/compose_file_picker_modes_20260809/1_PickerModeImplementation.md
+docs/TODO/compose_file_picker_modes_20260809/index.md
+docs/TODO/deepseek_harness_runtime_20260814
+docs/TODO/deepseek_harness_runtime_20260814/01_runtime_host.md
+docs/TODO/deepseek_harness_runtime_20260814/02_sidebar_surface.md
+docs/TODO/deepseek_harness_runtime_20260814/03_delivery.md
+docs/TODO/deepseek_harness_runtime_20260814/04_dual_app_debugging.md
+docs/TODO/deepseek_harness_runtime_20260814/05_runtime_failure_feedback.md
+docs/TODO/deepseek_harness_runtime_20260814/06_pnpm_dependency_builds.md
+docs/TODO/deepseek_harness_runtime_20260814/07_node_pty_module_resolution.md
+docs/TODO/deepseek_harness_runtime_20260814/08_official_control_consolidation.md
+docs/TODO/deepseek_harness_runtime_20260814/09_startup_readiness.md
+docs/TODO/deepseek_harness_runtime_20260814/10_explicit_runtime_lifecycle.md
+docs/TODO/deepseek_harness_runtime_20260814/index.md
+docs/TODO/dependency_security_updates
+docs/TODO/dependency_security_updates/01_upgrade_vulnerable_dependencies.md
+docs/TODO/dependency_security_updates/index.md
+docs/TODO/dragonbones_ci_dependency_path_20260806
+docs/TODO/dragonbones_ci_dependency_path_20260806/index.md
+docs/TODO/dynamic_thinking_options_20260824
+docs/TODO/dynamic_thinking_options_20260824/01-model-options.md
+docs/TODO/dynamic_thinking_options_20260824/02-settings-and-ui.md
+docs/TODO/dynamic_thinking_options_20260824/03-provider-capability-mapping.md
+docs/TODO/dynamic_thinking_options_20260824/index.md
+docs/TODO/github_login_browser_choice_20260801
+docs/TODO/github_login_browser_choice_20260801/01-browser-choice-and-callback.md
+docs/TODO/github_login_browser_choice_20260801/index.md
+docs/TODO/github_oauth_broker
+docs/TODO/github_oauth_broker/1_CloudBroker.md
+docs/TODO/github_oauth_broker/2_AndroidClient.md
+docs/TODO/github_oauth_broker/3_Operit2Client.md
+docs/TODO/github_oauth_broker/index.md
+docs/TODO/github_oauth_completion_delivery
+docs/TODO/github_oauth_completion_delivery/1_Protocol.md
+docs/TODO/github_oauth_completion_delivery/2_AppOwnedCoordination.md
+docs/TODO/github_oauth_completion_delivery/3_FlutterAndCliLogin.md
+docs/TODO/github_oauth_completion_delivery/index.md
+docs/TODO/issue-741-interrupted-turn-stats
+docs/TODO/issue-741-interrupted-turn-stats/01-bind-cancellation-to-runtime-message.md
+
+=== STACK DETECTION (manifest files) ===
+
+--- build.gradle.kts ---
+buildscript {
+    val objectboxVersion by extra("5.3.0")
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("io.objectbox:objectbox-gradle-plugin:$objectboxVersion")
+    }
+}
+
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+plugins {
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.compose) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.kotlin.kapt) apply false
+    alias(libs.plugins.kotlin.parcelize) apply false
+}
+
+tasks.register("clean", Delete::class) {
+    delete(rootProject.buildDir)
+}
+
+tasks.register("assembleDebugClone") {
+    dependsOn(":app:assembleClone")
+    description = "Build the clone (co-installable) debug APK with package name suffix .clone"
+}
+
+--- gradle.properties ---
+# Project-wide Gradle settings.
+# IDE (e.g. Android Studio) users:
+# Gradle settings configured through the IDE *will override*
+# any settings specified in this file.
+# For more details on how to configure your build environment visit
+# http://www.gradle.org/docs/current/userguide/build_environment.html
+# Specifies the JVM arguments used for the daemon process.
+# The setting is particularly useful for tweaking memory settings.
+org.gradle.jvmargs=-Xmx8192m -Dfile.encoding=UTF-8
+# When configured, Gradle will run in incubating parallel mode.
+# This option should only be used with decoupled projects. For more details, visit
+# https://developer.android.com/r/tools/gradle-multi-project-decoupled-projects
+# org.gradle.parallel=true
+# AndroidX package structure to make it clearer which packages are bundled with the
+# Android operating system, and which are packaged with your app's APK
+# https://developer.android.com/topic/libraries/support-library/androidx-rn
+android.useAndroidX=true
+# Kotlin code style for this project: "official" or "obsolete":
+kotlin.code.style=official
+# Enables namespacing of each library's R class so that its R class includes only the
+# resources declared in the library itself and none from the library's dependencies,
+# thereby reducing the size of the R class for that library
+android.nonTransitiveRClass=true
+org.gradle.parallel=true
+org.gradle.daemon=true
+org.gradle.configureondemand=true
+org.gradle.workers.max=16
+org.gradle.caching=true
+
+--- package-lock.json ---
+{
+    "name": "operit",
+    "version": "1.0.0",
+    "lockfileVersion": 3,
+    "requires": true,
+    "packages": {
+        "": {
+            "name": "operit",
+            "version": "1.0.0",
+            "license": "ISC",
+            "devDependencies": {
+                "@types/jest": "^29.5.12",
+                "@types/node": "^22.4.1",
+                "copy-paste": "^1.5.3",
+                "esbuild": "^0.25.0",
+                "object-sizeof": "^2.6.1",
+                "typescript": "5.9.3"
+            }
+        },
+        "node_modules/@babel/code-frame": {
+            "version": "7.29.7",
+            "resolved": "https://registry.npmjs.org/@babel/code-frame/-/code-frame-7.29.7.tgz",
+            "integrity": "sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "@babel/helper-validator-identifier": "^7.29.7",
+                "js-tokens": "^4.0.0",
+                "picocolors": "^1.1.1"
+            },
+            "engines": {
+                "node": ">=6.9.0"
+            }
+        },
+        "node_modules/@babel/helper-validator-identifier": {
+            "version": "7.29.7",
+            "resolved": "https://registry.npmjs.org/@babel/helper-validator-identifier/-/helper-validator-identifier-7.29.7.tgz",
+            "integrity": "sha512-qehxGkRj55h/ff8EMaJ+cYhyaKlHIxqYDn682wQD7RNp9UujOQsHog2uS0r2vzr4pW+sXf90NeeayjcNaX3fFg==",
+            "dev": true,
+            "license": "MIT",
+            "engines": {
+                "node": ">=6.9.0"
+            }
+        },
+        "node_modules/@esbuild/aix-ppc64": {
+            "version": "0.25.12",
+            "resolved": "https://registry.npmjs.org/@esbuild/aix-ppc64/-/aix-ppc64-0.25.12.tgz",
+            "integrity": "sha512-Hhmwd6CInZ3dwpuGTF8fJG6yoWmsToE+vYgD4nytZVxcu1ulHpUQRAB1UJ8+N1Am3Mz4+xOByoQoSZf4D+CpkA==",
+            "cpu": [
+                "ppc64"
+            ],
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "aix"
+            ],
+            "engines": {
+                "node": ">=18"
+            }
+        },
+        "node_modules/@esbuild/android-arm": {
+            "version": "0.25.12",
+            "resolved": "https://registry.npmjs.org/@esbuild/android-arm/-/android-arm-0.25.12.tgz",
+            "integrity": "sha512-VJ+sKvNA/GE7Ccacc9Cha7bpS8nyzVv0jdVgwNDaR4gDMC/2TTRc33Ip8qrNYUcpkOHUT5OZ0bUcNNVZQ9RLlg==",
+            "cpu": [
+                "arm"
+            ],
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "android"
+            ],
+            "engines": {
+                "node": ">=18"
+            }
+        },
+        "node_modules/@esbuild/android-arm64": {
+            "version": "0.25.12",
+
+[TRUNCATED] Showing first 80 of 1145 lines.
+--- package.json ---
+{
+    "scripts": {
+        "build": "webpack",
+        "java2ts": "java2ts config.json",
+        "builder": "node ./build/build.js",
+        "build:examples:github": "node ./examples/github/build.js",
+        "build:webchat": "npm --prefix web-chat run build && npm --prefix web-chat run sync:android-assets"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "@types/jest": "^29.5.12",
+        "@types/node": "^22.4.1",
+        "copy-paste": "^1.5.3",
+        "esbuild": "^0.25.0",
+        "object-sizeof": "^2.6.1",
+        "typescript": "5.9.3"
+    },
+    "name": "operit",
+    "version": "1.0.0",
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": ""
+}
+
+--- pnpm-lock.yaml ---
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    devDependencies:
+      '@types/jest':
+        specifier: ^29.5.12
+        version: 29.5.14
+      '@types/node':
+        specifier: ^22.4.1
+        version: 22.13.14
+      copy-paste:
+        specifier: ^1.5.3
+        version: 1.5.3
+      esbuild:
+        specifier: ^0.25.0
+        version: 0.25.12
+      object-sizeof:
+        specifier: ^2.6.1
+        version: 2.6.5
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+
+  tools/mcp_bridge:
+    dependencies:
+      '@modelcontextprotocol/sdk':
+        specifier: 1.30.0
+        version: 1.30.0(zod@3.25.76)
+    devDependencies:
+      '@types/node':
+        specifier: ^18.0.0
+        version: 18.19.130
+      '@vercel/ncc':
+        specifier: ^0.38.1
+        version: 0.38.4
+      ts-node:
+        specifier: ^10.9.1
+        version: 10.9.2(@types/node@18.19.130)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
+
+packages:
+
+  '@babel/code-frame@7.26.2':
+    resolution: {integrity: sha512-RJlIHRueQgwWitWgF8OdFYGZX328Ax5BCemNGlqHfplnRT9ESi8JkFlvaVYbS+UubVY6dpv87Fs2u5M29iNFVQ==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/helper-validator-identifier@7.25.9':
+    resolution: {integrity: sha512-Ed61U6XJc3CVRfkERJWDz4dJwKe7iLmmJsbOGu9wSloNSFttHV0I8g6UAgb7qnK5ly5bGLPd4oXZlxCdANBOWQ==}
+    engines: {node: '>=6.9.0'}
+
+  '@cspotcode/source-map-support@0.8.1':
+    resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
+    engines: {node: '>=12'}
+
+  '@esbuild/aix-ppc64@0.25.12':
+    resolution: {integrity: sha512-Hhmwd6CInZ3dwpuGTF8fJG6yoWmsToE+vYgD4nytZVxcu1ulHpUQRAB1UJ8+N1Am3Mz4+xOByoQoSZf4D+CpkA==}
+    engines: {node: '>=18'}
+    cpu: [ppc64]
+    os: [aix]
+
+  '@esbuild/android-arm64@0.25.12':
+    resolution: {integrity: sha512-6AAmLG7zwD1Z159jCKPvAxZd4y/VTO0VkprYy+3N2FtJ8+BQWFXU+OxARIwA46c5tdD9SsKGZ/1ocqBS/gAKHg==}
+    engines: {node: '>=18'}
+    cpu: [arm64]
+    os: [android]
+
+  '@esbuild/android-arm@0.25.12':
+    resolution: {integrity: sha512-VJ+sKvNA/GE7Ccacc9Cha7bpS8nyzVv0jdVgwNDaR4gDMC/2TTRc33Ip8qrNYUcpkOHUT5OZ0bUcNNVZQ9RLlg==}
+    engines: {node: '>=18'}
+    cpu: [arm]
+    os: [android]
+
+
+[TRUNCATED] Showing first 80 of 1609 lines.
+--- settings.gradle.kts ---
+pluginManagement {
+    repositories {
+        google()
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://jitpack.io") }
+        maven { url = uri("https://dl.bintray.com/rikkaw/Shizuku") }
+        maven { url = uri("https://api.xposed.info/") }
+        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
+    }
+}
+
+rootProject.name = "Operit"
+include(":app")
+include(":dragonbones")
+project(":dragonbones").projectDir = file("avator/dragonbones")
+include(":terminal")
+include(":mnn")
+project(":mnn").projectDir = file("llm/mnn")
+include(":llama")
+project(":llama").projectDir = file("llm/llama")
+include(":mmd")
+project(":mmd").projectDir = file("avator/mmd")
+include(":fbx")
+project(":fbx").projectDir = file("avator/fbx")
+include(":showerclient")
+include(":quickjs")
+
+
+=== ENTRY POINTS ===
+No common entry points found. Check 'main' or 'scripts.start' in manifest files above.
+
+=== LINTING AND FORMATTING CONFIG ===
+No linting or formatting config files found in project root.
+
+=== ENVIRONMENT VARIABLE TEMPLATES ===
+No .env.example or .env.template found. Identify required environment variables by searching the code and config for environment variable reads.
+
+=== TODO / FIXME / HACK (production code only, test dirs excluded) ===
+app/src/main/assets/bridge/spawn-helper.js:523: // TODO do not allow arrays here
+app/src/main/assets/bridge/spawn-helper.js:1580: // TODO refactor - remove compilations
+app/src/main/assets/bridge/spawn-helper.js:1584: const rootId = (0, resolve_1.getFullPath)(this.opts.uriResolver, sch.root.baseId); // TODO if getFullPath removed 1 tests fails
+app/src/main/assets/bridge/spawn-helper.js:1604: dataPathArr: [codegen_1.nil], // TODO can its length be used as dataLevel if nil is removed?
+app/src/main/assets/bridge/spawn-helper.js:1681: const schema = (_a = root.localRefs) === null || _a === void 0 ? void 0 : _a[ref]; // TODO maybe localRefs should hold SchemaEnv
+app/src/main/assets/bridge/spawn-helper.js:1708: // TODO returns AnySchemaObject (if the schema can be inlined) or validation function
+app/src/main/assets/bridge/spawn-helper.js:1718: function resolveSchema(root, // root object with properties schema, refs TODO below SchemaEnv is assigned to it
+app/src/main/assets/bridge/spawn-helper.js:1724: // TODO `Object.keys(root.schema).length > 0` should not be needed - but removing breaks 2 tests
+app/src/main/assets/bridge/spawn-helper.js:1769: // TODO PREVENT_SCOPE_CHANGE could be defined in keyword def?
+app/src/main/assets/bridge/spawn-helper.js:1856: // TODO refactor to use keyword definitions
+app/src/main/assets/bridge/spawn-helper.js:2050: // TODO refactor to use Set
+app/src/main/assets/bridge/spawn-helper.js:2208: : (0, codegen_1._) `"/" + ${dataProp}.replace(/~/g, "~0").replace(/\\//g, "~1")`; // TODO maybe use global escapePointer
+app/src/main/assets/bridge/spawn-helper.js:2282: gen.var(valid, false); // TODO var
+app/src/main/assets/bridge/spawn-helper.js:2286: gen.var(valid, true); // TODO var
+app/src/main/assets/bridge/spawn-helper.js:2292: // TODO maybe some other interface should be used for non-keyword validation errors...
+app/src/main/assets/bridge/spawn-helper.js:2438: // TODO use gen.property
+app/src/main/assets/bridge/spawn-helper.js:2640: // TODO maybe some hook to execute it in the end to check whether props/items are Name, as in assignEvaluated
+app/src/main/assets/bridge/spawn-helper.js:2680: // TODO var
+app/src/main/assets/bridge/spawn-helper.js:2729: // TODO assign unevaluated
+app/src/main/assets/bridge/spawn-helper.js:2749: gen.block(() => keywordCode(it, "$ref", RULES.all.$ref.definition)); // TODO typecast
+app/src/main/assets/bridge/spawn-helper.js:2774: // TODO make it "ok" call?
+app/src/main/assets/bridge/spawn-helper.js:2991: const validateSchemaRef = gen.scopeValue("validate$data", { ref: def.validateSchema }); // TODO value.code for standalone
+app/src/main/assets/bridge/spawn-helper.js:3184: // TODO add tests
+app/src/main/assets/bridge/spawn-helper.js:3278: // TODO something is possibly wrong here with not changing parentDataProperty and not appending dataPathArr
+app/src/main/assets/bridge/spawn-helper.js:3684: // TODO return type should be Ajv
+app/src/main/assets/bridge/spawn-helper.js:3765: // TODO atm it is allowed to overwrite schemas without id (instead of not adding them)
+app/src/main/assets/bridge/spawn-helper.js:3811: keyRef = (0, resolve_1.normalizeId)(keyRef); // TODO tests fail without this line
+app/src/main/assets/bridge/spawn-helper.js:4046: const valid = gen.var("valid", (0, codegen_1._) `${len} <= ${items.length}`); // TODO var
+app/src/main/assets/bridge/spawn-helper.js:4109: // TODO maybe an option instead of hard-coded 8?
+app/src/main/assets/bridge/spawn-helper.js:4346: deps: ${deps}}`, // TODO change to reference
+app/src/main/assets/bridge/spawn-helper.js:4409: }, () => gen.var(valid, true) // TODO var
+app/src/main/assets/bridge/spawn-helper.js:4702: // TODO possibly fail straight away (with warning or exception) if there are two empty always valid schemas
+app/src/main/assets/bridge/spawn-helper.js:4779: gen.var(valid, true); // TODO var
+app/src/main/assets/bridge/spawn-helper.js:5219: addEvaluatedFrom(v); // TODO will not work with async, it has to be returned with the result
+app/src/main/assets/bridge/spawn-helper.js:5235: gen.assign(names_1.default.vErrors, (0, codegen_1._) `${names_1.default.vErrors} === null ? ${errs} : ${names_1.default.vErrors}.concat(${errs})`); // TODO tagged
+app/src/main/assets/bridge/spawn-helper.js:5243: // TODO refactor
+app/src/main/assets/bridge/spawn-helper.js:5459: // TODO simplify
+app/src/main/assets/bridge/spawn-helper.js:6742: // TODO: Remove this for the next major release
+app/src/main/assets/js/terser.bundle.min.js:5541: this.expression._walk(visitor);  // TODO why do we need to crawl this last?
+app/src/main/assets/js/terser.bundle.min.js:6207: }, AST_Scope /* TODO a class might have a scope but it's not a scope */);
+app/src/main/assets/js/terser.bundle.min.js:12363: // XXX: HACK! Ensure the switch expression gets the correct scope (the parent scope) and the body gets the contained scope
+app/src/main/assets/js/terser.bundle.min.js:13217: // TODO string encoding stuff
+app/src/main/assets/js/terser.bundle.min.js:13548: // TODO take propmangle into account
+app/src/main/assets/js/terser.bundle.min.js:13992: // TODO this only works with AST_Defun, shouldn't it work for other ways of defining functions?
+app/src/main/assets/js/terser.bundle.min.js:14516: // TODO: or, we are asked to ignore TypeError
+app/src/main/assets/js/terser.bundle.min.js:19584: // TODO this is sometimes undefined during compression.
+app/src/main/assets/js/terser.bundle.min.js:19591: // TODO can we delete? AST_Catch is a block scope.
+app/src/main/assets/js/terser.bundle.min.js:23541: // TODO:
+app/src/main/assets/templates/android/app/src/main/res/xml/data_extraction_rules.xml:8: <!-- TODO: Use <include> and <exclude> to control what is backed up.
+app/src/main/java/com/ai/assistance/operit/api/speech/SherpaMnnSpeechProvider.kt:167: // TODO: 需要检查 VAD 模型格式或使用兼容的模型版本
+app/src/main/java/com/ai/assistance/operit/core/config/FunctionalPrompts.kt:976: - Do NOT store future/speculative items: next-step suggestions, TODO lists, tentative plans.
+app/src/main/java/com/ai/assistance/operit/core/config/FunctionalPrompts.kt:1004: - Do not write future actions, TODOs, or speculative plans in content.
+app/src/main/java/com/ai/assistance/operit/core/config/FunctionalPrompts.kt:1059: - 不记录未来推测项：下一步建议、TODO、暂定计划。
+app/src/main/java/com/ai/assistance/operit/core/config/FunctionalPrompts.kt:1087: - 内容禁止写未来动作、TODO、推测性计划。
+app/src/main/java/com/ai/assistance/operit/data/repository/UIHierarchyManager.kt:50: // TODO: 如果你不在Google Play上发布，可以将其更改为直接下载的URL
+app/src/main/java/com/ai/assistance/operit/ui/features/chat/components/lazy/LazyLayoutItemAnimator.kt:213: // TODO(jossiwolf): In some cases, keyToItemInfoMap and movingAwayKeys can get out of
+app/src/main/java/com/ai/assistance/operit/ui/features/chat/components/lazy/LazyLayoutScrollScope.kt:293: // TODO: prevent temporarily scrolling *past* the item
+app/src/main/java/com/ai/assistance/operit/ui/features/chat/components/lazy/LazyListState.kt:491: // TODO: Coroutine scrolling APIs will allow this to be private again once we have more
+app/src/main/java/com/ai/assistance/operit/ui/features/chat/screens/AIChatScreen.kt:1405: // TODO: 实现取消导出的逻辑
+app/src/main/java/com/ai/assistance/operit/ui/features/chat/webview/workspace/editor/language/KotlinSupport.kt:30: "TODO", "run", "runCatching", "use"
+
+=== GIT RECENT COMMITS (last 20) ===
+f323d6c5 docs: update development branch references (#1049)
+b9bde5d0 Merge pull request #1045 from AAswordman/AAswordman-patch-1
+03e864b5 Revise star history section in README
+0e803831 fix: refine model configuration and market workflows
+089d4b05 fix: refine model configuration and market workflows
+51ea6c2e chore: sync main to remote
+1289fd6f fix: preserve preference migration data
+26878cac fix: repair preference migration compilation
+5c5393cb Merge feat/model-thinking-config into development
+0038ff53 feat: add per-model thinking configuration
+b9a0ce01 feat: make thinking controls provider-aware and dynamic
+ada96e37 feat: update thinking options and stream handling
+8302ba19 Revert "feat(plugin): add chat view slot interfaces"
+837c0817 fix(media): preserve mixed attachment order
+b006d45e fix(opencode): provide context for reasoning history rewrite
+d5b2d3b3 Merge remote-tracking branch 'origin/pr-1016' into github-resolve-1016
+2c86ca7a Merge remote-tracking branch 'origin/pr-1024' into github-resolve-1024
+4ad12608 Merge remote-tracking branch 'origin/pr-1023' into github-resolve-1023
+45a907e7 Merge pull request #1020 from luojiaping/fix/thinking-quality-slider
+16f85365 Merge pull request #1022 from 3316891527/fix/issue-1021-deepseek-assistant-images
+
+=== HIGH-CHURN FILES (last 90 days, top 20) ===
+  78 app/src/main/res/values/strings.xml
+  76 app/src/main/res/values-en/strings.xml
+  46 app/src/main/res/values-es/strings.xml
+  46 app/src/main/res/values-id/strings.xml
+  46 app/src/main/res/values-ms/strings.xml
+  46 app/src/main/res/values-pt-rBR/strings.xml
+  45 app/src/main/res/values-ko/strings.xml
+  36 app/src/main/java/com/ai/assistance/operit/api/chat/llmprovider/OpenAIProvider.kt
+  34 app/src/main/res/values-ro/strings.xml
+  31 app/build.gradle.kts
+  24 app/src/main/java/com/ai/assistance/operit/api/chat/llmprovider/GeminiProvider.kt
+  21 app/src/main/java/com/ai/assistance/operit/api/chat/llmprovider/OpenAIResponsesProvider.kt
+  20 app/src/main/java/com/ai/assistance/operit/data/preferences/ApiPreferences.kt
+  19 app/src/main/java/com/ai/assistance/operit/api/chat/llmprovider/ClaudeProvider.kt
+  19 app/src/main/java/com/ai/assistance/operit/ui/features/packages/screens/ArtifactPublishScreen.kt
+  16 app/src/main/java/com/ai/assistance/operit/api/chat/llmprovider/AIServiceFactory.kt
+  16 app/src/main/java/com/ai/assistance/operit/ui/features/chat/screens/AIChatScreen.kt
+  15 app/src/main/java/com/ai/assistance/operit/api/chat/llmprovider/DeepseekProvider.kt
+  15 app/src/main/java/com/ai/assistance/operit/ui/features/chat/components/style/input/agent/AgentChatInputSection.kt
+  15 app/src/main/java/com/ai/assistance/operit/ui/features/chat/viewmodel/ChatViewModel.kt
+
+=== MONOREPO SIGNALS ===
+Monorepo tool detected: pnpm-workspace.yaml
+
+=== CODE METRICS ===
+Total files scanned: 2952
+Total lines of code: 752802
+
+Files by language:
+  Kotlin: 1397
+  Other: 974
+  TypeScript: 225
+  JavaScript: 151
+  C++: 46
+  TypeScript/React: 44
+  C Header: 42
+  Java: 34
+  Python: 30
+  Swift: 6
+  Go: 1
+  C: 1
+  Rust: 1
+
+Top 10 largest files:
+terminal/src/main/assets/ubuntu-noble-aarch64-pd-v4.18.0.tar.xz: 62630.4KB
+examples/apktool/resources/apktool/jadx-runtime-android.jar: 13996.1KB
+app/src/main/assets/desktop.apk: 6337.4KB
+examples/apktool/resources/apktool/apktool-runtime-android.jar: 5068.4KB
+examples/apktool/resources/apktool/android-framework.jar: 4382.8KB
+examples/apktool/resources/apktool/apk-reverse-helper-runtime-android.jar: 3101.9KB
+app/src/main/assets/accessibility.apk: 2699.2KB
+app/src/main/assets/shizuku.apk: 2511.5KB
+docs/assets/readme/operit-agent-task-flow-2400x1000-v3.png: 2383.8KB
+docs/assets/readme/operit-memory-multicharacter-chat-2400x1000-v2.png: 2257.5KB
+
+=== CI/CD PIPELINES ===
+CI/CD: GitHub Actions
+
+=== CONTAINERS & ORCHESTRATION ===
+No containerization configs detected.
+
+=== SECURITY & COMPLIANCE ===
+No security configs detected.
+
+=== PERFORMANCE & TESTING ===
+No performance testing configs detected.
+
+=== SCAN COMPLETE ===

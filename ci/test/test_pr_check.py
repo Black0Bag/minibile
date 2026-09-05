@@ -55,10 +55,14 @@ class ScopeClassificationTest(unittest.TestCase):
         self.assertFalse(plan.android_jvm)
         self.assertTrue(plan.android_full)
 
-    def test_android_workflow_changes_use_full_lane(self) -> None:
+    def test_android_workflow_and_release_metadata_changes_use_full_lane(self) -> None:
         for path in (
+            ".releaserc.yml",
+            "CHANGELOG.md",
+            "VERSION",
             ".github/workflows/android-build.yml",
             ".github/workflows/android-tests.yml",
+            ".github/workflows/android-release.yml",
             ".github/workflows/pr-check.yml",
         ):
             with self.subTest(path=path):

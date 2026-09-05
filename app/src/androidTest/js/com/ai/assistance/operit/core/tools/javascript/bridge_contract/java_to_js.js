@@ -89,7 +89,7 @@ exports.run = async function run() {
     }),
     test('application context returns to JS as proxy object', () => {
       const context = Java.getApplicationContext();
-      assertEq(String(context.getPackageName()), 'com.ai.assistance.operit');
+      assertEq(String(context.getPackageName()), 'io.github.black0bag.minibile.debug');
     }),
   ]);
 };
