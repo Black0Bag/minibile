@@ -3,11 +3,16 @@ package com.ai.assistance.operit.api.chat.llmprovider
 import com.ai.assistance.operit.data.collects.ApiProviderConfigs
 import com.ai.assistance.operit.data.collects.ModelThinkingConfigDefaults
 import com.ai.assistance.operit.data.model.ApiProviderType
+import com.ai.assistance.operit.util.AppLogger
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class XaiProviderReasoningTest {
+    init {
+        AppLogger.enableSystemLog = false
+    }
+
     private fun mapping(modelName: String): ThinkingQualityMapping =
         ThinkingQualityMappingRegistry.resolve(
             providerTypeId = ApiProviderType.XAI.name,

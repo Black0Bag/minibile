@@ -2,6 +2,14 @@
 
 本文件记录每个可安装版本的实际交付内容。每个版本只对应一个 Git 提交、一个 Tag 和一个 GitHub Release。
 
+## 0.0.2 - 2026-09-06
+
+### 修复
+
+- 修复 `RawSnapshotBackupManagerTest`：备份包名前缀已迁移到 `io.github.black0bag.minibile`，测试断言同步更新。
+- 修复 `XaiProviderReasoningTest.defaultConfigUsesTheOfficialXaiEndpointAndModel`：`ModelListFetcher.getModelsListUrl` 内部调用 `AppLogger.d`，在纯 JVM 测试环境触发 `android.util.Log` stub 异常；测试中关闭 `enableSystemLog`。
+- 修复 `ReleasedProviderModelKeyDecoder`：`decode` 在 `known` 为 null 时未校验 `providerAlias` 是否在已知 alias 集合中，导致 `FILE_BINDING` 被错误解码；新增 `require` 拒绝未知 provider alias。
+
 ## 0.0.1 - 2026-09-06
 
 ### 修复
