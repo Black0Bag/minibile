@@ -67,7 +67,7 @@ import org.json.JSONObject
 
 class MainActivity : ComponentActivity() {
     companion object {
-        const val ACTION_OPEN_SETTINGS_SHORTCUT = "com.ai.assistance.operit.action.OPEN_SETTINGS_SHORTCUT"
+        const val ACTION_OPEN_SETTINGS_SHORTCUT = "io.github.black0bag.minibile.action.OPEN_SETTINGS_SHORTCUT"
     }
 
     private val TAG = "MainActivity"

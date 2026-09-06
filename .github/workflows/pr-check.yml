@@ -2,7 +2,7 @@ name: PR Check
 
 on:
   pull_request:
-    branches: [development]
+    branches: [main]
     types: [opened, synchronize, reopened, edited, ready_for_review]
 
 concurrency:
@@ -71,6 +71,14 @@ jobs:
         id: gate-tests
         continue-on-error: true
         run: python3 -B -m unittest discover -s ci/test -p 'test_*.py'
+
+      - name: Check release version contract
+        id: release-version
+        continue-on-error: true
+        run: |
+          python3 -B ci/script/release_version.py check-pr \
+            --base "${{ steps.plan.outputs.base_sha }}" \
+            --candidate "${{ steps.plan.outputs.candidate_sha }}"
 
       - name: Check repository hygiene
         id: hygiene
@@ -151,6 +159,7 @@ jobs:
         env:
           PLAN_OUTCOME: ${{ steps.plan.outcome }}
           GATE_TESTS_OUTCOME: ${{ steps.gate-tests.outcome }}
+          RELEASE_VERSION_OUTCOME: ${{ steps.release-version.outcome }}
           HYGIENE_OUTCOME: ${{ steps.hygiene.outcome }}
           MARKDOWN_OUTCOME: ${{ steps.markdown.outcome }}
           LOCALIZATION_OUTCOME: ${{ steps.localization.outcome }}
@@ -183,6 +192,7 @@ jobs:
 
           check_stage candidate true "$PLAN_OUTCOME"
           check_stage gate-tests true "$GATE_TESTS_OUTCOME"
+          check_stage release-version true "$RELEASE_VERSION_OUTCOME"
           check_stage hygiene true "$HYGIENE_OUTCOME"
           check_stage markdown true "$MARKDOWN_OUTCOME"
           check_stage localization "$LOCALIZATION_REQUIRED" "$LOCALIZATION_OUTCOME"

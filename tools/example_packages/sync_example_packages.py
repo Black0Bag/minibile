@@ -14,8 +14,8 @@ from pathlib import Path, PurePosixPath
 MANIFEST_FILENAMES = ("manifest.hjson", "manifest.json")
 SYNCABLE_SUFFIXES = {".js", ".toolpkg"}
 SYNC_MODES = ("normal", "test")
-DEBUG_APP_PACKAGE = "com.ai.assistance.operit.debug"
-RELEASE_APP_PACKAGE = "com.ai.assistance.operit"
+DEBUG_APP_PACKAGE = "io.github.black0bag.minibile.debug"
+RELEASE_APP_PACKAGE = "io.github.black0bag.minibile"
 SUPPORTED_APP_PACKAGES = (DEBUG_APP_PACKAGE, RELEASE_APP_PACKAGE)
 APP_PACKAGE_ENV = "OPERIT_APP_PACKAGE"
 HOT_RELOAD_STATE_FILE = ".sync_example_packages_hot_reload_state.json"
@@ -705,9 +705,9 @@ def _save_hot_reload_state(path: Path, state: dict[str, dict[str, str]]) -> None
 
 
 def _broadcast_refresh_packages(device_serial: str, app_package: str) -> None:
-    action_debug_refresh_packages = f"{app_package}.DEBUG_REFRESH_PACKAGES"
+    action_debug_refresh_packages = "io.github.black0bag.minibile.DEBUG_REFRESH_PACKAGES"
     receiver_component_refresh = (
-        f"{app_package}/.core.tools.packTool.PackageDebugRefreshReceiver"
+        f"{app_package}/com.ai.assistance.operit.core.tools.packTool.PackageDebugRefreshReceiver"
     )
     _adb_command(
         device_serial,
@@ -733,9 +733,9 @@ def _broadcast_debug_install_toolpkg(
     package_name: str,
     remote_file_path: str,
 ) -> None:
-    action_debug_install_toolpkg = f"{app_package}.DEBUG_INSTALL_TOOLPKG"
+    action_debug_install_toolpkg = "io.github.black0bag.minibile.DEBUG_INSTALL_TOOLPKG"
     receiver_component_toolpkg = (
-        f"{app_package}/.core.tools.packTool.ToolPkgDebugInstallReceiver"
+        f"{app_package}/com.ai.assistance.operit.core.tools.packTool.ToolPkgDebugInstallReceiver"
     )
     _adb_command(
         device_serial,
@@ -930,8 +930,8 @@ def main() -> int:
         dest="app_package",
         default=None,
         help=(
-            "Operit applicationId for post-sync hot reload. Supports "
-            "com.ai.assistance.operit.debug and com.ai.assistance.operit; defaults to "
+            "minibile applicationId for post-sync hot reload. Supports "
+            "io.github.black0bag.minibile.debug and io.github.black0bag.minibile; defaults to "
             "OPERIT_APP_PACKAGE or automatic Debug-first detection."
         ),
     )

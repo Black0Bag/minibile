@@ -29,7 +29,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-private const val SNAPSHOT_PACKAGE_NAME_PREFIX = "com.ai.assistance.operit"
+private const val SNAPSHOT_PACKAGE_NAME_PREFIX = "io.github.black0bag.minibile"
 
 internal fun isSupportedSnapshotPackageName(packageName: String): Boolean =
     packageName.startsWith(SNAPSHOT_PACKAGE_NAME_PREFIX)

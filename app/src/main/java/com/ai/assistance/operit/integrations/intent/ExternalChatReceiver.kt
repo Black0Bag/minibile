@@ -16,8 +16,8 @@ class ExternalChatReceiver : BroadcastReceiver() {
     companion object {
         private const val TAG = "ExternalChatReceiver"
 
-        const val ACTION_EXTERNAL_CHAT = "com.ai.assistance.operit.EXTERNAL_CHAT"
-        const val ACTION_EXTERNAL_CHAT_RESULT = "com.ai.assistance.operit.EXTERNAL_CHAT_RESULT"
+        const val ACTION_EXTERNAL_CHAT = "io.github.black0bag.minibile.EXTERNAL_CHAT"
+        const val ACTION_EXTERNAL_CHAT_RESULT = "io.github.black0bag.minibile.EXTERNAL_CHAT_RESULT"
 
         const val EXTRA_REQUEST_ID = "request_id"
         const val EXTRA_MESSAGE = "message"

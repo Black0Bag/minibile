@@ -33,6 +33,9 @@ internal object ReleasedProviderModelKeyDecoder {
             "released token key does not contain a provider and model: $encoded"
         }
         val providerAlias = encoded.substring(0, separator)
+        require(known != null || providerAlias in aliases) {
+            "released token key has unknown provider alias: $providerAlias"
+        }
         val model = encoded.substring(separator + 1)
         return ReleasedProviderModelKey(
             storedProviderModel = "$providerAlias:$model",

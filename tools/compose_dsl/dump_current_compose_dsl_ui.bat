@@ -42,7 +42,7 @@ if %DEVICE_COUNT% equ 1 (
 REM Resolve the installed Debug or Release application package.
 set "APP_ID=%OPERIT_APP_PACKAGE%"
 if defined APP_ID (
-    if /I not "!APP_ID!"=="com.ai.assistance.operit.debug" if /I not "!APP_ID!"=="com.ai.assistance.operit" (
+    if /I not "!APP_ID!"=="io.github.black0bag.minibile.debug" if /I not "!APP_ID!"=="io.github.black0bag.minibile" (
         echo Error: Unsupported Operit application package - !APP_ID!
         exit /b 1
     )
@@ -53,7 +53,7 @@ if defined APP_ID (
     )
 ) else (
     set "APP_ID="
-    for %%P in (com.ai.assistance.operit.debug com.ai.assistance.operit) do (
+    for %%P in (io.github.black0bag.minibile.debug io.github.black0bag.minibile) do (
         if not defined APP_ID (
             adb -s "!DEVICE_SERIAL!" shell pm list packages "%%P" | findstr /x /c:"package:%%P" >nul
             if not errorlevel 1 set "APP_ID=%%P"
@@ -64,8 +64,8 @@ if defined APP_ID (
         exit /b 1
     )
 )
-set "ACTION=!APP_ID!.DUMP_COMPOSE_DSL_UI"
-set "RECEIVER=!APP_ID!/.core.tools.packTool.ToolPkgComposeDslDebugDumpReceiver"
+set "ACTION=io.github.black0bag.minibile.DUMP_COMPOSE_DSL_UI"
+set "RECEIVER=!APP_ID!/com.ai.assistance.operit.core.tools.packTool.ToolPkgComposeDslDebugDumpReceiver"
 set "REMOTE_DIR=/sdcard/Android/data/!APP_ID!/files/debug/compose_dsl_dump/current"
 echo Using Operit application package: !APP_ID!
 

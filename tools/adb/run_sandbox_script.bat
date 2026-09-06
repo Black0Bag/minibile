@@ -82,7 +82,7 @@ if %DEVICE_COUNT% equ 1 (
 REM Resolve the installed Debug or Release application package.
 set "APP_PACKAGE=%OPERIT_APP_PACKAGE%"
 if defined APP_PACKAGE (
-    if /I not "!APP_PACKAGE!"=="com.ai.assistance.operit.debug" if /I not "!APP_PACKAGE!"=="com.ai.assistance.operit" (
+    if /I not "!APP_PACKAGE!"=="io.github.black0bag.minibile.debug" if /I not "!APP_PACKAGE!"=="io.github.black0bag.minibile" (
         echo Error: Unsupported Operit application package - !APP_PACKAGE!
         exit /b 1
     )
@@ -93,7 +93,7 @@ if defined APP_PACKAGE (
     )
 ) else (
     set "APP_PACKAGE="
-    for %%P in (com.ai.assistance.operit.debug com.ai.assistance.operit) do (
+    for %%P in (io.github.black0bag.minibile.debug io.github.black0bag.minibile) do (
         if not defined APP_PACKAGE (
             adb -s "!DEVICE_SERIAL!" shell pm list packages "%%P" | findstr /x /c:"package:%%P" >nul
             if not errorlevel 1 set "APP_PACKAGE=%%P"
@@ -104,8 +104,8 @@ if defined APP_PACKAGE (
         exit /b 1
     )
 )
-set "EXECUTE_JS_ACTION=com.ai.assistance.operit.EXECUTE_JS"
-set "SCRIPT_EXECUTION_RECEIVER=!APP_PACKAGE!/.core.tools.javascript.ScriptExecutionReceiver"
+set "EXECUTE_JS_ACTION=io.github.black0bag.minibile.EXECUTE_JS"
+set "SCRIPT_EXECUTION_RECEIVER=!APP_PACKAGE!/com.ai.assistance.operit.core.tools.javascript.ScriptExecutionReceiver"
 echo Using Operit application package: !APP_PACKAGE!
 
 endlocal & set "DEVICE_SERIAL=%DEVICE_SERIAL%" & set "APP_PACKAGE=%APP_PACKAGE%" & set "EXECUTE_JS_ACTION=%EXECUTE_JS_ACTION%" & set "SCRIPT_EXECUTION_RECEIVER=%SCRIPT_EXECUTION_RECEIVER%"
