@@ -1,6 +1,6 @@
 ---
 title: VibeCoding 专用 Agent 重构
-status: planning
+status: in-progress
 fork: https://github.com/Black0Bag/minibile
 baseline: f323d6c5
 created: 2026-09-04
@@ -78,8 +78,10 @@ created: 2026-09-04
 
 ## 当前状态
 
-- 00 文档已创建并通过自动校验，修订后的 L3 总计划仍等待用户明确批准
+- 00 文档已创建并通过自动校验，L3 总计划已获用户批准
 - 目标安装包 ID `io.github.black0bag.minibile` 和工作区根级 `.release-signing/` 已确认
-- 工作区根级 `WORKSPACE.md` 已建立；签名目录已创建但为空
-- 01-12 均未开始
-- 业务源码、Gradle、Workflow 和 GitHub 远端配置均未修改
+- 工作区根级 `WORKSPACE.md` 已建立；签名目录已包含 keystore 与凭据
+- 00 已完成 `[DONE]`
+- 01 已完成 `[DONE]`：首个 GitHub Release `v0.0.2` 已发布，APK 已通过用户安装验收
+- 02 已完成 `[DONE]`：能力矩阵定稿（2026-09-09），179 工具保留 101/删除 78，全部 7 个取舍点获用户确认，明细双向零差集核验通过
+- 03-12 均未开始

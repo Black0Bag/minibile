@@ -2,6 +2,14 @@
 
 本文件记录每个可安装版本的实际交付内容。每个版本只对应一个 Git 提交、一个 Tag 和一个 GitHub Release。
 
+## 0.0.3 - 2026-09-09
+
+### 文档
+
+- T02 能力矩阵定稿：179 个内置工具逐一判定（保留 101 / 删除 78），全部 7 个取舍点获用户确认。
+- 判定变更记录附源码证据：浏览器自动化 24 工具全保留、`update_user_profile` 保留、`capture_screenshot`/`install_app`/`uninstall_app` 改判保留、`QUERY_ALL_PACKAGES` 删除、本地推理模块删除、子包签名与 `assets/shizuku.apk` 修正为保留。
+- 步骤文档与索引同步：02 标记 [DONE]，进入 T03。
+
 ## 0.0.2 - 2026-09-06
 
 ### 修复
