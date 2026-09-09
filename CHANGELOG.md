@@ -22,7 +22,7 @@
 
 ### 修复
 
-- 修复上游遗留的 `XaiProviderReasoningTest`：它引用了已被删除的 `XaiReasoningMapper` 与 `xaihaM modelSupportsReasoningEffort`，导致 `:app:compileDebugUnitTestKotlin` 编译失败；改为通过现行 `ThinkingQualityMappingRegistry` 与 `ModelThinkingConfigDefaults` 校验 Grok 的 `reasoning_effort` 契约。
+- 修复上游遗留的 `XaiProviderReasoningTest`：它引用了已被删除的 `XaiReasoningMapper` 与 `xaiModelSupportsReasoningEffort`，导致 `:app:compileDebugUnitTestKotlin` 编译失败；改为通过现行 `ThinkingQualityMappingRegistry` 与 `ModelThinkingConfigDefaults` 校验 Grok 的 `reasoning_effort` 契约。
 
 ## 0.0.0 - 2026-09-05
 
