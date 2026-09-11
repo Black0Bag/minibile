@@ -15,6 +15,16 @@
 - 当前 GitHub 源码是一次性原始基线；开始定制后，仓库文档、测试和构建证据是新系统的事实源
 - 不与其他项目建立架构、业务、命名或记忆关联
 
+- VibeCoding 主流程代码化：需求、探索、研究、计划、用户审批、实施、验证、文档、证据与发布必须由强类型状态机和转换守卫驱动，不得只依赖 Skill/Prompt 文本
+- 固定 VibeCoding 状态机不是可配置的通用工作流；只允许配置项目构建模板、验证命令、风险策略和用户批准的远端目标
+- 云端构建统一对外协议为 `cloud_build_release`；PLAN 仅允许 `inspect`/`prepare`/`status`，其余远端副作用 action 仅允许 BUILD + 当前 `planRevision` 审批
+- 构建策略必须保存证据：Go/可承受轻量项目本地优先；Android、Flutter Android、NDK、大型 Gradle/Maven、Rust/C++、Docker/多架构默认 GitHub Actions；未知项目不得猜测
+- 临时仓库默认 private、不自动删除；public、Secrets 写入、Workflow 覆盖、发布、清理必须显式审批，仓库/Tag/Release 删除永不自动执行
+- 自动修复必须有失败分类、失败指纹和熔断预算；同 SHA 只用于基础设施瞬时故障重跑，代码变化必须产生新 SHA
+- GitHub 账号凭据必须使用 Android Keystore 不可导出主密钥 + AES-GCM 信封加密，禁止复制已废弃的 `EncryptedSharedPreferences`，也禁止继续使用普通 `EnvPreferences` 存放 `GITHUB_TOKEN`；凭据永不进入 Prompt、日志、TODO、证据或检查点
+- 首选 `git push` 上传；Git Data API 仅作为小型仓库降级通道；禁止用 Contents API 手工重建大型仓库
+- 以 [`03a_vibecoding_task_engine_and_cloud_build_plan.md`](TODO/vibecoding_specialization_20260904/03a_vibecoding_task_engine_and_cloud_build_plan.md) 作为 T03-T12 修订实施基线
+
 ## 命名规范
 
 ### 领域名称

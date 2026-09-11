@@ -65,7 +65,8 @@ created: 2026-09-04
 | 00 | [`00_documentation_and_baseline_contract.md`](00_documentation_and_baseline_contract.md) | 固化文档、边界与基线契约 | 无 |
 | 01 | [`01_build_environment_and_original_baseline.md`](01_build_environment_and_original_baseline.md) | GitHub 云构建、强制版本、固定签名与原始 Release 基线 | 00 |
 | 02 | [`02_vibecoding_capability_matrix.md`](02_vibecoding_capability_matrix.md) | 全量能力矩阵与依赖图 | 01 |
-| 03 | [`03_session_mode_and_execution_context.md`](03_session_mode_and_execution_context.md) | 会话模式和执行上下文 | 01、02 |
+| 03A | [`03a_vibecoding_task_engine_and_cloud_build_plan.md`](03a_vibecoding_task_engine_and_cloud_build_plan.md) | VibeCoding Skill 代码级状态机与统一云端构建发布工具修订计划 | 02 |
+| 03 | [`03_session_mode_and_execution_context.md`](03_session_mode_and_execution_context.md) | 会话模式和执行上下文（并入 03A Phase A-C） | 01、02、03A |
 | 04 | [`04_tool_policy_gate_and_readonly_terminal.md`](04_tool_policy_gate_and_readonly_terminal.md) | 不可绕过硬门禁 | 03 |
 | 05 | [`05_session_todo_runtime.md`](05_session_todo_runtime.md) | 运行时 TODO 与 Dock | 03、04 |
 | 06 | [`06_chinese_tool_activity_metadata.md`](06_chinese_tool_activity_metadata.md) | 中文工具动作视图 | 04、05 |
@@ -84,4 +85,5 @@ created: 2026-09-04
 - 00 已完成 `[DONE]`
 - 01 已完成 `[DONE]`：首个 GitHub Release `v0.0.2` 已发布，APK 已通过用户安装验收
 - 02 已完成 `[DONE]`：能力矩阵定稿（2026-09-09），179 工具保留 101/删除 78，全部 7 个取舍点获用户确认，明细双向零差集核验通过
-- 03-12 均未开始
+- 03A Phase A 已完成代码与 PR 验证（2026-09-12）：纯 Kotlin 领域模型、状态机转换守卫和 21 个 JVM 单测已落盘；PR #3 的 Fast checks、Android JVM tests、Android build、Candidate checks 全部通过；尚未接数据库/UI/真实 GitHub，等待合并与 v0.1.0 Release
+- 03-12 将按 03A 的 Phase A-H 顺序重排
