@@ -150,6 +150,12 @@ minibile/
 | `ExecutionCheckpoint` | 中断、暂停、网络卡顿后的可恢复状态 |
 | `ModelCapability` | 模型上下文、输出限制、推理强度和支持参数的标准化模型 |
 | `ToolDisplayCatalog` | 协议工具 ID 与简体中文显示信息分离 |
+| `VibeCodingTaskEngine` | 固定阶段与转换守卫，执行需求澄清、探索、研究、计划审批、实施、验证、文档、证据和发布主线 |
+| `RequirementSpec` / `PlanRevision` / `ApprovalRecord` | 结构化需求、版本化计划和用户审批；计划变化使旧审批失效 |
+| `EvidenceRecord` / `ValidationRun` / `ReleaseEvidence` | 保存真实来源、命令退出码、测试、产物、签名、Tag 和 Release 证据 |
+| `BuildStrategyDecision` | 基于项目标识、依赖、资源和工具链选择 LOCAL/CLOUD，并保存可解释依据 |
+| `CloudBuildOrchestrator` | `cloud_build_release` 内部编排：仓库、CI 模板、Actions run/job/log、失败分类、重跑/修复、产物和 Release 验收 |
+| `GitHubCredentialStore` | 使用 Android Keystore 不可导出主密钥 + AES-GCM 信封加密保存 Fine-grained PAT；替代普通 `EnvPreferences`，不复制已废弃的 `EncryptedSharedPreferences` |
 
 ## 依赖与外部接口
 
@@ -165,6 +171,8 @@ minibile/
 - 记忆库，用于编码经验和项目知识
 - MCP、Skill、ToolPkg，本地与远程编码工具扩展
 - Logcat、APK 安装和 Android 调试等开发能力
+- 云端编译与发布：单一 `cloud_build_release` 工具、GitHub Actions CI 模板、受控建仓、运行跟踪、失败修复、产物校验与 Release 证据
+- App 凭据仓使用 Android Keystore 不可导出主密钥 + AES-GCM 信封加密；不复制已废弃的 `EncryptedSharedPreferences`。第一版使用 Fine-grained PAT，后续可升级 GitHub App。
 - 模型 Provider、模型列表、参数配置和能力探测
 
 ### 已明确排除的产品领域
@@ -222,6 +230,9 @@ minibile/
 | 模型能力自适应 | Provider 元数据结构不统一 | 建立证据来源和置信状态，未知必须显式显示未知 |
 | 中文显示 | 改协议工具名会破坏 ToolPkg/MCP/Prompt 合约 | 协议 ID 保持不变，只本地化显示元数据 |
 | 当前测试覆盖 | 主对话链路与工具底层门禁缺少充分测试 | 先补策略和权限测试，再动核心链路 |
+| 云端交付 | 当前仅有针对 minibile 自身的 `android-release.yml`；内置 `github.js` 只有 20 个低级工具，缺建仓、Actions、Secrets、Release 完整闭环 | 新增 `cloud_build_release` 与 `CloudBuildOrchestrator`；优先 git push，Git Data API 小仓降级，按 runId/headSha 跟踪并生成 ReleaseEvidence |
+| GitHub 凭据 | `github.js` 从普通 `EnvPreferences` 读取 `GITHUB_TOKEN`；旧 `CodexAuthPreferences` 使用现已废弃的 `EncryptedSharedPreferences` | 新建 `GitHubCredentialStore`，使用 Android Keystore 不可导出主密钥 + AES-GCM 信封加密；令牌永不进入模型上下文和日志 |
+| 云端构建安全 | 建仓、Workflow、Secrets、重跑、发布均是远端副作用 | PLAN 只读；BUILD + 当前计划审批；Fine-grained PAT 权限预检；Workflow 使用最小 GITHUB_TOKEN；尝试预算与熔断 |
 | 版本与发布 | `versionName`/`versionCode` 当前硬编码，Tag、Release 和唯一版本源均不存在 | 根 `VERSION` 为单一事实源，CI 校验 App、Tag、Release 和 APK 名称一致 |
 | APK 签名 | 当前 CI 未配置仓库 Secret，Release 签名不可复现；Runner 临时 Debug 密钥不能作为长期更新身份 | 使用专用固定密钥和 GitHub Actions Secrets，公开证书指纹但绝不提交私钥或口令 |
 | 云端交付 | 当前 Workflow 仅上传保留 14 天的 Artifact，`GITHUB_TOKEN` 默认只读 | 测试成功后才创建不可复用的 Tag/Release 并上传签名 APK，发布 Job 仅授予 `contents: write` |

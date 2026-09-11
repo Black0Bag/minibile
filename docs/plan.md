@@ -1,8 +1,30 @@
 # 实施计划（Plan）
 
-> 状态：L3 总计划草案，等待用户确认。
-> 本文获用户确认后，才允许创建开发分支并修改业务源码。
-> 详细步骤见 [`TODO/vibecoding_specialization_20260904/`](TODO/vibecoding_specialization_20260904/)。
+> 状态：L3 总计划修订版，2026-09-12 因“VibeCoding Skill 代码化 + 统一云端构建发布工具”发生架构级范围变化，等待用户确认后再进入 Phase A 业务实现。
+> T00-T02 已完成；本文获用户确认仅授权 Phase A（纯领域状态机与 JVM 测试），不授权数据库重建、真实 GitHub 写入、Secrets、远端仓库删除或后续 Phase。
+> 详细步骤见 [`TODO/vibecoding_specialization_20260904/`](TODO/vibecoding_specialization_20260904/)，本次修订详见 [`03a_vibecoding_task_engine_and_cloud_build_plan.md`](TODO/vibecoding_specialization_20260904/03a_vibecoding_task_engine_and_cloud_build_plan.md)。
+
+## 2026-09-12 架构修订：唯一 VibeCoding 主线
+
+旧计划中的 PLAN/BUILD、TODO、Subagent、恢复和发布不再作为平行功能逐个叠加，而统一收敛为代码级 `VibeCodingTaskEngine`：固定阶段、版本化计划、用户审批、工具硬门禁、验证证据和可恢复状态均由代码维护。旧通用工作流仍按 T02 结论删除，不复用为任意节点编排器。
+
+新增单一工具 `cloud_build_release`：Go/可承受轻量项目本地优先；Android/Flutter Android/NDK/重量级构建默认由 GitHub Actions 完成。工具支持现有/长期/临时私有仓库、CI 模板、run/job/log 跟踪、失败分类、受预算约束的修复与重跑、产物及 Release 验收。详细安全边界、官方 GitHub API 权限证据、验证与回滚见 03A 计划。
+
+修订后的实施顺序：
+
+```text
+Phase A  VibeCoding 纯领域状态机 + 转换守卫 + JVM 测试
+  -> Phase B 任务/模式/计划审批持久化（数据库需再次授权）
+  -> Phase C ToolExecutionContext + ToolPolicyGate 全路径硬门禁
+  -> Phase D 澄清/探索/研究/计划/TODO/验证/六段式证据纵向切片
+  -> Phase E cloud_build_release 只读 inspect/prepare/status
+  -> Phase F 加密 GitHub 凭据 + 建仓/上传/CI/Secrets/Release 写入闭环
+  -> Phase G Subagent、检查点、App 重启恢复和受控修复循环
+  -> Phase H 非 VibeCoding 能力分波删除 + 编码工作台 UI 收敛
+  -> T12 多技术栈端到端验收
+```
+
+Phase A 退出门禁：非法阶段转换全部被拒绝；计划 revision 变化使审批失效；Agent 无模式切换 API；纯 JVM 测试通过；不改数据库、不执行工具、不访问真实 GitHub。
 
 ## 里程碑
 
