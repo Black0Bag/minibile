@@ -322,7 +322,9 @@ inspect workspace
 
 - 2026-09-12：用户明确确认 Phase A 按计划开工。
 - Phase A 当前范围：纯 Kotlin 领域模型、状态机转换守卫和 JVM 单测；不改数据库、不接 UI、不注册工具、不访问真实 GitHub/Secrets。
-- 当前实现分支：`feature/vibecoding-task-engine-phase-a`；PR #3 用于权威云端编译与测试。
+- 当前实现分支：`feature/vibecoding-task-engine-phase-a`；PR #3 的 Fast checks、Android JVM tests、Android build 和 Candidate checks 已全部通过。
+- Phase A 已实现：固定阶段与异常状态、结构化需求/研究/计划/审批/验证/文档/审查/构建/Release 证据、用户独占模式和审批、旧审批失效、构建后端与 SHA 一致性、恢复写权限复核；共 21 个 JVM 单测。
+- 尚未合并/发布；合并后由 Android Release 生成 v0.1.0，并在 Release 成功后标记 Phase A `[DONE]`。
 - Phase B 数据库改造仍需再次明确授权。
 
 Phase A 已确认的门禁：

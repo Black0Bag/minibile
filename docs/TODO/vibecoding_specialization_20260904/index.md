@@ -85,5 +85,5 @@ created: 2026-09-04
 - 00 已完成 `[DONE]`
 - 01 已完成 `[DONE]`：首个 GitHub Release `v0.0.2` 已发布，APK 已通过用户安装验收
 - 02 已完成 `[DONE]`：能力矩阵定稿（2026-09-09），179 工具保留 101/删除 78，全部 7 个取舍点获用户确认，明细双向零差集核验通过
-- 03A Phase A 实施中：用户已于 2026-09-12 确认开工；纯 Kotlin 领域模型、状态机转换守卫和 21 个 JVM 单测已落盘，尚未接数据库/UI/真实 GitHub，等待 PR #3 云端编译测试
+- 03A Phase A 已完成代码与 PR 验证（2026-09-12）：纯 Kotlin 领域模型、状态机转换守卫和 21 个 JVM 单测已落盘；PR #3 的 Fast checks、Android JVM tests、Android build、Candidate checks 全部通过；尚未接数据库/UI/真实 GitHub，等待合并与 v0.1.0 Release
 - 03-12 将按 03A 的 Phase A-H 顺序重排
