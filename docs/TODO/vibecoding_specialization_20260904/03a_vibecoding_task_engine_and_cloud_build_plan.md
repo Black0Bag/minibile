@@ -318,9 +318,14 @@ inspect workspace
 - 任何凭据泄漏迹象立即禁用工具、撤销 token、停止发布；不在日志中复述凭据。
 - 若云构建闭环不稳定，本地 Go/轻量构建保持可用，重量级构建显示“云端构建暂不可用”，不得静默退回手机强行编译。
 
-## 十三、开工门禁
+## 十三、开工与实施状态
 
-实施 Phase A 前必须由用户明确确认：
+- 2026-09-12：用户明确确认 Phase A 按计划开工。
+- Phase A 当前范围：纯 Kotlin 领域模型、状态机转换守卫和 JVM 单测；不改数据库、不接 UI、不注册工具、不访问真实 GitHub/Secrets。
+- 当前实现分支：`feature/vibecoding-task-engine-phase-a`；PR #3 用于权威云端编译与测试。
+- Phase B 数据库改造仍需再次明确授权。
+
+Phase A 已确认的门禁：
 
 1. 固定 VibeCoding 状态机代替“仅靠 Skill 提示词”的方向。
 2. 单一工具 ID `cloud_build_release` + `action` 生命周期接口。
