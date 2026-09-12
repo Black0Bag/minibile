@@ -11,11 +11,16 @@ import com.ai.assistance.operit.data.dao.ChatDao
 import com.ai.assistance.operit.data.dao.MessageDao
 import com.ai.assistance.operit.data.dao.MessageVariantDao
 import com.ai.assistance.operit.data.dao.TokenUsageDao
+import com.ai.assistance.operit.data.dao.VibeCodingTaskDao
 import com.ai.assistance.operit.data.model.ChatEntity
 import com.ai.assistance.operit.data.model.MessageEntity
 import com.ai.assistance.operit.data.model.MessageVariantEntity
 import com.ai.assistance.operit.data.model.TokenStatsModelEntity
 import com.ai.assistance.operit.data.model.TokenUsageRecordEntity
+import com.ai.assistance.operit.data.model.VibeCodingBuildRunEntity
+import com.ai.assistance.operit.data.model.VibeCodingResearchRecordEntity
+import com.ai.assistance.operit.data.model.VibeCodingTaskEntity
+import com.ai.assistance.operit.data.model.VibeCodingValidationRunEntity
 /** 应用数据库，包含聊天表和消息表 */
 @Database(
     entities = [
@@ -24,8 +29,12 @@ import com.ai.assistance.operit.data.model.TokenUsageRecordEntity
         MessageVariantEntity::class,
         TokenUsageRecordEntity::class,
         TokenStatsModelEntity::class,
+        VibeCodingTaskEntity::class,
+        VibeCodingResearchRecordEntity::class,
+        VibeCodingValidationRunEntity::class,
+        VibeCodingBuildRunEntity::class,
     ],
-    version = 21,
+    version = 22,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -37,6 +46,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun messageVariantDao(): MessageVariantDao
     abstract fun chatContentDao(): ChatContentDao
     abstract fun tokenUsageDao(): TokenUsageDao
+    abstract fun vibeCodingTaskDao(): VibeCodingTaskDao
 
     companion object {
         @Volatile
@@ -332,6 +342,152 @@ abstract class AppDatabase : RoomDatabase() {
                 }
             }
 
+        /** v21 -> v22: VibeCoding task persistence tables. */
+        internal val MIGRATION_21_22 =
+            object : Migration(21, 22) {
+                override fun migrate(db: SupportSQLiteDatabase) {
+                    db.execSQL(
+                        """
+                        CREATE TABLE IF NOT EXISTS `vibecoding_tasks` (
+                            `id` TEXT NOT NULL,
+                            `chatId` TEXT NOT NULL,
+                            `workspaceId` TEXT NOT NULL,
+                            `stage` TEXT NOT NULL,
+                            `mode` TEXT NOT NULL,
+                            `requirementJson` TEXT,
+                            `localEvidenceFallbackApproved` INTEGER NOT NULL DEFAULT 0,
+                            `planJson` TEXT,
+                            `approvalJson` TEXT,
+                            `changedPathsJson` TEXT,
+                            `documentationDecisionJson` TEXT,
+                            `reviewJson` TEXT,
+                            `buildStrategyJson` TEXT,
+                            `releaseEvidenceJson` TEXT,
+                            `recoveryTarget` TEXT,
+                            `createdAt` INTEGER NOT NULL,
+                            `updatedAt` INTEGER NOT NULL,
+                            PRIMARY KEY(`id`),
+                            FOREIGN KEY(`chatId`) REFERENCES `chats`(`id`) ON DELETE CASCADE
+                        )
+                        """.trimIndent()
+                    )
+                    db.execSQL("CREATE INDEX IF NOT EXISTS `index_vibecoding_tasks_chatId` ON `vibecoding_tasks` (`chatId`)")
+
+                    db.execSQL(
+                        """
+                        CREATE TABLE IF NOT EXISTS `vibecoding_research_records` (
+                            `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                            `taskId` TEXT NOT NULL,
+                            `query` TEXT NOT NULL,
+                            `source` TEXT,
+                            `conclusion` TEXT NOT NULL,
+                            `status` TEXT NOT NULL,
+                            `createdAt` INTEGER NOT NULL,
+                            FOREIGN KEY(`taskId`) REFERENCES `vibecoding_tasks`(`id`) ON DELETE CASCADE
+                        )
+                        """.trimIndent()
+                    )
+                    db.execSQL("CREATE INDEX IF NOT EXISTS `index_vibecoding_research_records_taskId` ON `vibecoding_research_records` (`taskId`)")
+
+                    db.execSQL(
+                        """
+                        CREATE TABLE IF NOT EXISTS `vibecoding_validation_runs` (
+                            `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                            `taskId` TEXT NOT NULL,
+                            `runId` TEXT NOT NULL,
+                            `status` TEXT NOT NULL,
+                            `command` TEXT NOT NULL,
+                            `evidence` TEXT NOT NULL,
+                            `createdAt` INTEGER NOT NULL,
+                            FOREIGN KEY(`taskId`) REFERENCES `vibecoding_tasks`(`id`) ON DELETE CASCADE
+                        )
+                        """.trimIndent()
+                    )
+                    db.execSQL("CREATE INDEX IF NOT EXISTS `index_vibecoding_validation_runs_taskId` ON `vibecoding_validation_runs` (`taskId`)")
+
+                    db.execSQL(
+                        """
+                        CREATE TABLE IF NOT EXISTS `vibecoding_build_runs` (
+                            `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                            `taskId` TEXT NOT NULL,
+                            `runId` TEXT NOT NULL,
+                            `sourceSha` TEXT NOT NULL,
+                            `status` TEXT NOT NULL,
+                            `evidence` TEXT NOT NULL,
+                            `failureCategory` TEXT,
+                            `createdAt` INTEGER NOT NULL,
+                            FOREIGN KEY(`taskId`) REFERENCES `vibecoding_tasks`(`id`) ON DELETE CASCADE
+                        )
+                        """.trimIndent()
+                    )
+                    db.execSQL("CREATE INDEX IF NOT EXISTS `index_vibecoding_build_runs_taskId` ON `vibecoding_build_runs` (`taskId`)")
+                }
+
+                override fun migrate(connection: androidx.sqlite.SQLiteConnection) {
+                    val sqls = listOf(
+                        """CREATE TABLE IF NOT EXISTS `vibecoding_tasks` (
+                            `id` TEXT NOT NULL,
+                            `chatId` TEXT NOT NULL,
+                            `workspaceId` TEXT NOT NULL,
+                            `stage` TEXT NOT NULL,
+                            `mode` TEXT NOT NULL,
+                            `requirementJson` TEXT,
+                            `localEvidenceFallbackApproved` INTEGER NOT NULL DEFAULT 0,
+                            `planJson` TEXT,
+                            `approvalJson` TEXT,
+                            `changedPathsJson` TEXT,
+                            `documentationDecisionJson` TEXT,
+                            `reviewJson` TEXT,
+                            `buildStrategyJson` TEXT,
+                            `releaseEvidenceJson` TEXT,
+                            `recoveryTarget` TEXT,
+                            `createdAt` INTEGER NOT NULL,
+                            `updatedAt` INTEGER NOT NULL,
+                            PRIMARY KEY(`id`),
+                            FOREIGN KEY(`chatId`) REFERENCES `chats`(`id`) ON DELETE CASCADE
+                        )""",
+                        "CREATE INDEX IF NOT EXISTS `index_vibecoding_tasks_chatId` ON `vibecoding_tasks` (`chatId`)",
+                        """CREATE TABLE IF NOT EXISTS `vibecoding_research_records` (
+                            `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                            `taskId` TEXT NOT NULL,
+                            `query` TEXT NOT NULL,
+                            `source` TEXT,
+                            `conclusion` TEXT NOT NULL,
+                            `status` TEXT NOT NULL,
+                            `createdAt` INTEGER NOT NULL,
+                            FOREIGN KEY(`taskId`) REFERENCES `vibecoding_tasks`(`id`) ON DELETE CASCADE
+                        )""",
+                        "CREATE INDEX IF NOT EXISTS `index_vibecoding_research_records_taskId` ON `vibecoding_research_records` (`taskId`)",
+                        """CREATE TABLE IF NOT EXISTS `vibecoding_validation_runs` (
+                            `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                            `taskId` TEXT NOT NULL,
+                            `runId` TEXT NOT NULL,
+                            `status` TEXT NOT NULL,
+                            `command` TEXT NOT NULL,
+                            `evidence` TEXT NOT NULL,
+                            `createdAt` INTEGER NOT NULL,
+                            FOREIGN KEY(`taskId`) REFERENCES `vibecoding_tasks`(`id`) ON DELETE CASCADE
+                        )""",
+                        "CREATE INDEX IF NOT EXISTS `index_vibecoding_validation_runs_taskId` ON `vibecoding_validation_runs` (`taskId`)",
+                        """CREATE TABLE IF NOT EXISTS `vibecoding_build_runs` (
+                            `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                            `taskId` TEXT NOT NULL,
+                            `runId` TEXT NOT NULL,
+                            `sourceSha` TEXT NOT NULL,
+                            `status` TEXT NOT NULL,
+                            `evidence` TEXT NOT NULL,
+                            `failureCategory` TEXT,
+                            `createdAt` INTEGER NOT NULL,
+                            FOREIGN KEY(`taskId`) REFERENCES `vibecoding_tasks`(`id`) ON DELETE CASCADE
+                        )""",
+                        "CREATE INDEX IF NOT EXISTS `index_vibecoding_build_runs_taskId` ON `vibecoding_build_runs` (`taskId`)",
+                    )
+                    sqls.forEach { sql ->
+                        connection.prepare(sql).use { it.step() }
+                    }
+                }
+            }
+
         // 定义从版本2到3的迁移
         private val MIGRATION_2_3 =
             object : Migration(2, 3) {
@@ -449,7 +605,8 @@ abstract class AppDatabase : RoomDatabase() {
                                 MIGRATION_17_18,
                                 MIGRATION_18_19,
                                 MIGRATION_19_20,
-                                MIGRATION_20_21
+                                MIGRATION_20_21,
+                                MIGRATION_21_22
                             ) // 添加新的迁移
                             .build()
                     INSTANCE = instance

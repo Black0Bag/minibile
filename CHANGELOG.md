@@ -2,6 +2,18 @@
 
 本文件记录每个可安装版本的实际交付内容。每个版本只对应一个 Git 提交、一个 Tag 和一个 GitHub Release。
 
+## 0.2.0 - 2026-09-12
+
+### 新功能
+
+- Phase B 数据库持久化：新增 4 张独立 Room 表（`vibecoding_tasks`、`vibecoding_research_records`、`vibecoding_validation_runs`、`vibecoding_build_runs`），带 `chats(id) ON DELETE CASCADE` 外键。
+- 新增 `VibeCodingTaskDao`、`VibeCodingTaskMapper`（Domain ↔ Entity JSON 映射）和 5 个 Mapper 往返测试。
+- Room 版本 21→22，新增 `MIGRATION_21_22`（仅 CREATE TABLE + INDEX，不修改现有表）。
+
+### 测试
+
+- 5 个 JVM 单元测试：完整任务往返、空任务往返、研究记录往返、构建失败分类往返、NotRequired Release 往返。
+
 ## 0.1.0 - 2026-09-12
 
 ### 新功能
