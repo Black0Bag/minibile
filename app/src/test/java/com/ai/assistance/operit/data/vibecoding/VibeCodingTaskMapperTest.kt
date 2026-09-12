@@ -21,6 +21,7 @@ import com.ai.assistance.operit.core.vibecoding.domain.VibeCodingActorType
 import com.ai.assistance.operit.core.vibecoding.domain.VibeCodingRiskLevel
 import com.ai.assistance.operit.core.vibecoding.domain.VibeCodingTask
 import com.ai.assistance.operit.core.vibecoding.domain.VibeCodingTaskStage
+import com.ai.assistance.operit.data.vibecoding.VibeCodingTaskMapper.toDomain
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
