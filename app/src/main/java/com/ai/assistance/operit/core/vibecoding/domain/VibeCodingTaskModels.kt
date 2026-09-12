@@ -1,11 +1,14 @@
 package com.ai.assistance.operit.core.vibecoding.domain
 
+import kotlinx.serialization.Serializable
+
 /** User-owned mode for a VibeCoding session. Agents can observe but cannot change it. */
 enum class CodingSessionMode {
     PLAN,
     BUILD,
 }
 
+@Serializable
 enum class VibeCodingActorType {
     USER,
     MAIN_AGENT,
@@ -14,6 +17,7 @@ enum class VibeCodingActorType {
     SYSTEM,
 }
 
+@Serializable
 enum class VibeCodingRiskLevel {
     L1,
     L2,
@@ -45,27 +49,32 @@ enum class VibeCodingTaskStage {
     CANCELLED,
 }
 
+@Serializable
 enum class ResearchEvidenceStatus {
     VERIFIED,
     UNAVAILABLE,
     CONFLICTING,
 }
 
+@Serializable
 enum class ValidationStatus {
     PASSED,
     FAILED,
 }
 
+@Serializable
 enum class BuildBackend {
     LOCAL,
     CLOUD,
 }
 
+@Serializable
 enum class BuildRunStatus {
     SUCCEEDED,
     FAILED,
 }
 
+@Serializable
 enum class BuildFailureCategory {
     INFRASTRUCTURE,
     CODE,
@@ -75,6 +84,7 @@ enum class BuildFailureCategory {
     UNKNOWN,
 }
 
+@Serializable
 data class RequirementSpec(
     val goal: String,
     val inScope: List<String>,
@@ -88,6 +98,7 @@ data class RequirementSpec(
             acceptanceCriteria.any(String::isNotBlank)
 }
 
+@Serializable
 data class ResearchRecord(
     val query: String,
     val source: String?,
@@ -101,12 +112,14 @@ data class ResearchRecord(
             conclusion.isNotBlank()
 }
 
+@Serializable
 data class PlanStep(
     val id: String,
     val description: String,
     val validation: String,
 )
 
+@Serializable
 data class TaskPlanRevision(
     val revision: Long,
     val summary: String,
@@ -124,12 +137,14 @@ data class TaskPlanRevision(
             rollbackPlan.isNotBlank()
 }
 
+@Serializable
 data class ApprovalRecord(
     val planRevision: Long,
     val actorType: VibeCodingActorType,
     val approvedAtEpochMillis: Long,
 )
 
+@Serializable
 data class ValidationRun(
     val id: String,
     val status: ValidationStatus,
@@ -137,6 +152,7 @@ data class ValidationRun(
     val evidence: String,
 )
 
+@Serializable
 data class DocumentationDecision(
     val required: Boolean,
     val updatedPaths: List<String> = emptyList(),
@@ -146,15 +162,18 @@ data class DocumentationDecision(
         rationale.isNotBlank() && (!required || updatedPaths.any(String::isNotBlank))
 }
 
+@Serializable
 data class ReviewRecord(
     val evidence: String,
 )
 
+@Serializable
 data class BuildStrategyDecision(
     val backend: BuildBackend,
     val reason: String,
 )
 
+@Serializable
 data class BuildRunEvidence(
     val runId: String,
     val sourceSha: String,
@@ -170,9 +189,11 @@ data class BuildRunEvidence(
             failureCategory == null
 }
 
+@Serializable
 sealed interface ReleaseEvidence {
     fun isComplete(): Boolean
 
+    @Serializable
     data class Published(
         val tag: String,
         val sourceSha: String,
@@ -189,6 +210,7 @@ sealed interface ReleaseEvidence {
                 (!signatureRequired || signatureVerified)
     }
 
+    @Serializable
     data class NotRequired(val reason: String) : ReleaseEvidence {
         override fun isComplete(): Boolean = reason.isNotBlank()
     }
