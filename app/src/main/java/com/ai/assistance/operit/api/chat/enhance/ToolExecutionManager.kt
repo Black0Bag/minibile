@@ -14,6 +14,8 @@ import com.ai.assistance.operit.data.model.ToolResult
 import com.ai.assistance.operit.core.tools.packTool.PackageManager
 import com.ai.assistance.operit.util.stream.StreamCollector
 import com.ai.assistance.operit.data.preferences.CharacterCardToolAccessResolver
+import com.ai.assistance.operit.core.vibecoding.policy.ToolExecutionContext
+import com.ai.assistance.operit.core.vibecoding.policy.ToolPolicyDecision
 import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asContextElement
@@ -46,7 +48,8 @@ object ToolExecutionManager {
 
     data class ToolRuntimeContext(
         val callerCardId: String? = null,
-        val toolExposureMode: ToolExposureMode = ToolExposureMode.FULL
+        val toolExposureMode: ToolExposureMode = ToolExposureMode.FULL,
+        val vibecodingContext: ToolExecutionContext? = null,
     )
 
     private data class ResolvedToolTarget(
@@ -523,7 +526,11 @@ object ToolExecutionManager {
         val toolRuntimeContext =
             ToolRuntimeContext(
                 callerCardId = callerCardId,
-                toolExposureMode = toolExposureMode
+                toolExposureMode = toolExposureMode,
+                // Phase C 阶段：门禁机制就位但默认放行（null context = Allow）。
+                // 真实会话模式快照将在 Phase D 接入持久化会话模式后注入，
+                // 当前未接入前不得硬编码 PLAN，否则会错误拒绝所有主代理写工具。
+                vibecodingContext = null,
             )
 
         // 1. 顶层工具暴露模式拦截
@@ -714,6 +721,24 @@ object ToolExecutionManager {
                 toolHandler.notifyToolExecutionStarted(invocation.tool)
 
                 val collectedResults = mutableListOf<ToolResult>()
+                // 先做 VibeCoding 策略门禁检查（只判定不执行），通过后再真正执行一次。
+                val gateDecision = toolHandler.evaluateToolPolicy(invocation.tool, runtimeContext.vibecodingContext)
+                if (gateDecision is ToolPolicyDecision.Deny) {
+                    val deniedResult =
+                        ToolResult(
+                            toolName = displayToolName,
+                            success = false,
+                            result = StringResultData(""),
+                            error = gateDecision.reason
+                        )
+                    val toolResultStatusContent =
+                        ConversationMarkupManager.formatToolResultForMessage(deniedResult)
+                    collector.emit(ensureEndsWithNewline(toolResultStatusContent))
+                    toolHandler.notifyToolPermissionChecked(invocation.tool, granted = false, reason = gateDecision.reason)
+                    toolHandler.notifyToolExecutionResult(invocation.tool, deniedResult)
+                    toolHandler.notifyToolExecutionFinished(invocation.tool)
+                    return@withContext deniedResult
+                }
                 executeToolSafely(invocation, executor, toolHandler).collect { result ->
                     collectedResults.add(result)
                     // 实时输出每个结果

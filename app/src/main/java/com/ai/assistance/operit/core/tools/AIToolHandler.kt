@@ -11,6 +11,9 @@ import com.ai.assistance.operit.data.model.ToolResult
 import com.ai.assistance.operit.data.model.ToolValidationResult
 import com.ai.assistance.operit.ui.common.displays.MessageContentParser
 import com.ai.assistance.operit.ui.permissions.ToolPermissionSystem
+import com.ai.assistance.operit.core.vibecoding.policy.ToolExecutionContext
+import com.ai.assistance.operit.core.vibecoding.policy.ToolPolicyDecision
+import com.ai.assistance.operit.core.vibecoding.policy.ToolPolicyGate
 import com.ai.assistance.operit.util.stream.splitBy
 import com.ai.assistance.operit.util.stream.stream
 import java.util.concurrent.ConcurrentHashMap
@@ -359,8 +362,32 @@ class AIToolHandler private constructor(private val context: Context) {
     }
 
 
-    /** Executes a tool directly */
-    fun executeTool(tool: AITool): ToolResult {
+    /** Executes a tool directly (backward-compatible, treated as USER_DIRECT). */
+    fun executeTool(tool: AITool): ToolResult = executeTool(tool, null)
+
+    /** 仅执行 VibeCoding 策略判定，不触发 executor（供调用方先行门禁检查）。 */
+    fun evaluateToolPolicy(tool: AITool, context: ToolExecutionContext?): ToolPolicyDecision =
+        ToolPolicyGate.evaluate(tool.name, context)
+
+    /** Executes a tool directly with an explicit VibeCoding execution context (policy-gated). */
+    fun executeTool(tool: AITool, context: ToolExecutionContext?): ToolResult {
+        // VibeCoding 硬门禁：在 Executor 激活前 fail-closed 判定。
+        val decision = evaluateToolPolicy(tool, context)
+        if (decision is ToolPolicyDecision.Deny) {
+            val deniedResult =
+                ToolResult(
+                    toolName = tool.name,
+                    success = false,
+                    result = StringResultData(""),
+                    error = decision.reason
+                )
+            notifyToolCallRequested(tool)
+            notifyToolPermissionChecked(tool, granted = false, reason = decision.reason)
+            notifyToolExecutionResult(tool, deniedResult)
+            notifyToolExecutionFinished(tool)
+            return deniedResult
+        }
+
         notifyToolCallRequested(tool)
         when (val interception = checkToolInterception(tool)) {
             AIToolHookDecision.Allow -> Unit
@@ -416,7 +443,28 @@ class AIToolHandler private constructor(private val context: Context) {
     }
 
     /** Executes a tool and preserves intermediate streaming results when supported by the executor. */
-    fun executeToolAndStream(tool: AITool): Flow<ToolResult> = flow {
+    fun executeToolAndStream(tool: AITool): Flow<ToolResult> = executeToolAndStream(tool, null)
+
+    /** Executes a tool with streaming and an explicit VibeCoding execution context (policy-gated). */
+    fun executeToolAndStream(tool: AITool, context: ToolExecutionContext?): Flow<ToolResult> = flow {
+        // VibeCoding 硬门禁：在 Executor 激活前 fail-closed 判定。
+        val decision = ToolPolicyGate.evaluate(tool.name, context)
+        if (decision is ToolPolicyDecision.Deny) {
+            val deniedResult =
+                ToolResult(
+                    toolName = tool.name,
+                    success = false,
+                    result = StringResultData(""),
+                    error = decision.reason
+                )
+            notifyToolCallRequested(tool)
+            notifyToolPermissionChecked(tool, granted = false, reason = decision.reason)
+            notifyToolExecutionResult(tool, deniedResult)
+            notifyToolExecutionFinished(tool)
+            emit(deniedResult)
+            return@flow
+        }
+
         notifyToolCallRequested(tool)
         when (val interception = checkToolInterception(tool)) {
             AIToolHookDecision.Allow -> Unit
