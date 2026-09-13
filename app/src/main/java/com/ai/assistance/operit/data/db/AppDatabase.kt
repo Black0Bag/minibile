@@ -10,11 +10,13 @@ import com.ai.assistance.operit.data.dao.ChatContentDao
 import com.ai.assistance.operit.data.dao.ChatDao
 import com.ai.assistance.operit.data.dao.MessageDao
 import com.ai.assistance.operit.data.dao.MessageVariantDao
+import com.ai.assistance.operit.data.dao.SessionTodoDao
 import com.ai.assistance.operit.data.dao.TokenUsageDao
 import com.ai.assistance.operit.data.dao.VibeCodingTaskDao
 import com.ai.assistance.operit.data.model.ChatEntity
 import com.ai.assistance.operit.data.model.MessageEntity
 import com.ai.assistance.operit.data.model.MessageVariantEntity
+import com.ai.assistance.operit.data.model.SessionTodoEntity
 import com.ai.assistance.operit.data.model.TokenStatsModelEntity
 import com.ai.assistance.operit.data.model.TokenUsageRecordEntity
 import com.ai.assistance.operit.data.model.VibeCodingBuildRunEntity
@@ -27,6 +29,7 @@ import com.ai.assistance.operit.data.model.VibeCodingValidationRunEntity
         ChatEntity::class,
         MessageEntity::class,
         MessageVariantEntity::class,
+        SessionTodoEntity::class,
         TokenUsageRecordEntity::class,
         TokenStatsModelEntity::class,
         VibeCodingTaskEntity::class,
@@ -34,7 +37,7 @@ import com.ai.assistance.operit.data.model.VibeCodingValidationRunEntity
         VibeCodingValidationRunEntity::class,
         VibeCodingBuildRunEntity::class,
     ],
-    version = 22,
+    version = 23,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -47,6 +50,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun chatContentDao(): ChatContentDao
     abstract fun tokenUsageDao(): TokenUsageDao
     abstract fun vibeCodingTaskDao(): VibeCodingTaskDao
+    abstract fun sessionTodoDao(): SessionTodoDao
 
     companion object {
         @Volatile
@@ -488,6 +492,55 @@ abstract class AppDatabase : RoomDatabase() {
                 }
             }
 
+        /** v22 -> v23: SessionTodo runtime list persistence. */
+        internal val MIGRATION_22_23 =
+            object : Migration(22, 23) {
+                override fun migrate(db: SupportSQLiteDatabase) {
+                    db.execSQL(
+                        """
+                        CREATE TABLE IF NOT EXISTS `vibecoding_session_todos` (
+                            `id` TEXT NOT NULL,
+                            `sessionId` TEXT NOT NULL,
+                            `content` TEXT NOT NULL,
+                            `status` TEXT NOT NULL,
+                            `priority` TEXT NOT NULL,
+                            `order` INTEGER NOT NULL DEFAULT 0,
+                            `createdAt` INTEGER NOT NULL,
+                            `updatedAt` INTEGER NOT NULL,
+                            `parentTaskId` TEXT,
+                            `blockedReason` TEXT,
+                            PRIMARY KEY(`id`),
+                            FOREIGN KEY(`sessionId`) REFERENCES `chats`(`id`) ON DELETE CASCADE
+                        )
+                        """.trimIndent()
+                    )
+                    db.execSQL("CREATE INDEX IF NOT EXISTS `index_vibecoding_session_todos_sessionId` ON `vibecoding_session_todos` (`sessionId`)")
+                }
+
+                override fun migrate(connection: androidx.sqlite.SQLiteConnection) {
+                    val sqls = listOf(
+                        """CREATE TABLE IF NOT EXISTS `vibecoding_session_todos` (
+                            `id` TEXT NOT NULL,
+                            `sessionId` TEXT NOT NULL,
+                            `content` TEXT NOT NULL,
+                            `status` TEXT NOT NULL,
+                            `priority` TEXT NOT NULL,
+                            `order` INTEGER NOT NULL DEFAULT 0,
+                            `createdAt` INTEGER NOT NULL,
+                            `updatedAt` INTEGER NOT NULL,
+                            `parentTaskId` TEXT,
+                            `blockedReason` TEXT,
+                            PRIMARY KEY(`id`),
+                            FOREIGN KEY(`sessionId`) REFERENCES `chats`(`id`) ON DELETE CASCADE
+                        )""",
+                        "CREATE INDEX IF NOT EXISTS `index_vibecoding_session_todos_sessionId` ON `vibecoding_session_todos` (`sessionId`)",
+                    )
+                    sqls.forEach { sql ->
+                        connection.prepare(sql).use { it.step() }
+                    }
+                }
+            }
+
         // 定义从版本2到3的迁移
         private val MIGRATION_2_3 =
             object : Migration(2, 3) {
@@ -606,7 +659,8 @@ abstract class AppDatabase : RoomDatabase() {
                                 MIGRATION_18_19,
                                 MIGRATION_19_20,
                                 MIGRATION_20_21,
-                                MIGRATION_21_22
+                                MIGRATION_21_22,
+                                MIGRATION_22_23
                             ) // 添加新的迁移
                             .build()
                     INSTANCE = instance

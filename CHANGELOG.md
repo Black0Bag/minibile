@@ -2,6 +2,18 @@
 
 本文件记录每个可安装版本的实际交付内容。每个版本只对应一个 Git 提交、一个 Tag 和一个 GitHub Release。
 
+## 0.4.0 - 2026-09-14
+
+### 新功能
+
+- Phase D 会话任务纵向切片：新增纯 Kotlin 运行时模型 `SessionTodo`（状态/优先级/排序/父任务/阻塞原因）与 `SessionTaskCoordinator`，把 VibeCoding 状态机与 TODO 清单串成“澄清 → 探索 → 研究 → 计划 → 审批 → Build → 验证 → 交付”可恢复执行链。
+- 新增 `SessionTodoDao`、`SessionTodoMapper`、`SessionTodoRepository`：Room 会话级 TODO 持久化与 Flow 观察。
+- Room 版本 22→23，新增 `MIGRATION_22_23`（仅 CREATE TABLE `vibecoding_session_todos` + INDEX，不修改现有表）。
+
+### 测试
+
+- 新增 5 个 JVM 单元测试：TODO 状态转换、主 TODO 唯一进行中约束、子任务不阻塞主任务、会话隔离、Mapper 往返一致性。
+
 ## 0.3.0 - 2026-09-12
 
 ### 新功能
