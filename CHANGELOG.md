@@ -2,6 +2,18 @@
 
 本文件记录每个可安装版本的实际交付内容。每个版本只对应一个 Git 提交、一个 Tag 和一个 GitHub Release。
 
+## 0.3.0 - 2026-09-12
+
+### 新功能
+
+- Phase C 统一工具硬门禁：新增 `ToolExecutionContext`、`ToolPolicyDecision`、`ToolPolicyGate` 纯 Kotlin 组件。
+- `AIToolHandler.executeTool/executeToolAndStream` 新增可空 context 重载，在 Executor 激活前 fail-closed 判定；旧签名保持兼容。
+- `ToolExecutionManager` 构建 `ToolRuntimeContext` 并预留 `vibecodingContext`；Phase C 默认传 null（不破坏现有调用），Phase D 接入真实会话模式快照后注入。
+
+### 测试
+
+- 新增 11 个 JVM 单元测试：null context 兼容、用户直连放行、PLAN 拒绝写/放行读、未知工具保守拒绝、BUILD 审批校验、过期审批拒绝、调用者类型限制、包只读工具放行、工具分类。
+
 ## 0.2.0 - 2026-09-12
 
 ### 新功能
