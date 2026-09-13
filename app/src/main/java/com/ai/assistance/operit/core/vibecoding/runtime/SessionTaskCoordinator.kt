@@ -1,8 +1,14 @@
 package com.ai.assistance.operit.core.vibecoding.runtime
 
+import com.ai.assistance.operit.core.vibecoding.domain.BuildBackend
+import com.ai.assistance.operit.core.vibecoding.domain.BuildRunEvidence
+import com.ai.assistance.operit.core.vibecoding.domain.BuildStrategyDecision
 import com.ai.assistance.operit.core.vibecoding.domain.CodingSessionMode
+import com.ai.assistance.operit.core.vibecoding.domain.DocumentationDecision
 import com.ai.assistance.operit.core.vibecoding.domain.RequirementSpec
 import com.ai.assistance.operit.core.vibecoding.domain.ResearchRecord
+import com.ai.assistance.operit.core.vibecoding.domain.ReviewRecord
+import com.ai.assistance.operit.core.vibecoding.domain.ReleaseEvidence
 import com.ai.assistance.operit.core.vibecoding.domain.TaskPlanRevision
 import com.ai.assistance.operit.core.vibecoding.domain.ValidationRun
 import com.ai.assistance.operit.core.vibecoding.domain.VibeCodingActorType
@@ -162,15 +168,81 @@ class SessionTaskCoordinator {
             is VibeCodingDecision.Rejected -> Result.Rejected(decision.task, decision.reason)
         }
 
-    /** 六段式交付收口：把最后一个 TODO 标记完成并返回最终任务。 */
+    fun recordDocumentation(
+        task: VibeCodingTask,
+        decision: DocumentationDecision,
+        todos: List<SessionTodo>,
+        sessionId: String,
+    ): Result =
+        when (val engineDecision = VibeCodingTaskEngine.recordDocumentationDecision(task, decision)) {
+            is VibeCodingDecision.Accepted ->
+                Result.Success(
+                    engineDecision.task,
+                    markTodo(todos, sessionId, "交付与文档", SessionTodoStatus.IN_PROGRESS),
+                )
+
+            is VibeCodingDecision.Rejected -> Result.Rejected(engineDecision.task, engineDecision.reason)
+        }
+
+    fun recordReview(
+        task: VibeCodingTask,
+        review: ReviewRecord,
+        todos: List<SessionTodo>,
+        sessionId: String,
+    ): Result =
+        when (val engineDecision = VibeCodingTaskEngine.recordReview(task, review)) {
+            is VibeCodingDecision.Accepted -> Result.Success(engineDecision.task, todos)
+            is VibeCodingDecision.Rejected -> Result.Rejected(engineDecision.task, engineDecision.reason)
+        }
+
+    fun recordBuildStrategy(
+        task: VibeCodingTask,
+        backend: BuildBackend,
+        reason: String,
+        todos: List<SessionTodo>,
+        sessionId: String,
+    ): Result =
+        when (val engineDecision =
+            VibeCodingTaskEngine.recordBuildStrategy(task, BuildStrategyDecision(backend, reason))) {
+            is VibeCodingDecision.Accepted -> Result.Success(engineDecision.task, todos)
+            is VibeCodingDecision.Rejected -> Result.Rejected(engineDecision.task, engineDecision.reason)
+        }
+
+    fun recordBuildRun(
+        task: VibeCodingTask,
+        run: BuildRunEvidence,
+        todos: List<SessionTodo>,
+        sessionId: String,
+    ): Result =
+        when (val engineDecision = VibeCodingTaskEngine.recordBuildRun(task, run)) {
+            is VibeCodingDecision.Accepted -> Result.Success(engineDecision.task, todos)
+            is VibeCodingDecision.Rejected -> Result.Rejected(engineDecision.task, engineDecision.reason)
+        }
+
+    fun recordReleaseEvidence(
+        task: VibeCodingTask,
+        evidence: ReleaseEvidence,
+        todos: List<SessionTodo>,
+        sessionId: String,
+    ): Result =
+        when (val engineDecision = VibeCodingTaskEngine.recordReleaseEvidence(task, evidence)) {
+            is VibeCodingDecision.Accepted ->
+                Result.Success(
+                    engineDecision.task,
+                    markTodo(todos, sessionId, "交付与文档", SessionTodoStatus.COMPLETED),
+                )
+
+            is VibeCodingDecision.Rejected -> Result.Rejected(engineDecision.task, engineDecision.reason)
+        }
+
+    /** 六段式交付收口：将最后 TODO 标记完成（不绕过状态机，仅更新 TODO 清单）。 */
     fun completeDelivery(
         task: VibeCodingTask,
         todos: List<SessionTodo>,
         sessionId: String,
     ): Result {
-        val finalTask = task.copy(stage = VibeCodingTaskStage.COMPLETED)
         val finalTodos = markTodo(todos, sessionId, "交付与文档", SessionTodoStatus.COMPLETED)
-        return Result.Success(finalTask, finalTodos)
+        return Result.Success(task, finalTodos)
     }
 
     private fun newTodo(

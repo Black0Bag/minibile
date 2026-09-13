@@ -27,6 +27,13 @@ class SessionTaskCoordinatorTest {
         assertEquals(8, todos.size)
         assertTrue(todos.all { it.status == SessionTodoStatus.PENDING })
 
+        // NEW -> CLARIFYING
+        val clarifying =
+            coordinator.transition(task, VibeCodingTaskStage.CLARIFYING, todos, "chat-1")
+                as SessionTaskCoordinator.Result.Success
+        task = clarifying.task
+        todos = clarifying.todos
+
         // 澄清需求
         val clarified =
             coordinator.recordRequirement(
@@ -155,13 +162,100 @@ class SessionTaskCoordinatorTest {
         todos = validation.todos
         assertEquals(SessionTodoStatus.COMPLETED, todos.first { it.content == "验证结果" }.status)
 
-        // 交付收口
-        val delivered = coordinator.completeDelivery(task, todos, "chat-1")
-        val finalResult = delivered as SessionTaskCoordinator.Result.Success
-        assertEquals(VibeCodingTaskStage.COMPLETED, finalResult.task.stage)
+        // DOCUMENTING -> REVIEWING -> CLOUD_BUILD -> RELEASING -> COMPLETED
+        val documenting =
+            coordinator.transition(task, VibeCodingTaskStage.DOCUMENTING, todos, "chat-1")
+                as SessionTaskCoordinator.Result.Success
+        task = documenting.task
+        todos = documenting.todos
+        val docsRecorded =
+            coordinator.recordDocumentation(
+                task,
+                com.ai.assistance.operit.core.vibecoding.domain.DocumentationDecision(
+                    required = true,
+                    updatedPaths = listOf("docs/structure.md"),
+                    rationale = "new runtime boundary",
+                ),
+                todos,
+                "chat-1",
+            ) as SessionTaskCoordinator.Result.Success
+        task = docsRecorded.task
+        todos = docsRecorded.todos
+
+        val reviewing =
+            coordinator.transition(task, VibeCodingTaskStage.REVIEWING, todos, "chat-1")
+                as SessionTaskCoordinator.Result.Success
+        task = reviewing.task
+        todos = reviewing.todos
+        val reviewed =
+            coordinator.recordReview(
+                task,
+                com.ai.assistance.operit.core.vibecoding.domain.ReviewRecord(evidence = "diff reviewed"),
+                todos,
+                "chat-1",
+            ) as SessionTaskCoordinator.Result.Success
+        task = reviewed.task
+        todos = reviewed.todos
+        val strategy =
+            coordinator.recordBuildStrategy(
+                task,
+                com.ai.assistance.operit.core.vibecoding.domain.BuildBackend.CLOUD,
+                reason = "android toolchain requires cloud",
+                todos,
+                "chat-1",
+            ) as SessionTaskCoordinator.Result.Success
+        task = strategy.task
+        todos = strategy.todos
+
+        val cloudBuild =
+            coordinator.transition(task, VibeCodingTaskStage.CLOUD_BUILD, todos, "chat-1")
+                as SessionTaskCoordinator.Result.Success
+        task = cloudBuild.task
+        todos = cloudBuild.todos
+        val buildRun =
+            coordinator.recordBuildRun(
+                task,
+                com.ai.assistance.operit.core.vibecoding.domain.BuildRunEvidence(
+                    runId = "run-1",
+                    sourceSha = "abc",
+                    status = com.ai.assistance.operit.core.vibecoding.domain.BuildRunStatus.SUCCEEDED,
+                    evidence = "build passed",
+                ),
+                todos,
+                "chat-1",
+            ) as SessionTaskCoordinator.Result.Success
+        task = buildRun.task
+        todos = buildRun.todos
+
+        val releasing =
+            coordinator.transition(task, VibeCodingTaskStage.RELEASING, todos, "chat-1")
+                as SessionTaskCoordinator.Result.Success
+        task = releasing.task
+        todos = releasing.todos
+        val release =
+            coordinator.recordReleaseEvidence(
+                task,
+                com.ai.assistance.operit.core.vibecoding.domain.ReleaseEvidence.Published(
+                    tag = "v1.0.0",
+                    sourceSha = "abc",
+                    assetNames = listOf("app.apk", "app.apk.sha256"),
+                    digestVerified = true,
+                    signatureRequired = true,
+                    signatureVerified = true,
+                ),
+                todos,
+                "chat-1",
+            ) as SessionTaskCoordinator.Result.Success
+        task = release.task
+        todos = release.todos
+
+        val completed =
+            coordinator.transition(task, VibeCodingTaskStage.COMPLETED, todos, "chat-1")
+                as SessionTaskCoordinator.Result.Success
+        assertEquals(VibeCodingTaskStage.COMPLETED, completed.task.stage)
         assertEquals(
             SessionTodoStatus.COMPLETED,
-            finalResult.todos.first { it.content == "交付与文档" }.status,
+            completed.todos.first { it.content == "交付与文档" }.status,
         )
     }
 

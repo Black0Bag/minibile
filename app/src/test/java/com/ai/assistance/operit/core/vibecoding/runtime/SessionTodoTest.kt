@@ -20,7 +20,8 @@ class SessionTodoTest {
         val first = newTodo("a", order = 1).start()
         val second = newTodo("b", order = 2)
         assertFalse(second.canStart(listOf(first)))
-        assertTrue(first.canStart(emptyList()))
+        // 已进行中的主 TODO 不能再 start
+        assertFalse(first.canStart(emptyList()))
     }
 
     @Test
