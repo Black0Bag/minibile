@@ -103,3 +103,28 @@ data class VibeCodingBuildRunEntity(
     val failureCategory: String? = null,
     val createdAt: Long = System.currentTimeMillis(),
 )
+
+@Entity(
+    tableName = "vibecoding_session_todos",
+    foreignKeys = [
+        ForeignKey(
+            entity = ChatEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["sessionId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
+    indices = [Index("sessionId")],
+)
+data class SessionTodoEntity(
+    @PrimaryKey val id: String,
+    val sessionId: String,
+    val content: String,
+    val status: String,
+    val priority: String,
+    val order: Int = 0,
+    val createdAt: Long = System.currentTimeMillis(),
+    val updatedAt: Long = System.currentTimeMillis(),
+    val parentTaskId: String? = null,
+    val blockedReason: String? = null,
+)
