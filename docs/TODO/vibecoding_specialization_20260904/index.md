@@ -85,5 +85,8 @@ created: 2026-09-04
 - 00 已完成 `[DONE]`
 - 01 已完成 `[DONE]`：首个 GitHub Release `v0.0.2` 已发布，APK 已通过用户安装验收
 - 02 已完成 `[DONE]`：能力矩阵定稿（2026-09-09），179 工具保留 101/删除 78，全部 7 个取舍点获用户确认，明细双向零差集核验通过
-- 03A Phase A 已完成代码与 PR 验证（2026-09-12）：纯 Kotlin 领域模型、状态机转换守卫和 21 个 JVM 单测已落盘；PR #3 的 Fast checks、Android JVM tests、Android build、Candidate checks 全部通过；尚未接数据库/UI/真实 GitHub，等待合并与 v0.1.0 Release
-- 03-12 将按 03A 的 Phase A-H 顺序重排
+- 03A Phase A 已完成 `[DONE]`（2026-09-12）：纯 Kotlin 领域模型、状态机转换守卫和 21 个 JVM 单测已落盘；PR #3 合并到 main（d8340695），Release v0.1.0 已发布
+- 03A Phase B 已完成 `[DONE]`（2026-09-12）：Room 持久化（4 张 VibeCoding 任务表 + DAO + Mapper），PR #4 合并到 main（ee2ca379），Release v0.2.0 已发布
+- 03A Phase C 已完成 `[DONE]`（2026-09-13）：ToolExecutionContext + ToolPolicyGate 统一工具硬门禁，PR #5 合并到 main（62334a1f），Release v0.3.0 已发布
+- 03A Phase D 已完成 `[DONE]`（2026-09-14）：会话任务纵向切片（SessionTodo + SessionTaskCoordinator + Room 22→23 持久化），PR #6 合并到 main（ab70b555），Release v0.4.0 已发布，APK digest sha256:08f25b03153fc093e85ada9caa95ccb1d75d00dfb64ff13a2d97379a63e52120
+- 下一阶段：03A Phase E（cloud_build_release 只读 inspect/prepare/status），需用户授权后开工
