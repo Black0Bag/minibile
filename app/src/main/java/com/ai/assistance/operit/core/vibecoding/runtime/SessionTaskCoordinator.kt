@@ -295,8 +295,16 @@ class SessionTaskCoordinator {
                 VibeCodingTaskStage.LOCAL_BUILD,
                 VibeCodingTaskStage.CLOUD_BUILD,
                 VibeCodingTaskStage.RELEASING,
-                VibeCodingTaskStage.COMPLETED,
                 -> "交付与文档"
+                // COMPLETED 是终态，不把 TODO 重新置为进行中。
+                VibeCodingTaskStage.COMPLETED,
+                VibeCodingTaskStage.CANCELLED,
+                VibeCodingTaskStage.PAUSED,
+                VibeCodingTaskStage.STALLED,
+                VibeCodingTaskStage.BLOCKED,
+                VibeCodingTaskStage.FAILED,
+                VibeCodingTaskStage.RECOVERING,
+                -> null
                 else -> null
             } ?: return todos
 
