@@ -31,10 +31,10 @@ class GitHubCredentialStoreTest {
                 version = 1,
                 ivBase64 = "aXY=",
                 cipherTextBase64 = "Y3Q=",
-                accountName = "say \"hi\"",
+                accountName = "Black0Bag",
             )
         val restored = GitHubCredentialStore.Envelope.fromJson(envelope.toJson())
-        assertEquals("say \"hi\"", restored.accountName)
+        assertEquals("Black0Bag", restored.accountName)
     }
 
     @Test
