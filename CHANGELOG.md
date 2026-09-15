@@ -1,6 +1,18 @@
 # 更新日志
 本文件记录每个可安装版本的实际交付内容。每个版本只对应一个 Git 提交、一个 Tag 和一个 GitHub Release。
 
+## 0.6.1 - 2026-09-16
+
+### 新功能
+
+- Phase F 第二部分：`GitHubCloudWriteClient.putSecretViaWorkflow`（通过 workflow_dispatch 触发设置 Secret，方案 B，不在 App 侧加密）。
+- `isValidSecretName` 校验（字母数字下划线，不以 GITHUB_ 开头）。
+- F5 端到端验证：vc-node-demo 仓库 set-secret.yml workflow_dispatch 成功设置 VC_DEMO_TEST Secret。
+
+### 测试
+
+- 新增 2 个 JVM 单元测试：Secret 名称校验（合法/非法）。
+
 ## 0.6.0 - 2026-09-15
 
 ### 新功能
