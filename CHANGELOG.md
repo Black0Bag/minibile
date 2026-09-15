@@ -7,6 +7,22 @@
 
 - 修复 GitHub Actions runner 镜像更新导致的 Android SDK 安装失败：`setup-android` 默认安装的 `tools` 包已从新版 SDK 移除（"Failed to find package 'tools'"），改为 `packages: platform-tools`，其余包由后续 `sdkmanager --install` 安装。
 
+## 0.5.0 - 2026-09-15
+
+### 新功能
+
+- Phase E 云端构建只读能力：新增纯 Kotlin `CloudBuildInspector`、`CloudBuildTemplateRegistry`、`CloudBuildModels`。
+- `cloud_build_release` 只读动作（inspect/prepare/status）：
+  - `inspect`：按项目文件识别技术栈（Android/Flutter/Rust/JVM/Go/Python/Node）、给出构建后端建议并匹配 CI 模板
+  - `prepare`：生成仓库模式 + CI 模板 + 产物语义的只读发布计划预览，不写远端
+  - `status`：解析远端 workflow run 查询结果摘要
+- 8 个 CI 模板注册表（android-gradle-apk / flutter-android / node-web / python-package / jvm-gradle / jvm-maven / rust-binary / generic-command），来源锚定 03A 计划 §6.4。
+- 权限预检只报告缺失权限与原因，不输出或回显任何 token。
+
+### 测试
+
+- 新增 7 个 JVM 单元测试：技术栈识别（Android/Go/未知）、prepare 只读预览、权限预检（无 token/部分权限/齐备）、status 摘要、空运行、模板注册表完整性。
+
 ## 0.4.0 - 2026-09-14
 
 ### 新功能
