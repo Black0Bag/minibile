@@ -93,4 +93,5 @@ created: 2026-09-04
 - 03A Phase F 第一部分已完成 `[DONE]`（2026-09-15）：GitHubCredentialStore（Android Keystore AES-256-GCM 信封加密）+ GitHubCloudWriteClient（建仓/上传/dispatch/run 查询/Release 验收）+ CloudWriteModels，PR #11 合并到 main（1877b09f），Release v0.6.0 已发布，APK digest sha256:0155c7a227a658e92d470784ab4ef00d4be48f50916a7ddd41ea9793d055aa8b
 - Phase F 待续：F5 Secrets 加密写入（libsodium）+ Android 签名样例
 - F4 已完成 `[DONE]`（2026-09-16）：无 Secrets Node 样例端到端云端构建验证（公开仓库 Black0Bag/vc-node-demo），push + workflow_dispatch 双路径成功，artifact vc-node-demo-dist 142 bytes 上传通过
+- F5 已完成 `[DONE]`（2026-09-16）：Secrets 写入通道（方案 B：workflow_dispatch 触发 `gh secret set`，不引入 native libsodium），vc-node-demo set-secret.yml dispatch 成功设置 VC_DEMO_TEST Secret；PR #12 合并到 main（2f56042f），Release v0.6.1 发布中
 - 更后阶段：03A Phase G（恢复/Subagent/修复循环）、Phase H（删除非 VibeCoding 能力并收敛 UI）
