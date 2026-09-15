@@ -257,9 +257,6 @@ jobs:
         with:
           # 新版 SDK 已移除 `tools` 包；只装 platform-tools，其余包由后续 sdkmanager 安装。
           packages: 'platform-tools'
-        with:
-          # 新版 SDK 已移除 `tools` 包；只装 platform-tools，其余包由后续 sdkmanager 安装。
-          packages: 'platform-tools'
 
       - name: Install required Android toolchain
         if: >-
