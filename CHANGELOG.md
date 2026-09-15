@@ -1,6 +1,18 @@
 # 更新日志
 本文件记录每个可安装版本的实际交付内容。每个版本只对应一个 Git 提交、一个 Tag 和一个 GitHub Release。
 
+## 0.6.0 - 2026-09-15
+
+### 新功能
+
+- Phase F 云端写入闭环（第一部分）：新增 `GitHubCredentialStore`（Android Keystore 不可导出 AES-256-GCM 主密钥 + 信封加密，密文/IV/版本存 app-private SharedPreferences，不复用已废弃的 EncryptedSharedPreferences）。
+- 新增 `GitHubCloudWriteClient`（OkHttp）：建仓、单文件上传（Contents API）、workflow dispatch、run 查询、Release 验收；token 仅从凭据仓读取，绝不写入日志/结果/证据。
+- 新增 `CloudWriteModels`：仓库创建/上传条目/dispatch/Release 验收模型。
+
+### 测试
+
+- 新增 7 个 JVM 单元测试：凭据信封编解码、路径/仓库名校验、Release 验收完整性。
+
 ## 0.4.1 - 2026-09-15
 
 ### 修复
