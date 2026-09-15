@@ -89,4 +89,5 @@ created: 2026-09-04
 - 03A Phase B 已完成 `[DONE]`（2026-09-12）：Room 持久化（4 张 VibeCoding 任务表 + DAO + Mapper），PR #4 合并到 main（ee2ca379），Release v0.2.0 已发布
 - 03A Phase C 已完成 `[DONE]`（2026-09-13）：ToolExecutionContext + ToolPolicyGate 统一工具硬门禁，PR #5 合并到 main（62334a1f），Release v0.3.0 已发布
 - 03A Phase D 已完成 `[DONE]`（2026-09-14）：会话任务纵向切片（SessionTodo + SessionTaskCoordinator + Room 22→23 持久化），PR #6 合并到 main（ab70b555），Release v0.4.0 已发布，APK digest sha256:08f25b03153fc093e85ada9caa95ccb1d75d00dfb64ff13a2d97379a63e52120
-- 下一阶段：03A Phase E（cloud_build_release 只读 inspect/prepare/status），需用户授权后开工
+- 03A Phase E 已完成 `[DONE]`（2026-09-15）：cloud_build_release 只读动作（CloudBuildInspector + CloudBuildTemplateRegistry 8 模板 + 权限预检），PR #9 合并到 main（529034a7），Release v0.5.0 已发布，APK digest sha256:c7f34c7c457c8a15efcd18475c4ccb16a4774547274ac2f8d0c9b48e0352db12；同时修复 runner 镜像 setup-android tools 包问题（PR #8/#10）
+- 下一阶段：03A Phase F（云端工具写入闭环：加密凭据仓、建仓、上传、workflow、dispatch、Secrets、Release 验收），需用户授权后开工
