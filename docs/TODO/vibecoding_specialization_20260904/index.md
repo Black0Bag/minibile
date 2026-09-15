@@ -90,4 +90,6 @@ created: 2026-09-04
 - 03A Phase C 已完成 `[DONE]`（2026-09-13）：ToolExecutionContext + ToolPolicyGate 统一工具硬门禁，PR #5 合并到 main（62334a1f），Release v0.3.0 已发布
 - 03A Phase D 已完成 `[DONE]`（2026-09-14）：会话任务纵向切片（SessionTodo + SessionTaskCoordinator + Room 22→23 持久化），PR #6 合并到 main（ab70b555），Release v0.4.0 已发布，APK digest sha256:08f25b03153fc093e85ada9caa95ccb1d75d00dfb64ff13a2d97379a63e52120
 - 03A Phase E 已完成 `[DONE]`（2026-09-15）：cloud_build_release 只读动作（CloudBuildInspector + CloudBuildTemplateRegistry 8 模板 + 权限预检），PR #9 合并到 main（529034a7），Release v0.5.0 已发布，APK digest sha256:f15f822755a078f79690b9319d776873ab6392b02e765498deeb4b4912b35f74；同时修复 runner 镜像 setup-android tools 包问题（PR #8/#10）
-- 下一阶段：03A Phase F（云端工具写入闭环：加密凭据仓、建仓、上传、workflow、dispatch、Secrets、Release 验收），需用户授权后开工
+- 03A Phase F 第一部分已完成 `[DONE]`（2026-09-15）：GitHubCredentialStore（Android Keystore AES-256-GCM 信封加密）+ GitHubCloudWriteClient（建仓/上传/dispatch/run 查询/Release 验收）+ CloudWriteModels，PR #11 合并到 main（1877b09f），Release v0.6.0 已发布，APK digest sha256:0155c7a227a658e92d470784ab4ef00d4be48f50916a7ddd41ea9793d055aa8b
+- Phase F 待续：F4 无 Secrets Node 样例云端构建端到端验证；F5 Secrets 加密写入（libsodium）+ Android 签名样例
+- 更后阶段：03A Phase G（恢复/Subagent/修复循环）、Phase H（删除非 VibeCoding 能力并收敛 UI）
