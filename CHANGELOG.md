@@ -1,6 +1,11 @@
 # 更新日志
-
 本文件记录每个可安装版本的实际交付内容。每个版本只对应一个 Git 提交、一个 Tag 和一个 GitHub Release。
+
+## 0.4.1 - 2026-09-15
+
+### 修复
+
+- 修复 GitHub Actions runner 镜像更新导致的 Android SDK 安装失败：`setup-android` 默认安装的 `tools` 包已从新版 SDK 移除（"Failed to find package 'tools'"），改为 `packages: platform-tools`，其余包由后续 `sdkmanager --install` 安装。
 
 ## 0.4.0 - 2026-09-14
 

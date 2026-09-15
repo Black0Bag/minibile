@@ -254,6 +254,12 @@ jobs:
       - name: Set up Android SDK
         if: steps.plan.outputs.android_resources == 'true'
         uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4
+        with:
+          # 新版 SDK 已移除 `tools` 包；只装 platform-tools，其余包由后续 sdkmanager 安装。
+          packages: 'platform-tools'
+        with:
+          # 新版 SDK 已移除 `tools` 包；只装 platform-tools，其余包由后续 sdkmanager 安装。
+          packages: 'platform-tools'
 
       - name: Install required Android toolchain
         if: >-
@@ -320,6 +326,9 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4
+        with:
+          # 新版 SDK 已移除 `tools` 包；只装 platform-tools，其余包由后续 sdkmanager 安装。
+          packages: 'platform-tools'
 
       - name: Install required Android toolchain
         shell: bash
@@ -461,6 +470,9 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4
+        with:
+          # 新版 SDK 已移除 `tools` 包；只装 platform-tools，其余包由后续 sdkmanager 安装。
+          packages: 'platform-tools'
 
       - name: Install required Android toolchain
         shell: bash
