@@ -59,4 +59,19 @@ class GitHubCloudWriteClientTest {
         val notExists = complete.copy(exists = false, assetNames = emptyList())
         assertFalse(notExists.isComplete())
     }
+
+    @Test
+    fun `secret name validation accepts valid names`() {
+        assertTrue(GitHubCloudWriteClient.isValidSecretName("MY_SECRET"))
+        assertTrue(GitHubCloudWriteClient.isValidSecretName("release_token"))
+        assertTrue(GitHubCloudWriteClient.isValidSecretName("API_KEY_2026"))
+    }
+
+    @Test
+    fun `secret name validation rejects invalid names`() {
+        assertFalse(GitHubCloudWriteClient.isValidSecretName(""))
+        assertFalse(GitHubCloudWriteClient.isValidSecretName("GITHUB_TOKEN"))
+        assertFalse(GitHubCloudWriteClient.isValidSecretName("secret-with-dash"))
+        assertFalse(GitHubCloudWriteClient.isValidSecretName("secret with space"))
+    }
 }

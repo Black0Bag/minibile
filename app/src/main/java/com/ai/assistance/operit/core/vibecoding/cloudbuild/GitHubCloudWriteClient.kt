@@ -205,6 +205,48 @@ class GitHubCloudWriteClient(
             }
         }
 
+    /**
+     * 通过 workflow_dispatch 触发设置 GitHub Secret（方案 B：不在 App 侧加密，由 workflow 内 CLI 完成）。
+     *
+     * 安全约束：
+     * - secretValue 通过 workflow_dispatch inputs 传递，**仅在该次 dispatch 中可见**，不写入日志；
+     * - workflow 文件需有 `secrets: write` 权限，并使用 `gh secret set` 设置；
+     * - 调用方需确保 secretName 合法（不含特殊字符）。
+     */
+    suspend fun putSecretViaWorkflow(
+        owner: String,
+        repo: String,
+        secretName: String,
+        secretValue: String,
+        workflowFile: String = "set-secret.yml",
+        ref: String = "main",
+    ): Boolean =
+        withContext(Dispatchers.IO) {
+            require(secretName.isNotBlank()) { "Secret name cannot be blank" }
+            require(secretValue.isNotBlank()) { "Secret value cannot be blank" }
+            require(isValidSecretName(secretName)) { "Invalid secret name: $secretName" }
+            val body =
+                JSONObject()
+                    .put("ref", ref)
+                    .put(
+                        "inputs",
+                        JSONObject()
+                            .put("secret_name", secretName)
+                            .put("secret_value", secretValue),
+                    )
+                    .toString()
+            val httpRequest =
+                Request.Builder()
+                    .url("$apiBaseUrl/repos/$owner/$repo/actions/workflows/$workflowFile/dispatches")
+                    .header("Accept", "application/vnd.github+json")
+                    .header("Authorization", authHeader())
+                    .post(body.toRequestBody(jsonMediaType))
+                    .build()
+            client.newCall(httpRequest).execute().use { resp ->
+                resp.isSuccessful
+            }
+        }
+
     companion object {
         /** 校验文件名安全（避免路径穿越），纯逻辑可 JVM 单测。 */
         fun isValidUploadPath(path: String): Boolean =
@@ -216,5 +258,11 @@ class GitHubCloudWriteClient(
         /** 校验仓库名合法（GitHub 规则：小写字母数字连字符）。 */
         fun isValidRepoName(name: String): Boolean =
             name.matches(Regex("[a-z0-9][a-z0-9-]{0,99}"))
+
+        /** 校验 Secret 名称合法（GitHub 规则：字母数字下划线，不以 GITHUB_ 开头）。 */
+        fun isValidSecretName(name: String): Boolean =
+            name.isNotBlank() &&
+                !name.uppercase().startsWith("GITHUB_") &&
+                name.matches(Regex("[A-Za-z0-9_]+"))
     }
 }
