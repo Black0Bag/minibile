@@ -284,6 +284,12 @@ android {
         }
     }
 
+    packaging {
+        jniLibs {
+            keepDebugSymbols += "**/libsudo.so"
+        }
+    }
+
     signingConfigs {
         val releaseKeystorePath = localProperties.getProperty("RELEASE_STORE_FILE")?.trim()
         val releaseStorePassword = localProperties.getProperty("RELEASE_STORE_PASSWORD")?.trim()
