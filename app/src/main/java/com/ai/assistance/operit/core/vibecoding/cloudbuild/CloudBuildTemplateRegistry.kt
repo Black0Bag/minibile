@@ -118,7 +118,7 @@ object CloudBuildTemplateRegistry {
             ),
         )
 
-    fun match(projectFiles: Collection<String>): CloudBuildTemplate? =
+    fun match(projectFiles: Collection<String>): CloudBuildTemplate =
         templates
             .filter { it.id != "generic-command" }
             .maxByOrNull { template -> template.detectionMarkers.count { marker -> projectFiles.any { it.endsWith(marker) } } }
