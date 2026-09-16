@@ -864,6 +864,208 @@ object SystemToolPromptsInternal {
                         )
                     )
             ),
+            SystemToolPromptCategory(
+                categoryName = "Workflow Tools",
+                tools =
+                    listOf(
+                        ToolPrompt(
+                            name = "get_all_workflows",
+                            description = "Get all workflows.",
+                            parametersStructured = listOf()
+                        ),
+                        ToolPrompt(
+                            name = "create_workflow",
+                            description = "Create a workflow.",
+                            parametersStructured =
+                                listOf(
+                                    ToolParameterSchema(
+                                        name = "name",
+                                        type = "string",
+                                        description = "workflow name",
+                                        required = true
+                                    ),
+                                    ToolParameterSchema(
+                                        name = "description",
+                                        type = "string",
+                                        description = "optional",
+                                        required = false
+                                    ),
+                                    ToolParameterSchema(
+                                        name = "nodes",
+                                        type = "string",
+                                        description = "optional, nodes JSON array string",
+                                        required = false
+                                    ),
+                                    ToolParameterSchema(
+                                        name = "connections",
+                                        type = "string",
+                                        description = "optional, connections JSON array string",
+                                        required = false
+                                    ),
+                                    ToolParameterSchema(
+                                        name = "enabled",
+                                        type = "boolean",
+                                        description = "optional",
+                                        required = false,
+                                        default = "true"
+                                    )
+                                )
+                        ),
+                        ToolPrompt(
+                            name = "get_workflow",
+                            description = "Get workflow detail.",
+                            parametersStructured =
+                                listOf(
+                                    ToolParameterSchema(
+                                        name = "workflow_id",
+                                        type = "string",
+                                        description = "workflow id",
+                                        required = true
+                                    )
+                                )
+                        ),
+                        ToolPrompt(
+                            name = "update_workflow",
+                            description = "Update a workflow.",
+                            parametersStructured =
+                                listOf(
+                                    ToolParameterSchema(
+                                        name = "workflow_id",
+                                        type = "string",
+                                        description = "workflow id",
+                                        required = true
+                                    ),
+                                    ToolParameterSchema(
+                                        name = "name",
+                                        type = "string",
+                                        description = "optional",
+                                        required = false
+                                    ),
+                                    ToolParameterSchema(
+                                        name = "description",
+                                        type = "string",
+                                        description = "optional",
+                                        required = false
+                                    ),
+                                    ToolParameterSchema(
+                                        name = "nodes",
+                                        type = "string",
+                                        description = "optional, nodes JSON array string",
+                                        required = false
+                                    ),
+                                    ToolParameterSchema(
+                                        name = "connections",
+                                        type = "string",
+                                        description = "optional, connections JSON array string",
+                                        required = false
+                                    ),
+                                    ToolParameterSchema(
+                                        name = "enabled",
+                                        type = "boolean",
+                                        description = "optional",
+                                        required = false
+                                    )
+                                )
+                        ),
+                        ToolPrompt(
+                            name = "patch_workflow",
+                            description = "Patch a workflow incrementally.",
+                            parametersStructured =
+                                listOf(
+                                    ToolParameterSchema(
+                                        name = "workflow_id",
+                                        type = "string",
+                                        description = "workflow id",
+                                        required = true
+                                    ),
+                                    ToolParameterSchema(
+                                        name = "name",
+                                        type = "string",
+                                        description = "optional",
+                                        required = false
+                                    ),
+                                    ToolParameterSchema(
+                                        name = "description",
+                                        type = "string",
+                                        description = "optional",
+                                        required = false
+                                    ),
+                                    ToolParameterSchema(
+                                        name = "enabled",
+                                        type = "boolean",
+                                        description = "optional",
+                                        required = false
+                                    ),
+                                    ToolParameterSchema(
+                                        name = "node_patches",
+                                        type = "string",
+                                        description = "optional, node patch JSON array string",
+                                        required = false
+                                    ),
+                                    ToolParameterSchema(
+                                        name = "connection_patches",
+                                        type = "string",
+                                        description = "optional, connection patch JSON array string",
+                                        required = false
+                                    )
+                                )
+                        ),
+                        ToolPrompt(
+                            name = "enable_workflow",
+                            description = "Enable a workflow.",
+                            parametersStructured =
+                                listOf(
+                                    ToolParameterSchema(
+                                        name = "workflow_id",
+                                        type = "string",
+                                        description = "workflow id",
+                                        required = true
+                                    )
+                                )
+                        ),
+                        ToolPrompt(
+                            name = "disable_workflow",
+                            description = "Disable a workflow.",
+                            parametersStructured =
+                                listOf(
+                                    ToolParameterSchema(
+                                        name = "workflow_id",
+                                        type = "string",
+                                        description = "workflow id",
+                                        required = true
+                                    )
+                                )
+                        ),
+                        ToolPrompt(
+                            name = "delete_workflow",
+                            description = "Delete a workflow.",
+                            parametersStructured =
+                                listOf(
+                                    ToolParameterSchema(
+                                        name = "workflow_id",
+                                        type = "string",
+                                        description = "workflow id",
+                                        required = true
+                                    )
+                                )
+                        ),
+                        ToolPrompt(
+                            name = "trigger_workflow",
+                            description = "Trigger a workflow execution.",
+                            parametersStructured =
+                                listOf(
+                                    ToolParameterSchema(
+                                        name = "workflow_id",
+                                        type = "string",
+                                        description = "workflow id",
+                                        required = true
+                                    )
+                                )
+                        )
+                    )
+            ),
+            SystemToolPromptCategory(
+                categoryName = "Chat Tools",
                 tools =
                     listOf(
                         ToolPrompt(
