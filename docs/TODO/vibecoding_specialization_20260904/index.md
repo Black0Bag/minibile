@@ -91,7 +91,5 @@ created: 2026-09-04
 - 03A Phase D 已完成 `[DONE]`（2026-09-14）：会话任务纵向切片（SessionTodo + SessionTaskCoordinator + Room 22→23 持久化），PR #6 合并到 main（ab70b555），Release v0.4.0 已发布，APK digest sha256:08f25b03153fc093e85ada9caa95ccb1d75d00dfb64ff13a2d97379a63e52120
 - 03A Phase E 已完成 `[DONE]`（2026-09-15）：cloud_build_release 只读动作（CloudBuildInspector + CloudBuildTemplateRegistry 8 模板 + 权限预检），PR #9 合并到 main（529034a7），Release v0.5.0 已发布，APK digest sha256:f15f822755a078f79690b9319d776873ab6392b02e765498deeb4b4912b35f74；同时修复 runner 镜像 setup-android tools 包问题（PR #8/#10）
 - 03A Phase F 第一部分已完成 `[DONE]`（2026-09-15）：GitHubCredentialStore（Android Keystore AES-256-GCM 信封加密）+ GitHubCloudWriteClient（建仓/上传/dispatch/run 查询/Release 验收）+ CloudWriteModels，PR #11 合并到 main（1877b09f），Release v0.6.0 已发布，APK digest sha256:0155c7a227a658e92d470784ab4ef00d4be48f50916a7ddd41ea9793d055aa8b
-- Phase F 待续：F5 Secrets 加密写入（libsodium）+ Android 签名样例
-- F4 已完成 `[DONE]`（2026-09-16）：无 Secrets Node 样例端到端云端构建验证（公开仓库 Black0Bag/vc-node-demo），push + workflow_dispatch 双路径成功，artifact vc-node-demo-dist 142 bytes 上传通过
-- F5 已完成 `[DONE]`（2026-09-16）：Secrets 写入通道（方案 B：workflow_dispatch 触发 `gh secret set`，不引入 native libsodium），vc-node-demo set-secret.yml dispatch 成功设置 VC_DEMO_TEST Secret；PR #12 合并到 main（2f56042f），Release v0.6.1 发布中
+- Phase F 已全部完成 `[DONE]`（2026-09-16）：F1 凭据存储 + F2a 云端写入客户端 + F4 无 Secrets Node 样例端到端验证 + F5 Secrets 写入通道（方案 B）。PR #11（v0.6.0）+ PR #12（v0.6.1）+ PR #13（keepDebugSymbols 修复 llvm-strip/libsudo.so，v0.6.3）合并到 main。Release v0.6.3 已发布，APK digest sha256:730854d0bf985f8f748c3f232e4c844725ae8c3fc3f407a564dd0ba36c7228a9
 - 更后阶段：03A Phase G（恢复/Subagent/修复循环）、Phase H（删除非 VibeCoding 能力并收敛 UI）
