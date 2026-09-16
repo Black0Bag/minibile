@@ -11,7 +11,6 @@ import com.ai.assistance.operit.data.model.ToolParameter
 import com.ai.assistance.operit.data.model.ToolResult
 import com.ai.assistance.operit.data.preferences.CharacterCardToolAccessResolver
 import com.ai.assistance.operit.data.preferences.ResolvedCharacterCardToolAccess
-import com.ai.assistance.operit.integrations.tasker.triggerAIAgentAction
 import com.ai.assistance.operit.services.FloatingChatService
 import com.ai.assistance.operit.ui.common.displays.VirtualDisplayOverlay
 import com.ai.assistance.operit.util.LocaleUtils
@@ -1480,7 +1479,6 @@ fun registerAllTools(handler: AIToolHandler, context: Context) {
                 } else {
                     val args = params.filterKeys { it != "task_type" }
                     try {
-                        context.triggerAIAgentAction(
                             taskType,
                             args
                         )
