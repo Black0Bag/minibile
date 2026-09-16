@@ -113,6 +113,7 @@ class FloatingWindowDelegate(
         } catch (_: Exception) {
         }
 
+        // If the service is already running (started by wake/workflow/widget), bind to it.
         tryBindToRunningService()
         setupInputStateCollection()
     }

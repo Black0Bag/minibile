@@ -371,6 +371,7 @@ fun OperitApp(
         NavItem.MemoryBase,
         NavItem.Toolbox,
         NavItem.ShizukuCommands,
+        NavItem.Workflow,
         NavItem.Settings,
         NavItem.Help,
         NavItem.About
