@@ -864,7 +864,6 @@ object SystemToolPromptsInternal {
                         )
                     )
             ),
-                categoryName = "Chat Tools",
                 tools =
                     listOf(
                         ToolPrompt(
