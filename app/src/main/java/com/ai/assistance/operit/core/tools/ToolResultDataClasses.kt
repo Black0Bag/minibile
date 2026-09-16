@@ -1787,15 +1787,6 @@ data class GrepResultData(
     }
 }
 
-/** 工作流基本信息结果数据 */
-@Serializable
-
-/** 工作流列表结果数据 */
-@Serializable
-
-/** 工作流详细信息结果数据（包含完整的节点和连接信息） */
-@Serializable
-
 /** 对话服务启动结果数据 */
 @Serializable
 data class ChatServiceStartResultData(
