@@ -1,6 +1,14 @@
 # 更新日志
 本文件记录每个可安装版本的实际交付内容。每个版本只对应一个 Git 提交、一个 Tag 和一个 GitHub Release。
 
+## 0.9.0 - 2026-09-17
+
+### 删除
+
+- Phase H Wave 2：删除蓝牙模块（BluetoothSessionManager.kt + 19 工具注册）
+- 删除蓝牙权限（BLUETOOTH, BLUETOOTH_ADMIN, BLUETOOTH_CONNECT, BLUETOOTH_SCAN）
+- 精确清理 6 个文件中的蓝牙引用（StandardSystemOperationTools, ToolRegistration, ToolResultDataClasses, JsTools, SystemToolPromptsInternal, AndroidManifest）
+
 ## 0.8.0 - 2026-09-17
 
 ### 删除
