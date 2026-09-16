@@ -1,6 +1,18 @@
 # 更新日志
 本文件记录每个可安装版本的实际交付内容。每个版本只对应一个 Git 提交、一个 Tag 和一个 GitHub Release。
 
+## 0.7.0 - 2026-09-16
+
+### 新功能
+
+- Phase G 恢复、Subagent 与修复循环：新增 BuildAttempt、FailureFingerprint、RepairBudget、RecoveryCheckpoint、SubagentTask 领域模型。
+- 数据库迁移 23→24：新增 3 张表（vibecoding_build_attempts、vibecoding_subagent_tasks、vibecoding_recovery_checkpoints），非破坏性迁移。
+- VibeCodingTaskDao 新增 12 个 DAO 方法（build attempts、subagent tasks、recovery checkpoints 的 CRUD）。
+
+### 测试
+
+- 新增 12 个 JVM 单元测试：RepairBudget 熔断逻辑（3）、失败指纹去重（2）、BuildAttempt 生命周期（2）、RecoveryCheckpoint 恢复目标（2）、SubagentTask 状态转换（3）。
+
 ## 0.6.3 - 2026-09-16
 
 ### 修复
