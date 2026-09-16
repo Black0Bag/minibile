@@ -195,6 +195,8 @@ object ToolGetter {
      * @param context 应用上下文
      * @return 工作流工具实现（只有标准版本）
      */
+    fun getWorkflowTools(context: Context): StandardWorkflowTools {
+        return StandardWorkflowTools(context)
     }
 
     /**
