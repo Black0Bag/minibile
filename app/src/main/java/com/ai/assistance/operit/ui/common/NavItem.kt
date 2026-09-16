@@ -45,5 +45,4 @@ sealed class NavItem(val route: String, val titleResId: Int, val icon: ImageVect
                 NavItem("agreement", R.string.nav_item_agreement, Icons.Default.Description)
         object Help : NavItem("help", R.string.nav_help, Icons.AutoMirrored.Filled.Help)
         object TokenConfig : NavItem("token_config", R.string.token_config, Icons.Default.Token)
-        object Workflow : NavItem("workflow", R.string.nav_workflow, Icons.Default.AccountTree)
 }

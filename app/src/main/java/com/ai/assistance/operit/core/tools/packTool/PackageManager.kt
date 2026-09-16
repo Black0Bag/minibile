@@ -24,7 +24,6 @@ import com.ai.assistance.operit.data.preferences.SkillVisibilityPreferences
 import com.ai.assistance.operit.core.tools.system.AndroidPermissionLevel
 import com.ai.assistance.operit.core.tools.system.ShizukuAuthorizer
 import com.ai.assistance.operit.data.preferences.DisplayPreferencesManager
-import com.ai.assistance.operit.data.model.Workflow
 import com.ai.assistance.operit.data.preferences.EnvPreferences
 import com.ai.assistance.operit.data.preferences.androidPermissionPreferences
 import com.ai.assistance.operit.data.model.PackageToolPromptCategory
@@ -127,13 +126,11 @@ private constructor(private val context: Context, private val aiToolHandler: AIT
         val author: List<String>,
         val resourceCount: Int,
         val wasmModuleCount: Int,
-        val workflowTemplateCount: Int,
         val workspaceTemplateCount: Int,
         val uiModuleCount: Int,
         val wasmModules: List<ToolPkgWasmModule>,
         val toolboxUiModules: List<ToolPkgToolboxUiModule>,
         val subpackages: List<ToolPkgSubpackageInfo>,
-        val workflowTemplates: List<ToolPkgWorkflowTemplate>,
         val workspaceTemplates: List<ToolPkgWorkspaceTemplate>,
         val logoResourceKey: String? = null,
         val logoMimeType: String? = null
@@ -159,15 +156,6 @@ private constructor(private val context: Context, private val aiToolHandler: AIT
         val moduleId: String,
         val path: String,
         val bytes: ByteArray
-    )
-
-    data class ToolPkgWorkflowTemplate(
-        val containerPackageName: String,
-        val toolPkgId: String,
-        val templateId: String,
-        val displayName: String,
-        val description: String,
-        val resourceKey: String
     )
 
     data class ToolPkgWorkspaceTemplate(
@@ -1437,19 +1425,6 @@ private constructor(private val context: Context, private val aiToolHandler: AIT
         resolveContext: Context? = null
     ): List<ToolPkgNavigationEntry> {
         return toolPkgFacade.getToolPkgNavigationEntries(resolveContext)
-    }
-
-    fun getToolPkgWorkflowTemplates(
-        resolveContext: Context? = null
-    ): List<ToolPkgWorkflowTemplate> {
-        return toolPkgFacade.getToolPkgWorkflowTemplates(resolveContext)
-    }
-
-    fun importToolPkgWorkflowTemplate(
-        containerPackageName: String,
-        templateId: String
-    ): Result<Workflow> {
-        return toolPkgFacade.importToolPkgWorkflowTemplate(containerPackageName, templateId)
     }
 
     fun getToolPkgWorkspaceTemplates(

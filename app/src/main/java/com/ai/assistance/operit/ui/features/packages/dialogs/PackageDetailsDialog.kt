@@ -333,11 +333,6 @@ fun PackageDetailsDialog(
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                         Text(
-                                            text = stringResource(R.string.pkg_toolpkg_workflow_templates, details.workflowTemplateCount),
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                        Text(
                                             text = stringResource(R.string.pkg_toolpkg_workspace_templates, details.workspaceTemplateCount),
                                             style = MaterialTheme.typography.bodySmall,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -359,19 +354,6 @@ fun PackageDetailsDialog(
                                         text = toolPkgToggleError.orEmpty(),
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.error
-                                    )
-                                }
-
-                                if (details.workflowTemplates.isNotEmpty()) {
-                                    Spacer(modifier = Modifier.height(12.dp))
-                                    Text(
-                                        text = stringResource(R.string.pkg_toolpkg_registered_workflow_templates),
-                                        style = MaterialTheme.typography.titleSmall,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    ToolPkgWorkflowTemplatesCard(
-                                        templates = details.workflowTemplates
                                     )
                                 }
 
@@ -817,57 +799,6 @@ private fun ToolPkgPluginConfigCard(
                             color = MaterialTheme.colorScheme.onSecondaryContainer,
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
                         )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun ToolPkgWorkflowTemplatesCard(
-    templates: List<PackageManager.ToolPkgWorkflowTemplate>
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        templates.forEach { template ->
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 14.dp, vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.AccountTree,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = template.displayName,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Medium,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        if (template.description.isNotBlank()) {
-                            Text(
-                                text = template.description,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
                     }
                 }
             }
