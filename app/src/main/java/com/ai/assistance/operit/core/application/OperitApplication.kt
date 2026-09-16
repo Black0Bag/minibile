@@ -33,7 +33,6 @@ import com.ai.assistance.operit.core.config.SystemPromptConfig
 import com.ai.assistance.operit.core.tools.AIToolHandler
 import com.ai.assistance.operit.core.tools.system.AndroidShellExecutor
 import com.ai.assistance.operit.core.tools.system.Terminal
-import com.ai.assistance.operit.core.workflow.WorkflowSchedulerInitializer
 import com.ai.assistance.operit.data.backup.RoomDatabaseBackupPreferences
 import com.ai.assistance.operit.data.backup.RoomDatabaseBackupScheduler
 import com.ai.assistance.operit.data.db.AppDatabase
@@ -363,8 +362,6 @@ class OperitApplication : Application(), ImageLoaderFactory, WorkConfiguration.P
         // 初始化工作流调度器（异步）
         applicationScope.launch {
             val schedulerStartTime = System.currentTimeMillis()
-            WorkflowSchedulerInitializer.initialize(applicationContext)
-            AppLogger.d(TAG, "【启动计时】WorkflowScheduler初始化完成（异步） - ${System.currentTimeMillis() - schedulerStartTime}ms")
         }
 
         applicationScope.launch {

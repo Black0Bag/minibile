@@ -1391,36 +1391,25 @@ fun getJsToolsDefinition(): String {
             },
             
             // 工作流工具
-            Workflow: {
                 // 获取所有工作流
                 getAll: () => {
-                    return toolCall("get_all_workflows", {});
                 },
                 // 创建新工作流
                 create: (name, description = "", nodes = null, connections = null, enabled = true) => {
                     const params = { name, description, enabled: enabled.toString() };
                     if (nodes) params.nodes = typeof nodes === 'string' ? nodes : JSON.stringify(nodes);
                     if (connections) params.connections = typeof connections === 'string' ? connections : JSON.stringify(connections);
-                    return toolCall("create_workflow", params);
                 },
                 // 获取工作流详情
-                get: (workflowId) => {
-                    const params = { workflow_id: workflowId };
-                    return toolCall("get_workflow", params);
                 },
                 // 更新工作流
-                update: (workflowId, updates = {}) => {
-                    const params = { workflow_id: workflowId };
                     if (updates.name !== undefined) params.name = updates.name;
                     if (updates.description !== undefined) params.description = updates.description;
                     if (updates.nodes !== undefined) params.nodes = typeof updates.nodes === 'string' ? updates.nodes : JSON.stringify(updates.nodes);
                     if (updates.connections !== undefined) params.connections = typeof updates.connections === 'string' ? updates.connections : JSON.stringify(updates.connections);
                     if (updates.enabled !== undefined) params.enabled = updates.enabled.toString();
-                    return toolCall("update_workflow", params);
                 },
                 // 差异更新工作流（增量 patch）
-                patch: (workflowId, patch = {}) => {
-                    const params = { workflow_id: workflowId };
                     if (patch.name !== undefined) params.name = patch.name;
                     if (patch.description !== undefined) params.description = patch.description;
                     if (patch.enabled !== undefined) params.enabled = patch.enabled.toString();
@@ -1434,32 +1423,16 @@ fun getJsToolsDefinition(): String {
                             ? patch.connection_patches
                             : JSON.stringify(patch.connection_patches);
                     }
-                    return toolCall("patch_workflow", params);
                 },
                 // 设置工作流启用状态
-                setEnabled: (workflowId, enabled) => {
-                    const params = { workflow_id: workflowId };
-                    return toolCall(enabled ? "enable_workflow" : "disable_workflow", params);
                 },
                 // 启用工作流
-                enable: (workflowId) => {
-                    const params = { workflow_id: workflowId };
-                    return toolCall("enable_workflow", params);
                 },
                 // 禁用工作流
-                disable: (workflowId) => {
-                    const params = { workflow_id: workflowId };
-                    return toolCall("disable_workflow", params);
                 },
                 // 删除工作流
-                delete: (workflowId) => {
-                    const params = { workflow_id: workflowId };
-                    return toolCall("delete_workflow", params);
                 },
                 // 触发工作流执行
-                trigger: (workflowId) => {
-                    const params = { workflow_id: workflowId };
-                    return toolCall("trigger_workflow", params);
                 }
             },
             // 对话管理工具

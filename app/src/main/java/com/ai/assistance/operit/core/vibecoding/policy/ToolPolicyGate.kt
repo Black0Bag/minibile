@@ -40,8 +40,6 @@ object ToolPolicyGate {
             "start_chat_service", "stop_chat_service",
             // 包/工作流写
             "use_package", "set_sandbox_package_enabled",
-            "create_workflow", "update_workflow", "patch_workflow", "delete_workflow",
-            "enable_workflow", "disable_workflow", "trigger_workflow", "trigger_tasker_event",
             // MCP / Skill 写
             "restart_mcp_with_logs",
         )

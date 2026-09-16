@@ -865,23 +865,17 @@ object SystemToolPromptsInternal {
                     )
             ),
             SystemToolPromptCategory(
-                categoryName = "Workflow Tools",
                 tools =
                     listOf(
                         ToolPrompt(
-                            name = "get_all_workflows",
-                            description = "Get all workflows.",
                             parametersStructured = listOf()
                         ),
                         ToolPrompt(
-                            name = "create_workflow",
-                            description = "Create a workflow.",
                             parametersStructured =
                                 listOf(
                                     ToolParameterSchema(
                                         name = "name",
                                         type = "string",
-                                        description = "workflow name",
                                         required = true
                                     ),
                                     ToolParameterSchema(
@@ -912,27 +906,19 @@ object SystemToolPromptsInternal {
                                 )
                         ),
                         ToolPrompt(
-                            name = "get_workflow",
-                            description = "Get workflow detail.",
                             parametersStructured =
                                 listOf(
                                     ToolParameterSchema(
-                                        name = "workflow_id",
                                         type = "string",
-                                        description = "workflow id",
                                         required = true
                                     )
                                 )
                         ),
                         ToolPrompt(
-                            name = "update_workflow",
-                            description = "Update a workflow.",
                             parametersStructured =
                                 listOf(
                                     ToolParameterSchema(
-                                        name = "workflow_id",
                                         type = "string",
-                                        description = "workflow id",
                                         required = true
                                     ),
                                     ToolParameterSchema(
@@ -968,14 +954,10 @@ object SystemToolPromptsInternal {
                                 )
                         ),
                         ToolPrompt(
-                            name = "patch_workflow",
-                            description = "Patch a workflow incrementally.",
                             parametersStructured =
                                 listOf(
                                     ToolParameterSchema(
-                                        name = "workflow_id",
                                         type = "string",
-                                        description = "workflow id",
                                         required = true
                                     ),
                                     ToolParameterSchema(
@@ -1011,53 +993,37 @@ object SystemToolPromptsInternal {
                                 )
                         ),
                         ToolPrompt(
-                            name = "enable_workflow",
-                            description = "Enable a workflow.",
                             parametersStructured =
                                 listOf(
                                     ToolParameterSchema(
-                                        name = "workflow_id",
                                         type = "string",
-                                        description = "workflow id",
                                         required = true
                                     )
                                 )
                         ),
                         ToolPrompt(
-                            name = "disable_workflow",
-                            description = "Disable a workflow.",
                             parametersStructured =
                                 listOf(
                                     ToolParameterSchema(
-                                        name = "workflow_id",
                                         type = "string",
-                                        description = "workflow id",
                                         required = true
                                     )
                                 )
                         ),
                         ToolPrompt(
-                            name = "delete_workflow",
-                            description = "Delete a workflow.",
                             parametersStructured =
                                 listOf(
                                     ToolParameterSchema(
-                                        name = "workflow_id",
                                         type = "string",
-                                        description = "workflow id",
                                         required = true
                                     )
                                 )
                         ),
                         ToolPrompt(
-                            name = "trigger_workflow",
-                            description = "Trigger a workflow execution.",
                             parametersStructured =
                                 listOf(
                                     ToolParameterSchema(
-                                        name = "workflow_id",
                                         type = "string",
-                                        description = "workflow id",
                                         required = true
                                     )
                                 )
@@ -3861,12 +3827,10 @@ object SystemToolPromptsInternal {
                 tools =
                     listOf(
                         ToolPrompt(
-                            name = "get_all_workflows",
                             description = "获取所有工作流列表。",
                             parametersStructured = listOf()
                         ),
                         ToolPrompt(
-                            name = "create_workflow",
                             description = "创建工作流。",
                             parametersStructured =
                                 listOf(
@@ -3904,12 +3868,10 @@ object SystemToolPromptsInternal {
                                 )
                         ),
                         ToolPrompt(
-                            name = "get_workflow",
                             description = "获取工作流详情。",
                             parametersStructured =
                                 listOf(
                                     ToolParameterSchema(
-                                        name = "workflow_id",
                                         type = "string",
                                         description = "工作流 ID",
                                         required = true
@@ -3917,12 +3879,10 @@ object SystemToolPromptsInternal {
                                 )
                         ),
                         ToolPrompt(
-                            name = "update_workflow",
                             description = "更新工作流。",
                             parametersStructured =
                                 listOf(
                                     ToolParameterSchema(
-                                        name = "workflow_id",
                                         type = "string",
                                         description = "工作流 ID",
                                         required = true
@@ -3960,12 +3920,10 @@ object SystemToolPromptsInternal {
                                 )
                         ),
                         ToolPrompt(
-                            name = "patch_workflow",
                             description = "差异更新工作流。",
                             parametersStructured =
                                 listOf(
                                     ToolParameterSchema(
-                                        name = "workflow_id",
                                         type = "string",
                                         description = "工作流 ID",
                                         required = true
@@ -4003,12 +3961,10 @@ object SystemToolPromptsInternal {
                                 )
                         ),
                         ToolPrompt(
-                            name = "enable_workflow",
                             description = "启用工作流。",
                             parametersStructured =
                                 listOf(
                                     ToolParameterSchema(
-                                        name = "workflow_id",
                                         type = "string",
                                         description = "工作流 ID",
                                         required = true
@@ -4016,12 +3972,10 @@ object SystemToolPromptsInternal {
                                 )
                         ),
                         ToolPrompt(
-                            name = "disable_workflow",
                             description = "禁用工作流。",
                             parametersStructured =
                                 listOf(
                                     ToolParameterSchema(
-                                        name = "workflow_id",
                                         type = "string",
                                         description = "工作流 ID",
                                         required = true
@@ -4029,12 +3983,10 @@ object SystemToolPromptsInternal {
                                 )
                         ),
                         ToolPrompt(
-                            name = "delete_workflow",
                             description = "删除工作流。",
                             parametersStructured =
                                 listOf(
                                     ToolParameterSchema(
-                                        name = "workflow_id",
                                         type = "string",
                                         description = "工作流 ID",
                                         required = true
@@ -4042,12 +3994,10 @@ object SystemToolPromptsInternal {
                                 )
                         ),
                         ToolPrompt(
-                            name = "trigger_workflow",
                             description = "触发工作流执行。",
                             parametersStructured =
                                 listOf(
                                     ToolParameterSchema(
-                                        name = "workflow_id",
                                         type = "string",
                                         description = "工作流 ID",
                                         required = true
