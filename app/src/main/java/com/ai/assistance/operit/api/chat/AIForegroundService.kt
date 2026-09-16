@@ -48,7 +48,6 @@ import com.ai.assistance.operit.services.FloatingChatService
 import com.ai.assistance.operit.services.UIDebuggerService
 import com.ai.assistance.operit.data.preferences.DisplayPreferencesManager
 import com.ai.assistance.operit.data.preferences.WakeWordPreferences
-import com.ai.assistance.operit.data.repository.WorkflowRepository
 import com.ai.assistance.operit.ui.main.MainActivity
 import com.ai.assistance.operit.util.WaifuMessageProcessor
 import kotlinx.coroutines.CoroutineScope
@@ -723,7 +722,8 @@ class AIForegroundService : Service() {
     private val wakePrefs by lazy { WakeWordPreferences(applicationContext) }
     @Volatile
     private var wakeSpeechProvider: SpeechService? = null
-    private val workflowRepository by lazy { WorkflowRepository(applicationContext) }
+    // WorkflowRepository removed
+
     private val externalHttpPreferences by lazy { ExternalHttpApiPreferences.getInstance(applicationContext) }
 
     private val mainHandler by lazy { Handler(Looper.getMainLooper()) }
@@ -1657,17 +1657,8 @@ class AIForegroundService : Service() {
                             return@collectLatest
                         }
                     }
+                    // Speech workflow trigger removed
 
-                    try {
-                        val now = System.currentTimeMillis()
-                        val shouldCheckWorkflows = result.isFinal || now - lastSpeechWorkflowCheckAtMs >= 350L
-                        if (shouldCheckWorkflows) {
-                            lastSpeechWorkflowCheckAtMs = now
-                            workflowRepository.triggerWorkflowsBySpeechEvent(text = text, isFinal = result.isFinal)
-                        }
-                    } catch (e: Exception) {
-                        AppLogger.e(TAG, "Speech trigger processing failed: ${e.message}", e)
-                    }
 
                     if (matchWakePhrase(text, currentWakePhrase, wakePhraseRegexEnabled)) {
                         val now = System.currentTimeMillis()

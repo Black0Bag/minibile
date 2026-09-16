@@ -88,8 +88,6 @@ import com.ai.assistance.operit.ui.features.toolbox.screens.tooltester.ToolTeste
 import com.ai.assistance.operit.ui.features.toolbox.screens.autoglm.AutoGlmOneClickToolScreen
 import com.ai.assistance.operit.ui.features.toolbox.screens.autoglm.AutoGlmToolScreen
 import com.ai.assistance.operit.ui.features.update.screens.UpdateScreen
-import com.ai.assistance.operit.ui.features.workflow.screens.WorkflowListScreen
-import com.ai.assistance.operit.ui.features.workflow.screens.WorkflowDetailScreen
 import com.ai.assistance.operit.ui.main.PendingChatDraftHandler
 import com.ai.assistance.operit.ui.main.navigation.AppRouterGateway
 
@@ -722,43 +720,6 @@ sealed class Screen(
                 onGestureConsumed: (Boolean) -> Unit
         ) {
             AssistantConfigScreen()
-        }
-    }
-
-    data object Workflow : Screen(navItem = NavItem.Workflow) {
-        @Composable
-        override fun Content(
-                navController: NavController,
-                navigateTo: ScreenNavigationHandler,
-                onGoBack: () -> Unit,
-                hasBackgroundImage: Boolean,
-                onLoading: (Boolean) -> Unit,
-                onError: (String) -> Unit,
-                onGestureConsumed: (Boolean) -> Unit
-        ) {
-            WorkflowListScreen(
-                onNavigateToDetail = { workflowId ->
-                    navigateTo(WorkflowDetail(workflowId))
-                }
-            )
-        }
-    }
-
-    data class WorkflowDetail(val workflowId: String) : Screen(navItem = NavItem.Workflow, titleRes = R.string.nav_workflow) {
-        @Composable
-        override fun Content(
-                navController: NavController,
-                navigateTo: ScreenNavigationHandler,
-                onGoBack: () -> Unit,
-                hasBackgroundImage: Boolean,
-                onLoading: (Boolean) -> Unit,
-                onError: (String) -> Unit,
-                onGestureConsumed: (Boolean) -> Unit
-        ) {
-            WorkflowDetailScreen(
-                workflowId = workflowId,
-                onNavigateBack = onGoBack
-            )
         }
     }
 
