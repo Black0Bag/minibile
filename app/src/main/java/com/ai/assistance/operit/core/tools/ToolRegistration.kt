@@ -11,7 +11,6 @@ import com.ai.assistance.operit.data.model.ToolParameter
 import com.ai.assistance.operit.data.model.ToolResult
 import com.ai.assistance.operit.data.preferences.CharacterCardToolAccessResolver
 import com.ai.assistance.operit.data.preferences.ResolvedCharacterCardToolAccess
-import com.ai.assistance.operit.integrations.tasker.triggerAIAgentAction
 import com.ai.assistance.operit.services.FloatingChatService
 import com.ai.assistance.operit.ui.common.displays.VirtualDisplayOverlay
 import com.ai.assistance.operit.util.LocaleUtils
@@ -1480,7 +1479,6 @@ fun registerAllTools(handler: AIToolHandler, context: Context) {
                 } else {
                     val args = params.filterKeys { it != "task_type" }
                     try {
-                        context.triggerAIAgentAction(
                             taskType,
                             args
                         )
@@ -1509,101 +1507,6 @@ fun registerAllTools(handler: AIToolHandler, context: Context) {
     )
 
     
-    // 工作流工具
-    val workflowTools = ToolGetter.getWorkflowTools(context)
-
-    // 获取所有工作流
-    handler.registerTool(
-            name = "get_all_workflows",
-            descriptionGenerator = { _ -> s(R.string.toolreg_get_all_workflows_desc) },
-            executor = { tool -> runBlocking(Dispatchers.IO) { workflowTools.getAllWorkflows(tool) } }
-    )
-
-    // 创建工作流
-    handler.registerTool(
-            name = "create_workflow",
-            descriptionGenerator = { tool ->
-                val name = tool.parameters.find { it.name == "name" }?.value ?: ""
-                s(R.string.toolreg_create_workflow_desc, name)
-            },
-            executor = { tool -> runBlocking(Dispatchers.IO) { workflowTools.createWorkflow(tool) } }
-    )
-
-    // 获取工作流详情
-    handler.registerTool(
-            name = "get_workflow",
-            descriptionGenerator = { tool ->
-                val id = tool.parameters.find { it.name == "workflow_id" }?.value ?: ""
-                s(R.string.toolreg_get_workflow_desc, id)
-            },
-            executor = { tool -> runBlocking(Dispatchers.IO) { workflowTools.getWorkflow(tool) } }
-    )
-
-    // 更新工作流
-    handler.registerTool(
-            name = "update_workflow",
-            descriptionGenerator = { tool ->
-                val id = tool.parameters.find { it.name == "workflow_id" }?.value ?: ""
-                val name = tool.parameters.find { it.name == "name" }?.value
-                if (name != null) {
-                    s(R.string.toolreg_update_workflow_with_name_desc, id, name)
-                } else {
-                    s(R.string.toolreg_update_workflow_desc, id)
-                }
-            },
-            executor = { tool -> runBlocking(Dispatchers.IO) { workflowTools.updateWorkflow(tool) } }
-    )
-
-    // 差异更新工作流
-    handler.registerTool(
-            name = "patch_workflow",
-            descriptionGenerator = { tool ->
-                val id = tool.parameters.find { it.name == "workflow_id" }?.value ?: ""
-                s(R.string.toolreg_patch_workflow_desc, id)
-            },
-            executor = { tool -> runBlocking(Dispatchers.IO) { workflowTools.patchWorkflow(tool) } }
-    )
-
-    // 启用工作流
-    handler.registerTool(
-            name = "enable_workflow",
-            descriptionGenerator = { tool ->
-                val id = tool.parameters.find { it.name == "workflow_id" }?.value ?: ""
-                s(R.string.toolreg_enable_workflow_desc, id)
-            },
-            executor = { tool -> runBlocking(Dispatchers.IO) { workflowTools.enableWorkflow(tool) } }
-    )
-
-    // 禁用工作流
-    handler.registerTool(
-            name = "disable_workflow",
-            descriptionGenerator = { tool ->
-                val id = tool.parameters.find { it.name == "workflow_id" }?.value ?: ""
-                s(R.string.toolreg_disable_workflow_desc, id)
-            },
-            executor = { tool -> runBlocking(Dispatchers.IO) { workflowTools.disableWorkflow(tool) } }
-    )
-
-    // 删除工作流
-    handler.registerTool(
-            name = "delete_workflow",
-            descriptionGenerator = { tool ->
-                val id = tool.parameters.find { it.name == "workflow_id" }?.value ?: ""
-                s(R.string.toolreg_delete_workflow_desc, id)
-            },
-            executor = { tool -> runBlocking(Dispatchers.IO) { workflowTools.deleteWorkflow(tool) } }
-    )
-
-    // 触发工作流执行
-    handler.registerTool(
-            name = "trigger_workflow",
-            descriptionGenerator = { tool ->
-                val id = tool.parameters.find { it.name == "workflow_id" }?.value ?: ""
-                s(R.string.toolreg_trigger_workflow_desc, id)
-            },
-            executor = { tool -> runBlocking(Dispatchers.IO) { workflowTools.triggerWorkflow(tool) } }
-    )
-
     // 对话管理工具
     val chatManagerTool = ToolGetter.getChatManagerTool(context)
 
