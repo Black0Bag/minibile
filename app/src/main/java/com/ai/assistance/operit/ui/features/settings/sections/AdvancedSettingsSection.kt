@@ -521,7 +521,7 @@ fun AdvancedSettingsSection(
 
                         Spacer(modifier = Modifier.height(8.dp))
                     }
-                    
+
                     OutlinedButton(
                         onClick = {
                             val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
@@ -561,7 +561,7 @@ fun AdvancedSettingsSection(
                             Text(stringResource(R.string.clear_api_key_pool))
                         }
                     }
-                    
+
                     Text(
                         text = stringResource(R.string.import_format_desc),
                         style = MaterialTheme.typography.bodySmall,
@@ -662,8 +662,8 @@ private fun ApiKeyItem(
             modifier = Modifier.size(32.dp)
         ) {
             Icon(
-                Icons.Default.Edit, 
-                contentDescription = stringResource(R.string.edit_api_key), 
+                Icons.Default.Edit,
+                contentDescription = stringResource(R.string.edit_api_key),
                 tint = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier.size(16.dp)
             )
@@ -673,8 +673,8 @@ private fun ApiKeyItem(
             modifier = Modifier.size(32.dp)
         ) {
             Icon(
-                Icons.Default.Delete, 
-                contentDescription = stringResource(R.string.delete_api_key), 
+                Icons.Default.Delete,
+                contentDescription = stringResource(R.string.delete_api_key),
                 tint = MaterialTheme.colorScheme.error,
                 modifier = Modifier.size(16.dp)
             )
@@ -723,4 +723,4 @@ private fun ApiKeyEditDialog(
             }
         }
     )
-} 
+}

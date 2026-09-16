@@ -36,9 +36,9 @@ fun CompletionPopup(
     modifier: Modifier = Modifier
 ) {
     if (completionItems.isEmpty()) return
-    
+
     val listState = rememberLazyListState()
-    
+
     Popup(
         alignment = Alignment.TopStart,
         offset = offset,
@@ -48,7 +48,7 @@ fun CompletionPopup(
             dismissOnBackPress = true,
             dismissOnClickOutside = true,
             clippingEnabled = false // 允许在父布局边界外绘制，防止截断
-        ) 
+        )
     ) {
         Surface(
             shape = RoundedCornerShape(10.dp),
@@ -112,9 +112,9 @@ fun CompletionItemRow(
             },
             modifier = Modifier.size(20.dp)
         )
-        
+
         Spacer(modifier = Modifier.width(8.dp)) // 减小间隔
-        
+
         // 标签
         Column {
             Text(
@@ -123,7 +123,7 @@ fun CompletionItemRow(
                 fontWeight = FontWeight.Medium,
                 color = theme.textColor
             )
-            
+
             // 详情信息
             if (item.detail != null) {
                 Text(

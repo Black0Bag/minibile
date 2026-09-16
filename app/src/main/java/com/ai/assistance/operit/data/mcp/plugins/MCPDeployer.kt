@@ -152,12 +152,12 @@ class MCPDeployer(private val context: Context) {
                     // 检查是否有市场配置
                     val pluginMetadata = mcpLocalServer.getPluginMetadata(pluginId)
                     val marketConfig = pluginMetadata?.marketConfig
-                    
+
                     // 创建配置生成器（用于提取 server name，无论是否有市场配置都需要）
                     val configGenerator = MCPConfigGenerator()
-                    
+
                     val mcpConfig: String
-                    
+
                     if (!marketConfig.isNullOrBlank()) {
                         // 优先使用市场配置
                         AppLogger.d(TAG, "使用市场配置部署插件: $pluginId")
@@ -166,7 +166,7 @@ class MCPDeployer(private val context: Context) {
                     } else {
                         // 没有市场配置，分析项目并生成配置
                         AppLogger.d(TAG, "没有市场配置，分析项目生成配置: $pluginId")
-                        
+
                         // 创建项目分析器（仅用于分析项目类型和生成配置）
                         val projectAnalyzer = MCPProjectAnalyzer()
                         val readmeFile = projectAnalyzer.findReadmeFile(pluginDir)
@@ -323,7 +323,7 @@ class MCPDeployer(private val context: Context) {
                     ToolParameter("recursive", "true")
                 )
             )
-            
+
             val copyResult = toolHandler.executeTool(copyTool)
             if (!copyResult.success) {
                 statusCallback(DeploymentStatus.Error(context.getString(R.string.mcp_deployment_copy_failed, copyResult.error ?: "")))

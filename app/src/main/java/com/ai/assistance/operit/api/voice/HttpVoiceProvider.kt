@@ -975,7 +975,7 @@ open class HttpVoiceProvider(
         val paramsString = extraParams.entries.sortedBy { it.key }.joinToString()
         return "${text.hashCode()}_${rate}_${pitch}_${voiceId ?: "default"}_$paramsString"
     }
-    
+
     /**
      * 清除缓存文件
      */
@@ -991,4 +991,4 @@ open class HttpVoiceProvider(
             AppLogger.e(TAG, "清除HTTP TTS缓存失败", e)
         }
     }
-} 
+}

@@ -455,7 +455,7 @@ fun buildArtifactMarketMetadata(
         projectId = payload.projectId,
         projectDisplayName = payload.projectDisplayName,
         projectDescription = payload.projectDescription,
-        runtimePackageId = payload.runtimePackageId,
+        runtimePackageId = payload.runtimePackageId,
         publisherLogin = payload.publisherLogin,
         releaseOwner = payload.releaseOwner,
         releaseRepository = payload.releaseRepository,

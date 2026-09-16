@@ -48,7 +48,6 @@ import com.ai.assistance.operit.services.FloatingChatService
 import com.ai.assistance.operit.services.UIDebuggerService
 import com.ai.assistance.operit.data.preferences.DisplayPreferencesManager
 import com.ai.assistance.operit.data.preferences.WakeWordPreferences
-import com.ai.assistance.operit.data.repository.WorkflowRepository
 import com.ai.assistance.operit.ui.main.MainActivity
 import com.ai.assistance.operit.util.WaifuMessageProcessor
 import kotlinx.coroutines.CoroutineScope
@@ -144,7 +143,7 @@ class AIForegroundService : Service() {
         private val activeReplyNotificationTags = ConcurrentHashMap.newKeySet<String>()
         private val externalHttpStateFlow = MutableStateFlow(ExternalChatHttpState())
         val externalHttpState = externalHttpStateFlow.asStateFlow()
-        
+
         // Intent extras keys
         const val EXTRA_CHARACTER_NAME = "extra_character_name"
         const val EXTRA_AVATAR_URI = "extra_avatar_uri"
@@ -537,7 +536,7 @@ class AIForegroundService : Service() {
         AppLogger.d(TAG, "Wake listening suspended by floating fullscreen: $wakeListeningSuspendedForFloatingFullscreen")
         applyWakeListeningState()
     }
-    
+
     private fun applyWakeListeningState() {
         wakeStateApplyJob?.cancel()
         wakeStateApplyJob =
@@ -706,7 +705,7 @@ class AIForegroundService : Service() {
         audioManager = null
         wakeListeningSuspendedForExternalRecording = false
     }
-    
+
     // 存储通知信息
     private var characterName: String? = null
     private var avatarUri: String? = null
@@ -723,7 +722,8 @@ class AIForegroundService : Service() {
     private val wakePrefs by lazy { WakeWordPreferences(applicationContext) }
     @Volatile
     private var wakeSpeechProvider: SpeechService? = null
-    private val workflowRepository by lazy { WorkflowRepository(applicationContext) }
+    // WorkflowRepository removed
+
     private val externalHttpPreferences by lazy { ExternalHttpApiPreferences.getInstance(applicationContext) }
 
     private val mainHandler by lazy { Handler(Looper.getMainLooper()) }
@@ -1267,7 +1267,7 @@ class AIForegroundService : Service() {
                 manager.notify(NOTIFICATION_ID, createNotification())
             }
         }
-        
+
         // 当 External HTTP 处于启用状态时，使用 START_STICKY 提高后台保活强度；
         // 其他场景仍由 EnhancedAIService 与前台交互精确控制生命周期。
         return if (isExternalHttpEnabledNow()) START_STICKY else START_NOT_STICKY
@@ -1657,17 +1657,8 @@ class AIForegroundService : Service() {
                             return@collectLatest
                         }
                     }
+                    // Speech workflow trigger removed
 
-                    try {
-                        val now = System.currentTimeMillis()
-                        val shouldCheckWorkflows = result.isFinal || now - lastSpeechWorkflowCheckAtMs >= 350L
-                        if (shouldCheckWorkflows) {
-                            lastSpeechWorkflowCheckAtMs = now
-                            workflowRepository.triggerWorkflowsBySpeechEvent(text = text, isFinal = result.isFinal)
-                        }
-                    } catch (e: Exception) {
-                        AppLogger.e(TAG, "Speech trigger processing failed: ${e.message}", e)
-                    }
 
                     if (matchWakePhrase(text, currentWakePhrase, wakePhraseRegexEnabled)) {
                         val now = System.currentTimeMillis()
@@ -2017,5 +2008,5 @@ class AIForegroundService : Service() {
 
         return builder.build()
     }
-    
+
 }

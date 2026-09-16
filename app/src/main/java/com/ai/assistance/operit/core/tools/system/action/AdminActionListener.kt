@@ -145,7 +145,7 @@ class AdminActionListener(private val context: Context) : ActionListener {
      */
     private fun startAdminEventMonitoring() {
         AppLogger.d(TAG, "开始管理员级别事件监控 - 可监听系统状态和安全事件")
-        
+
         // 设备管理员可以监听：
         // - 锁屏/解锁事件
         // - 应用安装/卸载事件
@@ -196,4 +196,4 @@ class AdminActionListener(private val context: Context) : ActionListener {
             actionCallback?.invoke(actionEvent)
         }
     }
-} 
+}

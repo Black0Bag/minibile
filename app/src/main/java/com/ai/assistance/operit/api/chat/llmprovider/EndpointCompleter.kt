@@ -43,7 +43,7 @@ object EndpointCompleter {
         } catch (e: Exception) {
             // 如果不是一个有效的URL，则不进行任何操作
         }
-        
+
         // 如果不符合补全特征，则返回原始输入
         return endpoint
     }

@@ -13,7 +13,7 @@ import java.util.UUID
 /**
  * ChatBox 格式转换器
  * 支持 ChatBox 桌面应用的导出格式
- * 
+ *
  * ChatBox 导出格式参考：
  * {
  *   "sessions": [
@@ -54,9 +54,9 @@ class ChatBoxConverter(private val context: Context) : ChatFormatConverter {
             throw ConversionException(context.getString(R.string.chatbox_parse_error, e.message ?: ""), e)
         }
     }
-    
+
     override fun getSupportedFormat(): ChatFormat = ChatFormat.CHATBOX
-    
+
     /**
      * 解析对象格式
      */
@@ -73,7 +73,7 @@ class ChatBoxConverter(private val context: Context) : ChatFormatConverter {
             else -> throw ConversionException(context.getString(R.string.chatbox_invalid_export_file) + "（" + context.getString(R.string.chatbox_invalid_export_hint) + "）")
         }
     }
-    
+
     /**
      * 解析单个 session
      */
@@ -87,13 +87,13 @@ class ChatBoxConverter(private val context: Context) : ChatFormatConverter {
             val baseTimestamp = System.currentTimeMillis()
             val sessionModelName = sessionObj["model"]?.jsonPrimitive?.contentOrNull
                 ?: sessionObj["modelName"]?.jsonPrimitive?.contentOrNull
-            
+
             // 提取消息列表
             val messagesElement = sessionObj["messages"] ?: return null
             if (messagesElement !is JsonArray || messagesElement.isEmpty()) {
                 return null
             }
-            
+
             val messages = messagesElement.mapIndexedNotNull { index, element ->
                 if (element is JsonObject) {
                     parseMessage(element, baseTimestamp, index, sessionModelName)
@@ -101,21 +101,21 @@ class ChatBoxConverter(private val context: Context) : ChatFormatConverter {
                     null
                 }
             }
-            
+
             if (messages.isEmpty()) {
                 return null
             }
-            
+
             // 提取会话信息
             val title = sessionObj["name"]?.jsonPrimitive?.contentOrNull
                 ?: sessionObj["title"]?.jsonPrimitive?.contentOrNull
                 ?: fallbackTitle
                 ?: "Imported from ChatBox"
-            
+
             val id = sessionObj["id"]?.jsonPrimitive?.contentOrNull
                 ?: fallbackId
                 ?: UUID.randomUUID().toString()
-            
+
             // 提取创建时间
             val createdAt = sessionObj["createdAt"]?.jsonPrimitive?.longOrNull?.let {
                 LocalDateTime.ofInstant(
@@ -123,14 +123,14 @@ class ChatBoxConverter(private val context: Context) : ChatFormatConverter {
                     ZoneId.systemDefault()
                 )
             } ?: LocalDateTime.now()
-            
+
             val updatedAt = sessionObj["updatedAt"]?.jsonPrimitive?.longOrNull?.let {
                 LocalDateTime.ofInstant(
                     Instant.ofEpochMilli(it),
                     ZoneId.systemDefault()
                 )
             } ?: createdAt
-            
+
             return ChatHistory(
                 id = id,
                 title = title,
@@ -143,7 +143,7 @@ class ChatBoxConverter(private val context: Context) : ChatFormatConverter {
             return null
         }
     }
-    
+
     /**
      * 解析单条消息
      */
@@ -156,25 +156,25 @@ class ChatBoxConverter(private val context: Context) : ChatFormatConverter {
         try {
             val role = msgObj["role"]?.jsonPrimitive?.contentOrNull ?: return null
             val content = buildMessageContent(msgObj) ?: return null
-            
+
             // 规范化角色
             val sender = normalizeRole(role)
-            
+
             // 提取时间戳（如果有的话，否则使用递增时间戳）
             val rawTimestamp = msgObj["createdAt"]?.jsonPrimitive?.longOrNull
                 ?: msgObj["timestamp"]?.jsonPrimitive?.longOrNull
             val timestamp = rawTimestamp?.let { normalizeTimestamp(it) }
                 ?: (baseTimestamp + (index * 100L))
-            
+
             // 提取模型信息
             val modelName = msgObj["model"]?.jsonPrimitive?.contentOrNull
                 ?: msgObj["modelName"]?.jsonPrimitive?.contentOrNull
                 ?: fallbackModelName
                 ?: "chatbox"
-            
+
             val provider = msgObj["provider"]?.jsonPrimitive?.contentOrNull
                 ?: "ChatBox"
-            
+
             return ChatMessage(
                 sender = sender,
                 content = content,
@@ -312,7 +312,7 @@ class ChatBoxConverter(private val context: Context) : ChatFormatConverter {
             raw
         }
     }
-    
+
     /**
      * 规范化角色名称
      */

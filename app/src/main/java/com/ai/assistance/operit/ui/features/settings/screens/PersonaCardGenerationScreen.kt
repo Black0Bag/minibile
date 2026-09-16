@@ -73,7 +73,7 @@ private object LocalCharacterToolExecutor {
     ): ToolResult {
         return try {
             val manager = CharacterCardManager.getInstance(context)
-            
+
             // 获取当前角色卡
             val currentCard = manager.getCharacterCard(characterCardId)
             if (currentCard == null) {
@@ -84,7 +84,7 @@ private object LocalCharacterToolExecutor {
                     error = context.getString(R.string.error_character_card_not_exist)
                 )
             }
-            
+
             // 根据字段更新对应内容
             val updatedCard = when (field) {
                 "name" -> currentCard.copy(name = content)
@@ -105,11 +105,11 @@ private object LocalCharacterToolExecutor {
                     )
                 }
             }
-            
-            withContext(Dispatchers.IO) { 
+
+            withContext(Dispatchers.IO) {
                 manager.updateCharacterCard(updatedCard)
             }
-            
+
             ToolResult(
                 toolName = TOOL_NAME,
                 success = true,
@@ -196,7 +196,7 @@ fun PersonaCardGenerationScreen(
     var showClearHistoryConfirm by remember { mutableStateOf(false) }
     var showMessageLimitWarning by remember { mutableStateOf(false) }
     var newCardName by remember { mutableStateOf("") }
-    
+
     // 对话数量限制
     val MESSAGE_LIMIT = 40
 
@@ -288,7 +288,7 @@ fun PersonaCardGenerationScreen(
             } else {
                 // 如果没有历史记录，添加欢迎消息
                 chatMessages.add(CharacterChatMessage("assistant",
-                    context.getString(R.string.persona_generation_welcome, 
+                    context.getString(R.string.persona_generation_welcome,
                     cardResult?.name ?: context.getString(R.string.new_character))
                 ))
             }
@@ -339,13 +339,13 @@ fun PersonaCardGenerationScreen(
         val useEnglish = !Locale.getDefault().language.lowercase().startsWith("zh")
         return FunctionalPrompts.personaCardGenerationSystemPrompt(useEnglish)
     }
-    
+
     // 检查是否所有字段都已完成
     fun isCharacterCardComplete(): Boolean {
         return activeCard?.let { card ->
             listOf(
                 card.name,
-                card.description, 
+                card.description,
                 card.characterSetting,
                 card.openingStatement,
                 card.otherContentChat,
@@ -436,13 +436,13 @@ fun PersonaCardGenerationScreen(
 
     fun sendMessage() {
         if (userInput.isBlank() || isGenerating) return
-        
+
         // 检查对话数量限制
         if (chatMessages.size >= MESSAGE_LIMIT) {
             showMessageLimitWarning = true
             return
         }
-        
+
         val input = userInput
         userInput = ""
 
@@ -463,7 +463,7 @@ fun PersonaCardGenerationScreen(
             // 构建稳定的上下文
             val systemPrompt = buildSystemPrompt()
             // val characterStatus = buildCharacterStatus() // REMOVED: 不再每次都发送状态
-            
+
             val historySnapshot = chatMessages.toList()
             val historyPairs = withContext(Dispatchers.Default) {
                 historySnapshot.map { it.role to it.content }
@@ -514,7 +514,7 @@ fun PersonaCardGenerationScreen(
                 withContext(Dispatchers.IO) {
                     processToolInvocations(rawBuffer.toString(), assistantIndex)
                 }
-                
+
                 // 保存助手回复
                 saveChatHistory()
             } catch (e: Exception) {
@@ -687,7 +687,7 @@ fun PersonaCardGenerationScreen(
                     Spacer(Modifier.height(16.dp))
                     Text(context.getString(R.string.current_character_card_content), style = MaterialTheme.typography.titleSmall)
                     Spacer(Modifier.height(8.dp))
-                    
+
                     // 角色名称
                     OutlinedTextField(
                         value = editName,
@@ -705,9 +705,9 @@ fun PersonaCardGenerationScreen(
                         modifier = Modifier.fillMaxWidth(),
                         maxLines = 1
                     )
-                    
+
                     Spacer(Modifier.height(8.dp))
-                    
+
                     // 角色描述
                     OutlinedTextField(
                         value = editDescription,
@@ -725,9 +725,9 @@ fun PersonaCardGenerationScreen(
                         modifier = Modifier.fillMaxWidth(),
                         maxLines = 3
                     )
-                    
+
                     Spacer(Modifier.height(8.dp))
-                    
+
                     // 角色设定
                     OutlinedTextField(
                         value = editCharacterSetting,
@@ -745,9 +745,9 @@ fun PersonaCardGenerationScreen(
                         modifier = Modifier.fillMaxWidth(),
                         maxLines = 6
                     )
-                    
+
                     Spacer(Modifier.height(8.dp))
-                    
+
                     // 开场白
                     OutlinedTextField(
                         value = editOpeningStatement,
@@ -765,9 +765,9 @@ fun PersonaCardGenerationScreen(
                         modifier = Modifier.fillMaxWidth(),
                         maxLines = 4
                     )
-                    
+
                     Spacer(Modifier.height(8.dp))
-                    
+
                     // 其他内容（聊天）
                     OutlinedTextField(
                         value = editOtherContentChat,
@@ -805,9 +805,9 @@ fun PersonaCardGenerationScreen(
                         modifier = Modifier.fillMaxWidth(),
                         maxLines = 6
                     )
-                    
+
                     Spacer(Modifier.height(8.dp))
-                    
+
                     // 高级自定义提示词
                     OutlinedTextField(
                         value = editAdvancedCustomPrompt,
@@ -825,9 +825,9 @@ fun PersonaCardGenerationScreen(
                         modifier = Modifier.fillMaxWidth(),
                         maxLines = 6
                     )
-                    
+
                     Spacer(Modifier.height(8.dp))
-                    
+
                     // 备注信息
                     OutlinedTextField(
                         value = editMarks,
@@ -852,12 +852,12 @@ fun PersonaCardGenerationScreen(
         Column(modifier = Modifier.fillMaxSize()) {
             // 顶栏
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp), 
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = context.getString(R.string.persona_card_generation_title), 
-                    style = MaterialTheme.typography.titleMedium, 
+                    text = context.getString(R.string.persona_card_generation_title),
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
                 IconButton(onClick = { showClearHistoryConfirm = true }) {
@@ -968,9 +968,9 @@ fun PersonaCardGenerationScreen(
                         Text(
                             text = "${chatMessages.size}/$MESSAGE_LIMIT",
                             style = MaterialTheme.typography.labelSmall,
-                            color = if (chatMessages.size >= MESSAGE_LIMIT) 
-                                MaterialTheme.colorScheme.error 
-                            else 
+                            color = if (chatMessages.size >= MESSAGE_LIMIT)
+                                MaterialTheme.colorScheme.error
+                            else
                                 MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
@@ -991,13 +991,13 @@ fun PersonaCardGenerationScreen(
             }
         }
     }
-    
+
     // 对话数量限制警告对话框
     if (showMessageLimitWarning) {
         AlertDialog(
             onDismissRequest = { showMessageLimitWarning = false },
             title = { Text(context.getString(R.string.message_limit_reached_title)) },
-            text = { 
+            text = {
                 Text(context.getString(R.string.message_limit_reached_message, MESSAGE_LIMIT))
             },
             confirmButton = {
@@ -1011,7 +1011,7 @@ fun PersonaCardGenerationScreen(
             }
         )
     }
-    
+
     // 清空对话记录确认对话框
     if (showClearHistoryConfirm) {
         AlertDialog(
@@ -1029,7 +1029,7 @@ fun PersonaCardGenerationScreen(
                         chatMessages.clear()
                         // 添加欢迎消息
                         chatMessages.add(CharacterChatMessage("assistant",
-                            context.getString(R.string.persona_generation_welcome, 
+                            context.getString(R.string.persona_generation_welcome,
                             activeCard?.name ?: context.getString(R.string.new_character))
                         ))
                         saveChatHistory()
@@ -1041,4 +1041,4 @@ fun PersonaCardGenerationScreen(
             }
         )
     }
-} 
+}

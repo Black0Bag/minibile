@@ -92,4 +92,4 @@ fun SerializableTextStyle.toComposeTextStyle(): TextStyle {
         fontWeight = FontWeight(this.fontWeight),
         fontFamily = FontFamily.Default
     )
-} 
+}

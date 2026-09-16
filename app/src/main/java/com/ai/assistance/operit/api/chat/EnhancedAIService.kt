@@ -991,7 +991,7 @@ class EnhancedAIService private constructor(private val context: Context) {
                             )
                     val tAfterPrepareHistory = messageTimingNow()
                     AppLogger.d(TAG, "sendMessage本地耗时: prepareConversationHistory=${tAfterPrepareHistory - startTime}ms")
-                    
+
                     // 关键修复：用准备好的历史记录（包含了系统提示）去同步更新内部的 conversationHistory 状态
                     execContext.conversationHistory.clear()
                     execContext.conversationHistory.addAll(preparedHistory)
@@ -1093,7 +1093,7 @@ class EnhancedAIService private constructor(private val context: Context) {
                         availableTools = availableTools,
                         publishEstimate = true
                     )
-                    
+
                     // 使用新的Stream API
                     AppLogger.d(TAG, "sendMessage请求前准备耗时: ${tAfterGetTools - startTime}ms, 流式输出: $stream")
                     val requestStartTime = messageTimingNow()
@@ -1155,7 +1155,7 @@ class EnhancedAIService private constructor(private val context: Context) {
                                     }
                                 }
                             }
- 
+
                         try {
                             responseStream.collect { content ->
                                 // 第一次收到响应，更新状态
@@ -2003,7 +2003,7 @@ class EnhancedAIService private constructor(private val context: Context) {
 
         // 清除内容池
         // roundManager.clearContent()
-        
+
         // 保存最后的回复内容用于通知
         lastReplyContent = context.roundManager.getDisplayContent()
 
@@ -2277,7 +2277,7 @@ class EnhancedAIService private constructor(private val context: Context) {
 
         // 获取对应功能类型的AIService实例
         val serviceForFunction = modelSnapshot.service
-        
+
         // 获取工具列表（如果启用Tool Call）- 提前获取，以便在token计算中使用
         val availableTools = getAvailableToolsForFunction(
             functionType = functionType,
@@ -2286,7 +2286,7 @@ class EnhancedAIService private constructor(private val context: Context) {
             roleCardId = roleCardId,
             modelConfig = modelSnapshot.config
         )
- 
+
         val currentTokens = estimatePreparedRequestWindow(
             serviceForFunction = serviceForFunction,
             preparedHistory = currentChatHistory,
@@ -2315,7 +2315,7 @@ class EnhancedAIService private constructor(private val context: Context) {
         currentRequestInputTokenCount = 0L
         currentRequestOutputTokenCount = 0L
         currentRequestCachedInputTokenCount = 0L
-        
+
         // 使用新的Stream API处理工具执行结果
         withContext(Dispatchers.IO) {
             try {
@@ -2897,7 +2897,7 @@ class EnhancedAIService private constructor(private val context: Context) {
 
             // 获取对应功能类型的模型配置
             val config = modelConfig
-            
+
             // 检查是否启用Tool Call
             if (!config.enableToolCall) {
                 return null

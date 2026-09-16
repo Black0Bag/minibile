@@ -1727,7 +1727,7 @@ open class OpenAIProvider(
         state: StreamingState,
         emitter: StreamEmitter
     ) {
-        if (state.toolCallState.closed[prevIndex] != true && 
+        if (state.toolCallState.closed[prevIndex] != true &&
             state.toolCallState.nameEmitted[prevIndex] == true) {
             closeToolCallIfOpen(prevIndex, state, emitter)
             AppLogger.d("AIService", "检测到工具切换，关闭前一个工具 index=$prevIndex")
@@ -1759,7 +1759,7 @@ open class OpenAIProvider(
         // 处理function字段
         val deltaFunction = deltaCall.optJSONObject("function") ?: return
         val accFunction = accumulated.getJSONObject("function")
-        
+
         // 处理工具名
         val name = deltaFunction.optString("name", "")
         if (name.isNotEmpty()) {
@@ -1785,7 +1785,7 @@ open class OpenAIProvider(
                 }
             }
         }
-        
+
         // 处理参数
         val args = deltaFunction.optString("arguments", "")
         if (args.isNotEmpty()) {
@@ -2380,7 +2380,7 @@ open class OpenAIProvider(
                 if (!line.startsWith("data:")) {
                     continue
                 }
-                
+
                 val data = line.substring(5).trim()
                 if (data == "[DONE]") {
                     flushImageBuffers(state, emitter)
@@ -2427,7 +2427,7 @@ open class OpenAIProvider(
                     logLargeString("AIService", data, "[Send message] Original data when JSON parsing failed: ")
                 }
             }
-            
+
             if (!state.streamCompletionConfirmed) {
                 throw IOException(context.getString(R.string.openai_error_network_interrupted))
             }

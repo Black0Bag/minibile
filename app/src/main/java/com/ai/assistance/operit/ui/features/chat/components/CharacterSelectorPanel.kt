@@ -244,7 +244,7 @@ fun CharacterSelectorPanel(
                                 )
                             }
                         }
-                        
+
                         // 角色列表
                         LazyColumn(
                             modifier = Modifier.heightIn(max = 320.dp),
@@ -312,7 +312,7 @@ fun CharacterItem(
     } else {
         MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
     }
-    
+
     val borderColor = if (isSelected) {
         MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
     } else {
@@ -342,7 +342,7 @@ fun CharacterItem(
                     .size(36.dp)
                     .clip(CircleShape)
                     .background(
-                        if (avatarUri != null) Color.Transparent 
+                        if (avatarUri != null) Color.Transparent
                         else MaterialTheme.colorScheme.secondaryContainer
                     ),
                 contentAlignment = Alignment.Center
@@ -362,11 +362,11 @@ fun CharacterItem(
                         tint = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
-                
+
             }
-            
+
             Spacer(modifier = Modifier.width(12.dp))
-            
+
             // 角色信息
             Column(
                 modifier = Modifier.weight(1f).padding(end = if (isSelected) 4.dp else 0.dp)
@@ -375,12 +375,12 @@ fun CharacterItem(
                     text = card.name,
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold,
-                    color = if (isSelected) MaterialTheme.colorScheme.primary 
+                    color = if (isSelected) MaterialTheme.colorScheme.primary
                            else MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                
+
                 if (card.description.isNotBlank()) {
                     Spacer(modifier = Modifier.height(1.dp))
                     Text(
@@ -392,7 +392,7 @@ fun CharacterItem(
                     )
                 }
             }
-            
+
             // 选中状态指示器（右侧）
             if (isSelected) {
                 Spacer(modifier = Modifier.width(6.dp))

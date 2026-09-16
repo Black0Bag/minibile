@@ -2300,7 +2300,7 @@ fun CharacterCardItem(
                             modifier = Modifier.size(20.dp)
                         )
                     }
-                
+
                     DropdownMenu(
                         expanded = showMenu,
                         onDismissRequest = { showMenu = false },
@@ -2323,7 +2323,7 @@ fun CharacterCardItem(
                                 }
                             )
                         }
-                    
+
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.edit)) },
                             onClick = {
@@ -2338,7 +2338,7 @@ fun CharacterCardItem(
                                 )
                             }
                         )
-                    
+
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.duplicate)) },
                             onClick = {
@@ -2368,7 +2368,7 @@ fun CharacterCardItem(
                                 )
                             }
                         )
-                    
+
                         if (characterCard.isDefault) {
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.reset)) },
@@ -2385,7 +2385,7 @@ fun CharacterCardItem(
                                 }
                             )
                         }
-                    
+
                         if (!characterCard.isDefault) {
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.delete)) },

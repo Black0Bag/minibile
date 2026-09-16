@@ -63,41 +63,41 @@ import kotlinx.coroutines.delay
  */
 class UIOperationOverlay private constructor(private val context: Context) {
     private val TAG = "UIOperationOverlay"
-    
+
     companion object {
         @Volatile
         private var instance: UIOperationOverlay? = null
-        
+
         fun getInstance(context: Context): UIOperationOverlay {
             return instance ?: synchronized(this) {
                 instance ?: UIOperationOverlay(context.applicationContext).also { instance = it }
             }
         }
     }
-    
+
     private var windowManager: WindowManager? = null
     private var overlayView: ComposeView? = null
     private var lifecycleOwner: ServiceLifecycleOwner? = null
-    
+
     // 为每个操作定义一个带唯一ID的数据类
     data class TapEvent(val x: Int, val y: Int, val id: UUID = UUID.randomUUID())
     data class SwipeEvent(val startX: Int, val startY: Int, val endX: Int, val endY: Int, val id: UUID = UUID.randomUUID())
     data class TextInputEvent(val x: Int, val y: Int, val text: String, val id: UUID = UUID.randomUUID())
-    
+
     // UI状态：使用列表来管理可能同时发生的多个视觉效果
     private val tapEvents = mutableStateListOf<TapEvent>()
     private val swipeEvents = mutableStateListOf<SwipeEvent>()
     private val textInputEvents = mutableStateListOf<TextInputEvent>()
-    
+
     // 自动隐藏计时器
     private val handler = Handler(Looper.getMainLooper())
-    
+
     // 自动清理延迟（毫秒）
     private val AUTO_CLEANUP_DELAY_MS = 500L
 
     // 隐藏悬浮窗前的额外展示时间（毫秒），用于让动画有机会完整显示
     private val HIDE_DELAY_MS = 600L
-    
+
     // 操作类型
     sealed class OperationType {
         object None : OperationType()
@@ -105,7 +105,7 @@ class UIOperationOverlay private constructor(private val context: Context) {
         object Swipe : OperationType()
         object TextInput : OperationType()
     }
-    
+
     private val statusBarHeight: Int by lazy {
         val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
         if (resourceId > 0) {
@@ -114,14 +114,14 @@ class UIOperationOverlay private constructor(private val context: Context) {
             0
         }
     }
-    
+
     /**
      * 检查是否有悬浮窗权限
      */
     private fun hasOverlayPermission(): Boolean {
         return Settings.canDrawOverlays(context)
     }
-    
+
     /**
      * 请求悬浮窗权限
      */
@@ -139,7 +139,7 @@ class UIOperationOverlay private constructor(private val context: Context) {
             }
         }
     }
-    
+
     /**
      * 确保在主线程上执行操作
      */
@@ -156,28 +156,28 @@ class UIOperationOverlay private constructor(private val context: Context) {
             }
         }
     }
-    
+
     /**
      * 初始化和显示悬浮窗
      */
     private fun initOverlay() {
         if (overlayView != null) return
-        
+
         if (!hasOverlayPermission()) {
             AppLogger.e(TAG, "Cannot show overlay without permission")
             requestOverlayPermission()
             return
         }
-        
+
         // 确保在主线程上初始化UI组件
         if (Looper.myLooper() != Looper.getMainLooper()) {
             runOnMainThread { initOverlay() }
             return
         }
-        
+
         try {
             windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            
+
             val params = WindowManager.LayoutParams().apply {
                 width = WindowManager.LayoutParams.MATCH_PARENT
                 height = WindowManager.LayoutParams.MATCH_PARENT
@@ -200,21 +200,21 @@ class UIOperationOverlay private constructor(private val context: Context) {
                     windowAnimations = android.R.style.Animation_Toast
                 }
             }
-            
+
             lifecycleOwner = ServiceLifecycleOwner().apply {
                 handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
                 handleLifecycleEvent(Lifecycle.Event.ON_START)
                 handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
             }
-            
+
             overlayView = ComposeView(context).apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
-                
+
                 // 设置生命周期所有者
                 setViewTreeLifecycleOwner(lifecycleOwner)
                 setViewTreeViewModelStoreOwner(lifecycleOwner)
                 setViewTreeSavedStateRegistryOwner(lifecycleOwner)
-                
+
                 setContent {
                     MaterialTheme {
                         OperationFeedbackContent(
@@ -225,7 +225,7 @@ class UIOperationOverlay private constructor(private val context: Context) {
                     }
                 }
             }
-            
+
             windowManager?.addView(overlayView, params)
             AppLogger.d(TAG, "Overlay view added successfully")
         } catch (e: Exception) {
@@ -236,62 +236,62 @@ class UIOperationOverlay private constructor(private val context: Context) {
             windowManager = null
         }
     }
-    
+
     /**
      * 显示点击操作反馈
      */
     fun showTap(x: Int, y: Int, autoHideDelayMs: Long = 1500) {
         AppLogger.d(TAG, "Showing tap at ($x, $y)")
-        
+
         val newTapEvent = TapEvent(x, y - statusBarHeight)
-        
+
         runOnMainThread {
             initOverlay()
             tapEvents.add(newTapEvent)
             // 为这个特定的事件安排移除
-            handler.postDelayed({ 
+            handler.postDelayed({
                 tapEvents.remove(newTapEvent)
                 scheduleAutoCleanup()
             }, autoHideDelayMs)
         }
     }
-    
+
     /**
      * 显示滑动操作反馈
      */
     fun showSwipe(startX: Int, startY: Int, endX: Int, endY: Int, autoHideDelayMs: Long = 1500) {
         AppLogger.d(TAG, "Showing swipe from ($startX, $startY) to ($endX, $endY)")
-        
+
         val newSwipeEvent = SwipeEvent(startX, startY - statusBarHeight, endX, endY - statusBarHeight)
 
         runOnMainThread {
             initOverlay()
             swipeEvents.add(newSwipeEvent)
-            handler.postDelayed({ 
+            handler.postDelayed({
                 swipeEvents.remove(newSwipeEvent)
                 scheduleAutoCleanup()
             }, autoHideDelayMs)
         }
     }
-    
+
     /**
      * 显示文本输入操作反馈
      */
     fun showTextInput(x: Int, y: Int, text: String, autoHideDelayMs: Long = 2000) {
         AppLogger.d(TAG, "Showing text input at ($x, $y): $text")
-        
+
         val newTextInputEvent = TextInputEvent(x, y - statusBarHeight, text)
-        
+
         runOnMainThread {
             initOverlay()
             textInputEvents.add(newTextInputEvent)
-            handler.postDelayed({ 
+            handler.postDelayed({
                 textInputEvents.remove(newTextInputEvent)
                 scheduleAutoCleanup()
             }, autoHideDelayMs)
         }
     }
-    
+
     /**
      * 安排自动清理：如果所有事件列表都为空，则延迟移除窗口
      */
@@ -303,7 +303,7 @@ class UIOperationOverlay private constructor(private val context: Context) {
             }
         }, AUTO_CLEANUP_DELAY_MS)
     }
-    
+
     /**
      * 隐藏所有反馈悬浮窗（延迟一点时间，让动画有机会显示）
      */
@@ -367,7 +367,7 @@ private fun OperationFeedbackContent(
 ) {
     // 获取屏幕密度用于坐标转换
     val density = androidx.compose.ui.platform.LocalDensity.current
-    
+
     // 添加一个半透明背景以确保内容可见
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -400,7 +400,7 @@ private fun OperationFeedbackContent(
  */
 @Composable
 private fun TapIndicator(
-    x: Int, 
+    x: Int,
     y: Int,
     density: androidx.compose.ui.unit.Density
 ) {
@@ -441,9 +441,9 @@ private fun TapIndicator(
  */
 @Composable
 private fun SwipeIndicator(
-    startX: Int, 
-    startY: Int, 
-    endX: Int, 
+    startX: Int,
+    startY: Int,
+    endX: Int,
     endY: Int,
     density: androidx.compose.ui.unit.Density
 ) {
@@ -464,7 +464,7 @@ private fun SwipeIndicator(
     val swipeProgress = (p / 0.8f).coerceIn(0f, 1f)
     // 2. 淡出动画（p: 0.6 -> 1.0），整体效果逐渐消失
     val alpha = ((1f - p) / 0.4f).coerceIn(0f, 1f)
-    
+
     Canvas(modifier = Modifier.fillMaxSize()) {
         with(density) {
             val startOffset = Offset(startX.toFloat(), startY.toFloat())
@@ -474,7 +474,7 @@ private fun SwipeIndicator(
                 x = startX + (endX - startX) * swipeProgress,
                 y = startY + (endY - startY) * swipeProgress
             )
-            
+
             // 1. 绘制彗星的尾巴（轨迹）
             drawLine(
                 color = Color(0xFFFFA726), // 鲜艳的橙色
@@ -484,7 +484,7 @@ private fun SwipeIndicator(
                 cap = StrokeCap.Round,
                 alpha = alpha
             )
-            
+
             // 2. 绘制彗星的头部
             drawCircle(
                 color = Color(0xFFFFE0B2), // 更亮的头部颜色
@@ -492,7 +492,7 @@ private fun SwipeIndicator(
                 center = currentOffset,
                 alpha = alpha
             )
-            
+
             // 3. 绘制一个在滑动开始时可见，然后迅速消失的起点光环
             drawCircle(
                 color = Color(0xFFEF6C00),
@@ -509,8 +509,8 @@ private fun SwipeIndicator(
  */
 @Composable
 private fun TextInputIndicator(
-    x: Int, 
-    y: Int, 
+    x: Int,
+    y: Int,
     text: String,
     density: androidx.compose.ui.unit.Density
 ) {
@@ -520,7 +520,7 @@ private fun TextInputIndicator(
         animationSpec = tween(durationMillis = 300, easing = LinearEasing),
         label = "fadeIn"
     )
-    
+
     // 使用无限循环动画实现呼吸效果
     val infiniteTransition = rememberInfiniteTransition(label = "pulse")
     val pulseAlpha by infiniteTransition.animateFloat(
@@ -532,7 +532,7 @@ private fun TextInputIndicator(
         ),
         label = "pulse"
     )
-    
+
     // 绘制气泡背景和指向箭头，使用像素坐标
     Canvas(modifier = Modifier.fillMaxSize()) {
         with(density) {
@@ -541,17 +541,17 @@ private fun TextInputIndicator(
             val bubbleWidth = 220.dp.toPx()
             val bubbleHeight = 50.dp.toPx()
             val cornerRadius = 12.dp.toPx()
-            
+
             // 1. 绘制背景阴影提升可见性
             drawRoundRect(
                 color = Color.Black.copy(alpha = 0.25f),
-                topLeft = Offset(centerX - bubbleWidth/2 + 4.dp.toPx(), 
+                topLeft = Offset(centerX - bubbleWidth/2 + 4.dp.toPx(),
                                centerY - bubbleHeight/2 + 4.dp.toPx()),
                 size = androidx.compose.ui.geometry.Size(bubbleWidth, bubbleHeight),
                 cornerRadius = androidx.compose.ui.geometry.CornerRadius(cornerRadius),
                 alpha = fadeIn * pulseAlpha
             )
-            
+
             // 2. 绘制气泡背景
             drawRoundRect(
                 color = Color(0xEE000000), // 更不透明的黑色
@@ -560,7 +560,7 @@ private fun TextInputIndicator(
                 cornerRadius = androidx.compose.ui.geometry.CornerRadius(cornerRadius),
                 alpha = fadeIn * pulseAlpha
             )
-            
+
             // 3. 绘制底部箭头指向输入位置
             val arrowPath = androidx.compose.ui.graphics.Path().apply {
                 moveTo(centerX, centerY + bubbleHeight/2 + 10.dp.toPx())
@@ -568,13 +568,13 @@ private fun TextInputIndicator(
                 lineTo(centerX + 10.dp.toPx(), centerY + bubbleHeight/2)
                 close()
             }
-            
+
             drawPath(
                 path = arrowPath,
                 color = Color(0xEE000000),
                 alpha = fadeIn * pulseAlpha
             )
-            
+
             // 4. 绘制亮边框增加可见性
             drawRoundRect(
                 color = Color(0x77FFFFFF),
@@ -586,7 +586,7 @@ private fun TextInputIndicator(
             )
         }
     }
-    
+
     // 单独绘制文本内容，位置精确调整
     Box(
         modifier = Modifier.fillMaxSize()
@@ -594,7 +594,7 @@ private fun TextInputIndicator(
         with(density) {
             val bubbleWidth = 220.dp.toPx()
             val targetY = y.toFloat() - 85.dp.toPx()
-            
+
             // 使用精确的像素计算，然后转换为dp
             Text(
                 text = "\"$text\"",

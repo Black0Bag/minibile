@@ -14,4 +14,4 @@ object SerializationSetup {
         // Register the IntRange serializer as a contextual serializer
         contextual(IntRangeSerializer)
     }
-} 
+}

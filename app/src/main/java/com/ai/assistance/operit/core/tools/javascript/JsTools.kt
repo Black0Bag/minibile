@@ -613,7 +613,7 @@ fun getJsToolsDefinition(): String {
                 stopApp: (packageName) => toolCall("stop_app", { package_name: packageName }),
                 listApps: (includeSystem) => toolCall("list_installed_apps", { include_system: !!includeSystem }),
                 // 获取设备通知
-                getNotifications: (limit = 10, includeOngoing = false) => 
+                getNotifications: (limit = 10, includeOngoing = false) =>
                     toolCall("get_notifications", { limit: parseInt(limit), include_ongoing: !!includeOngoing }),
                 // 获取应用使用时长
                 getAppUsageTime: (options = {}) => {
@@ -1156,11 +1156,11 @@ fun getJsToolsDefinition(): String {
                     return toolCall("set_input_text", params);
                 },
                 swipe: (startX, startY, endX, endY, duration) => {
-                    const params = { 
-                        start_x: startX, 
-                        start_y: startY, 
-                        end_x: endX, 
-                        end_y: endY 
+                    const params = {
+                        start_x: startX,
+                        start_y: startY,
+                        end_x: endX,
+                        end_y: endY
                     };
                     if (duration) params.duration = duration;
                     return toolCall("swipe", params);
@@ -1370,15 +1370,15 @@ fun getJsToolsDefinition(): String {
             },
             // 计算功能
             calc: (expression) => toolCall("calculate", { expression }),
-            
+
             // FFmpeg工具
             FFmpeg: {
                 // 执行自定义FFmpeg命令
                 execute: (command) => toolCall("ffmpeg_execute", { command }),
-                
+
                 // 获取FFmpeg系统信息
                 info: () => toolCall("ffmpeg_info"),
-                
+
                 // 转换视频文件
                 convert: (inputPath, outputPath, options = {}) => {
                     const params = {
@@ -1389,7 +1389,7 @@ fun getJsToolsDefinition(): String {
                     return toolCall("ffmpeg_convert", params);
                 }
             },
-            
+
             // 工作流工具
             Workflow: {
                 // 获取所有工作流

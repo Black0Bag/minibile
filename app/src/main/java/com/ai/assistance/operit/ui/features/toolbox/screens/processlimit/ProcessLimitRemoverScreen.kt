@@ -60,14 +60,14 @@ enum class ProcessLimitAction {
 fun ProcessLimitRemoverScreen(navController: NavController? = null) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    
+
     // 字符串资源
     val statusChecking = stringResource(R.string.process_limit_status_checking)
     val statusRemoved = stringResource(R.string.process_limit_status_removed)
     val statusLimited = stringResource(R.string.process_limit_status_limited)
     val statusDefault = stringResource(R.string.process_limit_status_default)
     val statusUnknown = stringResource(R.string.process_limit_status_unknown)
-    
+
     // 状态管理
     var isExecuting by remember { mutableStateOf(false) }
     var currentStatus by remember { mutableStateOf<String?>(null) }
@@ -76,7 +76,7 @@ fun ProcessLimitRemoverScreen(navController: NavController? = null) {
     var showResultDialog by remember { mutableStateOf(false) }
     var lastResult by remember { mutableStateOf<ProcessLimitRecord?>(null) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
-    
+
     // 加载当前状态
     LaunchedEffect(Unit) {
         try {
@@ -98,12 +98,12 @@ fun ProcessLimitRemoverScreen(navController: NavController? = null) {
             currentStatus = "$statusUnknown: ${e.message}"
         }
     }
-    
+
     // 执行操作
     fun executeAction(action: ProcessLimitAction) {
         isExecuting = true
         errorMessage = null
-        
+
         coroutineScope.launch {
             try {
                 // 执行两个命令：设置最大幻象进程数 + 禁用同步测试
@@ -117,12 +117,12 @@ fun ProcessLimitRemoverScreen(navController: NavController? = null) {
                         "device_config set_sync_disabled_for_tests none"
                     )
                 }
-                
+
                 // 执行第一个命令
                 val result1 = AndroidShellExecutor.executeShellCommand(commands[0])
                 // 执行第二个命令
                 val result2 = AndroidShellExecutor.executeShellCommand(commands[1])
-                
+
                 // 合并结果
                 val combinedResult = AndroidShellExecutor.CommandResult(
                     success = result1.success && result2.success,
@@ -130,13 +130,13 @@ fun ProcessLimitRemoverScreen(navController: NavController? = null) {
                     stderr = "${result1.stderr}\n${result2.stderr}".trim(),
                     exitCode = if (result1.success && result2.success) 0 else maxOf(result1.exitCode, result2.exitCode)
                 )
-                
+
                 val record = ProcessLimitRecord(action, combinedResult)
-                
+
                 // 添加到历史记录
                 operationHistory = listOf(record) + operationHistory
                 lastResult = record
-                
+
                 // 更新当前状态
                 if (combinedResult.success) {
                     currentStatus = when (action) {
@@ -179,16 +179,16 @@ fun ProcessLimitRemoverScreen(navController: NavController? = null) {
                                 fontWeight = FontWeight.Bold
                             )
                         )
-                        
+
                         Spacer(modifier = Modifier.height(8.dp))
-                        
+
                         Text(
                             text = stringResource(R.string.process_limit_subtitle),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                         )
                     }
-                    
+
                     // 帮助按钮
                     IconButton(onClick = { showInfoDialog = true }) {
                         Icon(
@@ -198,9 +198,9 @@ fun ProcessLimitRemoverScreen(navController: NavController? = null) {
                         )
                     }
                 }
-                
+
                 Spacer(modifier = Modifier.height(16.dp))
-                
+
                 // 当前状态卡片
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -221,16 +221,16 @@ fun ProcessLimitRemoverScreen(navController: NavController? = null) {
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(32.dp)
                         )
-                        
+
                         Spacer(modifier = Modifier.width(12.dp))
-                        
+
                         Column {
                             Text(
                                 text = stringResource(R.string.process_limit_current_status),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
-                            
+
                             Text(
                                 text = currentStatus ?: statusChecking,
                                 style = MaterialTheme.typography.titleMedium.copy(
@@ -239,9 +239,9 @@ fun ProcessLimitRemoverScreen(navController: NavController? = null) {
                                 color = MaterialTheme.colorScheme.primary
                             )
                         }
-                        
+
                         Spacer(modifier = Modifier.weight(1f))
-                        
+
                         // 刷新按钮
                         IconButton(
                             onClick = {
@@ -274,9 +274,9 @@ fun ProcessLimitRemoverScreen(navController: NavController? = null) {
                         }
                     }
                 }
-                
+
                 Spacer(modifier = Modifier.height(16.dp))
-                
+
                 // 操作按钮区域
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -318,7 +318,7 @@ fun ProcessLimitRemoverScreen(navController: NavController? = null) {
                             }
                         }
                     }
-                    
+
                     // 恢复限制按钮
                     OutlinedButton(
                         onClick = { executeAction(ProcessLimitAction.RESTORE) },
@@ -356,11 +356,11 @@ fun ProcessLimitRemoverScreen(navController: NavController? = null) {
                         }
                     }
                 }
-                
+
                 // 错误提示
                 if (errorMessage != null) {
                     Spacer(modifier = Modifier.height(8.dp))
-                    
+
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(8.dp),
@@ -387,7 +387,7 @@ fun ProcessLimitRemoverScreen(navController: NavController? = null) {
                 }
             }
         }
-        
+
         // 操作历史区域
         Box(modifier = Modifier.weight(1f)) {
             if (operationHistory.isEmpty()) {
@@ -403,17 +403,17 @@ fun ProcessLimitRemoverScreen(navController: NavController? = null) {
                         tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
                         modifier = Modifier.size(72.dp)
                     )
-                    
+
                     Spacer(modifier = Modifier.height(16.dp))
-                    
+
                     Text(
                         text = stringResource(R.string.process_limit_no_history),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    
+
                     Spacer(modifier = Modifier.height(8.dp))
-                    
+
                     Text(
                         text = stringResource(R.string.process_limit_execution_history),
                         style = MaterialTheme.typography.bodyMedium,
@@ -439,7 +439,7 @@ fun ProcessLimitRemoverScreen(navController: NavController? = null) {
                                     fontWeight = FontWeight.Bold
                                 )
                             )
-                            
+
                             if (operationHistory.isNotEmpty()) {
                                 TextButton(
                                     onClick = { operationHistory = emptyList() },
@@ -456,18 +456,18 @@ fun ProcessLimitRemoverScreen(navController: NavController? = null) {
                             }
                         }
                     }
-                    
+
                     items(items = operationHistory) { record ->
                         OperationRecordCard(record = record)
                     }
-                    
+
                     // 底部空间
                     item { Spacer(modifier = Modifier.height(80.dp)) }
                 }
             }
         }
     }
-    
+
     // 帮助信息对话框
     if (showInfoDialog) {
         AlertDialog(
@@ -501,9 +501,9 @@ fun ProcessLimitRemoverScreen(navController: NavController? = null) {
                         text = stringResource(R.string.process_limit_what_is_desc),
                         style = MaterialTheme.typography.bodyMedium
                     )
-                    
+
                     Spacer(modifier = Modifier.height(12.dp))
-                    
+
                     Text(
                         text = stringResource(R.string.process_limit_benefits_title),
                         style = MaterialTheme.typography.titleSmall.copy(
@@ -515,9 +515,9 @@ fun ProcessLimitRemoverScreen(navController: NavController? = null) {
                         text = stringResource(R.string.process_limit_benefits_desc),
                         style = MaterialTheme.typography.bodyMedium
                     )
-                    
+
                     Spacer(modifier = Modifier.height(12.dp))
-                    
+
                     Text(
                         text = stringResource(R.string.process_limit_warnings_title),
                         style = MaterialTheme.typography.titleSmall.copy(
@@ -544,14 +544,14 @@ fun ProcessLimitRemoverScreen(navController: NavController? = null) {
             containerColor = MaterialTheme.colorScheme.surface
         )
     }
-    
+
     // 操作结果对话框
     if (showResultDialog && lastResult != null) {
         val actionName = when (lastResult!!.action) {
             ProcessLimitAction.REMOVE -> stringResource(R.string.process_limit_action_remove)
             ProcessLimitAction.RESTORE -> stringResource(R.string.process_limit_action_restore)
         }
-        
+
         AlertDialog(
             onDismissRequest = { showResultDialog = false },
             title = {
@@ -572,7 +572,7 @@ fun ProcessLimitRemoverScreen(navController: NavController? = null) {
                         text = "$actionName ${if (lastResult!!.result.success) context.getString(android.R.string.ok) else stringResource(R.string.process_limit_error_title)}",
                         style = MaterialTheme.typography.bodyMedium
                     )
-                    
+
                     if (!lastResult!!.result.success && lastResult!!.result.stderr.isNotEmpty()) {
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
@@ -604,12 +604,12 @@ fun ProcessLimitRemoverScreen(navController: NavController? = null) {
 fun OperationRecordCard(record: ProcessLimitRecord) {
     val dateFormatter = remember { SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()) }
     val formattedDate = remember(record) { dateFormatter.format(Date(record.timestamp)) }
-    
+
     val actionName = when (record.action) {
         ProcessLimitAction.REMOVE -> stringResource(R.string.process_limit_action_remove)
         ProcessLimitAction.RESTORE -> stringResource(R.string.process_limit_action_restore)
     }
-    
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -649,9 +649,9 @@ fun OperationRecordCard(record: ProcessLimitRecord) {
                     modifier = Modifier.size(20.dp)
                 )
             }
-            
+
             Spacer(modifier = Modifier.width(12.dp))
-            
+
             // 操作信息
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -660,14 +660,14 @@ fun OperationRecordCard(record: ProcessLimitRecord) {
                         fontWeight = FontWeight.Bold
                     )
                 )
-                
+
                 Text(
                     text = formattedDate,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            
+
             // 状态指示
             Box(
                 modifier = Modifier

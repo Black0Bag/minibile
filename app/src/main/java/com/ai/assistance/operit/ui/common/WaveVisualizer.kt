@@ -36,7 +36,7 @@ fun WaveVisualizer(
     // 波浪状态
     var currentVolume by remember { mutableStateOf(0f) }
     // isExpanded is no longer used, remove it.
-    
+
     // 从音量流收集数据，这是离散的
     LaunchedEffect(volumeFlow) {
         volumeFlow?.collect { volume ->
@@ -44,14 +44,14 @@ fun WaveVisualizer(
             currentVolume = volume
         }
     }
-    
+
     // 创建一个平滑的、经过补间动画处理的音量值，以解决数据离散导致的卡顿问题
     val animatedVolume by animateFloatAsState(
         targetValue = currentVolume,
         animationSpec = tween(durationMillis = 100, easing = LinearEasing), // 快速响应的补间动画
         label = "animated_volume"
     )
-    
+
     // 静态波浪动画
     val infiniteTransition = rememberInfiniteTransition(label = "wave_animation")
     val animatedProgress = infiniteTransition.animateFloat(
@@ -63,7 +63,7 @@ fun WaveVisualizer(
         ),
         label = "wave_progress"
     )
-    
+
     // 脉冲动画 - 用于非活跃模式中的脉冲效果
     val pulseAnimation = infiniteTransition.animateFloat(
         initialValue = 0.9f,
@@ -74,18 +74,18 @@ fun WaveVisualizer(
         ),
         label = "pulse_animation"
     )
-    
+
     // 呼吸光效动画 - 用于控制非活跃模式的光晕效果
     val glowAnimation = infiniteTransition.animateFloat(
         initialValue = 0.2f,
-        targetValue = 0.6f, 
+        targetValue = 0.6f,
         animationSpec = infiniteRepeatable(
             animation = tween(2000, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse
         ),
         label = "glow_animation"
     )
-    
+
     // For the active state rotation
     val rotation = infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -93,7 +93,7 @@ fun WaveVisualizer(
         animationSpec = infiniteRepeatable(tween(2000, easing = LinearEasing), RepeatMode.Restart),
         label = "rotation"
     )
-    
+
     // 波浪扩散动画 - 减少波浪数量使其更稀疏
     val waves = listOf(0.2f, 0.6f, 1.0f)
     val animatedScales = waves.map { initialScale ->
@@ -109,7 +109,7 @@ fun WaveVisualizer(
             label = "wave_scale_$initialScale"
         )
     }
-    
+
     Box(
         modifier = modifier
             .size(if (isActive) 200.dp else 120.dp)
@@ -162,14 +162,14 @@ fun WaveVisualizer(
             }
         } else {
             // 非活跃状态 - 全新的更现代的设计
-            
+
             // 背景光晕 (最底层)
             Canvas(
                 modifier = Modifier.fillMaxSize()
             ) {
                 val center = Offset(size.width / 2, size.height / 2)
                 val outerRadius = size.minDimension * 0.5f * pulseAnimation.value
-                
+
                 // 外部光晕效果
                 drawCircle(
                     brush = Brush.radialGradient(
@@ -194,7 +194,7 @@ fun WaveVisualizer(
                 ) {
                     val center = Offset(size.width / 2, size.height / 2)
                     val radius = size.minDimension / 2 * animatedScale.value
-                    
+
                     drawCircle(
                         color = activeWaveColor.copy(alpha = 0.7f), // 使用主题颜色而不是灰色
                         center = center,
@@ -203,14 +203,14 @@ fun WaveVisualizer(
                     )
                 }
             }
-            
+
             // 中心圆 - 现在是线框样式 (最顶层)
             Canvas(
                 modifier = Modifier.fillMaxSize()
             ) {
                 val center = Offset(size.width / 2, size.height / 2)
                 val innerRadius = size.minDimension * 0.18f * pulseAnimation.value
-                
+
                 // 主圆体 - 线框样式
                 drawCircle(
                     color = activeWaveColor.copy(alpha = 0.9f),
@@ -218,9 +218,9 @@ fun WaveVisualizer(
                     center = center,
                     radius = innerRadius
                 )
-                
+
                 // The highlight is removed as it doesn't fit the wireframe style.
             }
         }
     }
-} 
+}

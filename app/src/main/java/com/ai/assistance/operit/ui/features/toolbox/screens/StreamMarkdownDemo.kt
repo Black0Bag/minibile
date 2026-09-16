@@ -222,14 +222,14 @@ private fun ControlPanel(
 fun StreamMarkdownDemoScreenPreview() {
     val staticContent = """
         # 静态Markdown演示
-        
+
         这是一个**静态**的Markdown渲染示例。
-        
+
         * 列表项1
         * 列表项2
-        
+
         [点击这个链接](https://www.example.com)
-        
+
         ```kotlin
         fun main() {
             println("Hello, World!")

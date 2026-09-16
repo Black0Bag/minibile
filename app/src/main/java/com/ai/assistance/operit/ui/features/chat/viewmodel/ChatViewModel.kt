@@ -167,7 +167,7 @@ class ChatViewModel(private val context: Context) : ViewModel() {
 
     // 工具权限系统
     private val toolPermissionSystem = ToolPermissionSystem.getInstance(context)
-    
+
     // 终端管理器（用于执行工作区命令）
     private val terminal: Terminal? by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -176,7 +176,7 @@ class ChatViewModel(private val context: Context) : ViewModel() {
             null
         }
     }
-    
+
     // 工作区终端会话映射表：workspacePath -> sessionId
     private val workspaceTerminalSessions = mutableMapOf<String, String>()
     private var workspaceCommandExecutionJob: Job? = null
@@ -351,7 +351,7 @@ class ChatViewModel(private val context: Context) : ViewModel() {
     private val _autoSwitchChatOnCharacterSelect = MutableStateFlow(false)
     val autoSwitchChatOnCharacterSelect: StateFlow<Boolean> =
         _autoSwitchChatOnCharacterSelect.asStateFlow()
-    
+
     // 总结状态
     val isSummarizing: StateFlow<Boolean> by lazy {
         if (::messageCoordinationDelegate.isInitialized) {
@@ -529,7 +529,7 @@ class ChatViewModel(private val context: Context) : ViewModel() {
                     if (::messageProcessingDelegate.isInitialized && messageProcessingDelegate.isLoading.value) {
                         return@collect
                     }
-                    if (state is InputProcessingState.Completed && 
+                    if (state is InputProcessingState.Completed &&
                         ::messageCoordinationDelegate.isInitialized &&
                         (messageCoordinationDelegate.isSummarizing.value ||
                          messageCoordinationDelegate.isSendTriggeredSummarizing.value)
@@ -863,7 +863,7 @@ class ChatViewModel(private val context: Context) : ViewModel() {
                     uiStateDelegate.showToast(context.getString(R.string.chat_no_messages_to_summarize))
                     return@launch
                 }
-                
+
                 // 设置输入处理状态（按chatId隔离）
                 messageProcessingDelegate.setInputProcessingStateForChat(
                     currentChatId,
@@ -885,10 +885,10 @@ class ChatViewModel(private val context: Context) : ViewModel() {
                     messageProcessingDelegate.setInputProcessingStateForChat(currentChatId, InputProcessingState.Idle)
                     return@launch
                 }
-                
+
                 // 显示生成中提示
                 uiStateDelegate.showToast(context.getString(R.string.chat_summarizing_generating))
-                
+
                 // 调用AI生成总结
                 if (enhancedAiService == null) {
                     uiStateDelegate.showToast(context.getString(R.string.chat_ai_service_not_initialized))
@@ -923,7 +923,7 @@ class ChatViewModel(private val context: Context) : ViewModel() {
                 } else {
                     uiStateDelegate.showToast(context.getString(R.string.chat_summary_generation_failed))
                 }
-                
+
                 // 清除输入处理状态
                 messageProcessingDelegate.setInputProcessingStateForChat(currentChatId, InputProcessingState.Idle)
             } catch (e: CancellationException) {
@@ -1030,21 +1030,21 @@ class ChatViewModel(private val context: Context) : ViewModel() {
         viewModelScope.launch {
             try {
                 AppLogger.d(TAG, "开始生成分享图片，消息索引: $messageIndices")
-                
+
                 // 获取当前聊天历史
                 val currentHistory = chatHistoryDelegate.chatHistory.value
-                
+
                 // 验证索引有效性
                 if (messageIndices.any { it < 0 || it >= currentHistory.size }) {
                     onError(context.getString(R.string.chat_invalid_message_index))
                     return@launch
                 }
-                
+
                 // 获取选中的消息
                 val selectedMessages = messageIndices.sorted().map { currentHistory[it] }
-                
+
                 AppLogger.d(TAG, "准备生成图片，选中消息数量: ${selectedMessages.size}")
-                
+
                 // 生成图片（内部会自动处理线程切换）
                 val imageFile = MessageImageGenerator
                     .generateMessageImage(
@@ -1071,20 +1071,20 @@ class ChatViewModel(private val context: Context) : ViewModel() {
                         borderWidthDp = borderWidthDp,
                         forceShowThinkingProcess = forceShowThinkingProcess
                     )
-                
+
                 AppLogger.d(TAG, "图片文件生成成功: ${imageFile.absolutePath}, 大小: ${imageFile.length()} bytes")
-                
+
                 // 使用 FileProvider 获取 Uri
                 val uri = FileProvider.getUriForFile(
                     context,
                     "${context.packageName}.fileprovider",
                     imageFile
                 )
-                
+
                 AppLogger.d(TAG, "Uri 获取成功: $uri")
-                
+
                 onSuccess(uri)
-                
+
             } catch (e: Exception) {
                 AppLogger.e(TAG, "生成分享图片失败", e)
                 onError(context.getString(R.string.chat_generate_share_image_failed, e.message ?: ""))
@@ -1731,7 +1731,7 @@ class ChatViewModel(private val context: Context) : ViewModel() {
                 // 获取当前会话ID并绑定
                 val currentChatId = chatHistoryDelegate.currentChatId.value
                 if (currentChatId == null) return@launch
-                
+
                 // 显示附件处理进度
                 messageProcessingDelegate.setInputProcessingStateForChat(
                     currentChatId,
@@ -1802,7 +1802,7 @@ class ChatViewModel(private val context: Context) : ViewModel() {
                 // 获取当前会话ID并绑定
                 val currentChatId = chatHistoryDelegate.currentChatId.value
                 if (currentChatId == null) return@launch
-                
+
                 // 显示屏幕内容获取进度
                 messageProcessingDelegate.setInputProcessingStateForChat(
                     currentChatId,
@@ -1833,7 +1833,7 @@ class ChatViewModel(private val context: Context) : ViewModel() {
                 // 获取当前会话ID并绑定
                 val currentChatId = chatHistoryDelegate.currentChatId.value
                 if (currentChatId == null) return@launch
-                
+
                 // 显示通知获取进度
                 messageProcessingDelegate.setInputProcessingStateForChat(
                     currentChatId,
@@ -1864,7 +1864,7 @@ class ChatViewModel(private val context: Context) : ViewModel() {
                 // 获取当前会话ID并绑定
                 val currentChatId = chatHistoryDelegate.currentChatId.value
                 if (currentChatId == null) return@launch
-                
+
                 // 显示位置获取进度
                 messageProcessingDelegate.setInputProcessingStateForChat(
                     currentChatId,
@@ -1874,7 +1874,7 @@ class ChatViewModel(private val context: Context) : ViewModel() {
 
                 // 直接委托给attachmentDelegate执行
                 attachmentDelegate.captureLocation()
-                
+
                 // 隐藏进度状态
                 messageProcessingDelegate.setInputProcessingStateForChat(currentChatId, InputProcessingState.Idle)
             } catch (e: Exception) {
@@ -2081,7 +2081,7 @@ class ChatViewModel(private val context: Context) : ViewModel() {
         uris.forEachIndexed { index, uri ->
             AppLogger.d(TAG, "  [$index] URI: $uri")
         }
-        
+
         viewModelScope.launch {
             try {
                 val chatId = resolveTargetChatIdForSharedContent(targetChatId)
@@ -2110,7 +2110,7 @@ class ChatViewModel(private val context: Context) : ViewModel() {
                     delay(100) // Small delay between files
                 }
                 AppLogger.d(TAG, "All files attached successfully")
-                
+
                 if (messageProcessingDelegate.userMessage.value.text.isBlank()) {
                     AppLogger.d(TAG, "Setting pre-filled message")
                     val text = sharedText?.trim()
@@ -2127,7 +2127,7 @@ class ChatViewModel(private val context: Context) : ViewModel() {
 
                 // Clear processing state
                 messageProcessingDelegate.setInputProcessingStateForChat(chatId, InputProcessingState.Idle)
-                
+
                 AppLogger.d(TAG, "Successfully processed shared files")
                 uiStateDelegate.showToast(context.getString(R.string.chat_added_files_count, uris.size))
             } catch (e: Exception) {
@@ -2363,7 +2363,7 @@ class ChatViewModel(private val context: Context) : ViewModel() {
     ) {
         floatingWindowDelegate.launchInMode(mode, colorScheme, typography, moveTaskToBackOnReady)
     }
-    
+
     /**
      * 从Widget启动悬浮窗到指定模式（使用默认主题）
      */
@@ -2449,7 +2449,7 @@ class ChatViewModel(private val context: Context) : ViewModel() {
             mainChatCore.setUiBridge(EmptyChatServiceUiBridge)
             mainChatCore.setSpeakMessageHandler { _, _ -> }
         }
-        
+
         // 清理语音服务资源
         voiceService?.shutdown()
 
@@ -2598,7 +2598,7 @@ class ChatViewModel(private val context: Context) : ViewModel() {
             var sessionId: String? = null
             try {
                 AppLogger.d(TAG, "Executing workspace command: $commandText in $workspacePath")
-                
+
                 val workspaceDir = File(workspacePath)
 
                 // 使用工作区的共享会话
@@ -2869,10 +2869,10 @@ class ChatViewModel(private val context: Context) : ViewModel() {
                 _showWebView.value = false
                 AppLogger.d(TAG, "工作区已关闭（由于打开AI电脑）")
             }
-            
+
             val newShowState = !_showAiComputer.value
             _showAiComputer.value = newShowState
-            
+
             if (newShowState) {
                 // 初始化AI电脑管理器
                 try {

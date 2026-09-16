@@ -44,7 +44,7 @@ class UIDebuggerWindowManager(
     private var composeView: ComposeView? = null
     private var params: WindowManager.LayoutParams? = null
     private var isExpanded = mutableStateOf(false)
-    
+
     // Floating ball position state
     private var ballX = mutableStateOf(100f)
     private var ballY = mutableStateOf(100f)
@@ -99,7 +99,7 @@ class UIDebuggerWindowManager(
         }
         windowManager.addView(composeView, params)
     }
-    
+
     private fun updateWindowPosition() {
         params?.let { layoutParams ->
             layoutParams.x = ballX.value.toInt()
@@ -109,7 +109,7 @@ class UIDebuggerWindowManager(
             }
         }
     }
-    
+
     private fun updateWindowLayout() {
         params?.let { layoutParams ->
             if (isExpanded.value) {
@@ -193,4 +193,4 @@ fun DraggableFloatingBall(
             tint = Color.White
         )
     }
-} 
+}

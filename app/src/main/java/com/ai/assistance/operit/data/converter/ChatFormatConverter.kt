@@ -13,7 +13,7 @@ interface ChatFormatConverter {
      * @throws ConversionException 转换失败时抛出
      */
     fun convert(content: String): List<ChatHistory>
-    
+
     /**
      * 获取转换器支持的格式
      */

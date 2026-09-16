@@ -109,7 +109,7 @@ object DocumentConversionUtil {
             }
         }
     }
-    
+
     /**
      * Converts each page of a PDF to an image and uses OCR to extract text.
      */
@@ -121,7 +121,7 @@ object DocumentConversionUtil {
         try {
             fileDescriptor = ParcelFileDescriptor.open(sourceFile, ParcelFileDescriptor.MODE_READ_ONLY)
             pdfRenderer = PdfRenderer(fileDescriptor)
-            
+
             val pageCount = pdfRenderer.pageCount
             if (pageCount == 0) {
                 AppLogger.w(TAG, "PDF has no pages, OCR cannot proceed.")
@@ -130,11 +130,11 @@ object DocumentConversionUtil {
 
             for (i in 0 until pageCount) {
                 val page = pdfRenderer.openPage(i)
-                
+
                 // Render page to bitmap
                 val bitmap = Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_8888)
                 page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
-                
+
                 // Recognize text from bitmap using OCRUtils in high quality
                 val recognizedText =
                         OCRUtils.recognizeText(context, bitmap, OCRUtils.Quality.HIGH)
@@ -787,10 +787,10 @@ object DocumentConversionUtil {
                 val doc = HWPFDocument(fis)
                 val extractor = WordExtractor(doc)
                 var text = extractor.text
-                
+
                 // 优化文本格式：压缩连续空行
                 text = optimizeTextFormat(text)
-                
+
                 // Write extracted text to target file
                 FileOutputStream(targetFile).bufferedWriter().use { writer ->
                     writer.write(text)
@@ -810,10 +810,10 @@ object DocumentConversionUtil {
                 val docx = XWPFDocument(fis)
                 val extractor = XWPFWordExtractor(docx)
                 var text = extractor.text
-                
+
                 // 优化文本格式：压缩连续空行
                 text = optimizeTextFormat(text)
-                
+
                 // Write extracted text to target file
                 FileOutputStream(targetFile).bufferedWriter().use { writer ->
                     writer.write(text)
@@ -825,21 +825,21 @@ object DocumentConversionUtil {
             false
         }
     }
-    
+
     /** 优化提取出的文本格式，压缩连续空行 */
     private fun optimizeTextFormat(text: String): String {
         // 将文本按行分割
         val lines = text.split("\n")
         val optimizedLines = mutableListOf<String>()
         var consecutiveEmptyLines = 0
-        
+
         for (line in lines) {
             val trimmedLine = line.trim()
-            
+
             if (trimmedLine.isEmpty()) {
                 // 处理空行
                 consecutiveEmptyLines++
-                
+
                 // 两行空行压缩为一行，多行空行压缩为两行
                 if (consecutiveEmptyLines <= 2) {
                     optimizedLines.add("")
@@ -850,7 +850,7 @@ object DocumentConversionUtil {
                 consecutiveEmptyLines = 0
             }
         }
-        
+
         // 合并为单个字符串并返回
         return optimizedLines.joinToString("\n")
     }
@@ -888,7 +888,7 @@ object DocumentConversionUtil {
             XWPFDocument().use { docx ->
                 // Split the content into paragraphs. We can split by one or more newlines.
                 val paragraphs = content.split(Regex("(\\r\\n|\\n){2,}"))
-                
+
                 for (paraText in paragraphs) {
                     if (paraText.isNotBlank()) {
                         // Create a paragraph in the DOCX document.
@@ -903,7 +903,7 @@ object DocumentConversionUtil {
                     docx.write(fos)
                 }
             }
-            
+
             AppLogger.d(TAG, "Successfully converted PDF to DOCX: ${targetFile.name}")
             true
         } catch (e: Exception) {

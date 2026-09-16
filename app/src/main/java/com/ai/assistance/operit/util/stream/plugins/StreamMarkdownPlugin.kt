@@ -568,7 +568,7 @@ class StreamMarkdownImagePlugin(private val includeDelimiters: Boolean = true) :
                                 literal("!")
                             }
                     )
-    
+
     // Matcher for the rest of the image markdown, starting from "["
     private val imageContentMatcher: StreamKmpGraph =
             StreamKmpGraphBuilder()
@@ -615,7 +615,7 @@ class StreamMarkdownImagePlugin(private val includeDelimiters: Boolean = true) :
                         reset()
                         // The buffered characters (including '!') and the current char
                         // will be re-processed as default text by the multiplexer.
-                        return true 
+                        return true
                     }
                 }
             }
@@ -1368,27 +1368,27 @@ class StreamMarkdownBlockBracketLaTeXPlugin(private val includeDelimiters: Boole
 /**
  * A stream plugin for identifying Markdown tables. It recognizes complete table blocks with
  * multiple rows, starting with pipe characters and maintaining table state across newlines.
- * 
+ *
  * @param includeDelimiters If true, the pipe delimiters are included in the output.
  */
 class StreamMarkdownTablePlugin(private val includeDelimiters: Boolean = true) : StreamPlugin {
     override var state: PluginState = PluginState.IDLE
         private set
-    
+
     // 用于记录表格状态
     private var tableRowCount = 0
     private var foundHeaderSeparator = false
     private var emptyLineCount = 0 // 用于检测表格结束的空行计数
-    
+
     // 用于匹配表格行开始
-    private val tableRowMatcher = 
+    private val tableRowMatcher =
             StreamKmpGraphBuilder()
                     .build(
                             kmpPattern {
                                 char('|') // 表格行必须以竖线开始
                             }
                     )
-    
+
     // 用于匹配表头分隔符行
     private val headerSeparatorMatcher =
             StreamKmpGraphBuilder()
@@ -1398,10 +1398,10 @@ class StreamMarkdownTablePlugin(private val includeDelimiters: Boolean = true) :
                                 greedyStar { anyOf('-', ':', ' ') }
                             }
                     )
-    
+
     // 用于检测其他块元素开始符号
     private val otherBlockStarters = setOf('$', '`', '#', '>', '*', '-', '+')
-    
+
     override fun processChar(c: Char, atStartOfLine: Boolean): Boolean {
         // 处理换行符
         if (c == '\n') {
@@ -1413,7 +1413,7 @@ class StreamMarkdownTablePlugin(private val includeDelimiters: Boolean = true) :
             }
             return true
         }
-        
+
         // WAITFOR状态下处理字符
         if (state == PluginState.WAITFOR) {
             if (atStartOfLine) {
@@ -1433,7 +1433,7 @@ class StreamMarkdownTablePlugin(private val includeDelimiters: Boolean = true) :
                 }
             }
         }
-        
+
         // 处理行开始
         if (atStartOfLine) {
             // 检查是否是表格行开始
@@ -1450,12 +1450,12 @@ class StreamMarkdownTablePlugin(private val includeDelimiters: Boolean = true) :
                         tableRowCount++
                         emptyLineCount = 0
                     }
-                    
+
                     // 检查是否是表头分隔符行
                     if (tableRowCount == 2 && !foundHeaderSeparator) {
                         headerSeparatorMatcher.processChar(c)
                     }
-                    
+
                     return includeDelimiters
                 }
                 else -> {
@@ -1469,7 +1469,7 @@ class StreamMarkdownTablePlugin(private val includeDelimiters: Boolean = true) :
             }
         } else if (state == PluginState.PROCESSING) {
             // 在表格行中间处理字符
-            
+
             // 如果是第二行且可能是分隔符行
             if (tableRowCount == 2 && !foundHeaderSeparator) {
                 // 处理头部分隔符检测
@@ -1483,21 +1483,21 @@ class StreamMarkdownTablePlugin(private val includeDelimiters: Boolean = true) :
                     else -> { /* 继续收集字符 */ }
                 }
             }
-            
+
             // 返回字符是否应该包含在输出中
             return includeDelimiters || c != '|'
         }
-        
+
         return true
     }
-    
+
     override fun initPlugin(): Boolean {
         reset()
         return true
     }
-    
+
     override fun destroy() {}
-    
+
     override fun reset() {
         state = PluginState.IDLE
         tableRowCount = 0

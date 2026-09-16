@@ -15,4 +15,4 @@ interface ISkeletalAvatarModel : AvatarModel {
 
     /** The asset path to the texture atlas image file (e.g., "avatars/my_db_char/character_tex.png"). */
     val texturePath: String
-} 
+}

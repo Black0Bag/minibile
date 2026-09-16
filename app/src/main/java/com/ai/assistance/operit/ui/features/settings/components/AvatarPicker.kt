@@ -1,4 +1,4 @@
- 
+
 package com.ai.assistance.operit.ui.features.settings.components
 
 import android.net.Uri
@@ -34,7 +34,7 @@ fun AvatarPicker(
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         Text(
-            text = label, 
+            text = label,
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier.padding(horizontal = 4.dp)
         )
@@ -73,8 +73,8 @@ fun AvatarPicker(
                 .padding(horizontal = 4.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Refresh, 
-                contentDescription = "Reset Avatar", 
+                imageVector = Icons.Default.Refresh,
+                contentDescription = "Reset Avatar",
                 modifier = Modifier.size(16.dp)
             )
             Spacer(modifier = Modifier.width(3.dp))
@@ -84,4 +84,4 @@ fun AvatarPicker(
             )
         }
     }
-} 
+}

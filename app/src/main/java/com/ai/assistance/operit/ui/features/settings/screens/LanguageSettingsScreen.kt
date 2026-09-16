@@ -106,24 +106,24 @@ fun LanguageSettingsScreen(
                                 if (language.code != currentLanguage) {
                                     // 设置状态为正在切换语言
                                     isChangingLanguage = true
-                                    
+
                                     // 应用新的语言设置（使用已初始化的全局实例）
                                     LocaleUtils.setAppLanguage(context, language.code)
-                                    
+
                                     // 显示切换语言的提示
                                     Toast.makeText(
-                                        context, 
-                                        context.getString(R.string.language_changed), 
+                                        context,
+                                        context.getString(R.string.language_changed),
                                         Toast.LENGTH_SHORT
                                     ).show()
-                                    
+
                                     // 延迟重启应用以确保语言设置完全生效
                                     scope.launch {
                                         delay(600) // 短暂延迟确保设置已保存
-                                        
+
                                         // 重启应用
                                         val intent = Intent(context, MainActivity::class.java).apply {
-                                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or 
+                                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or
                                                    Intent.FLAG_ACTIVITY_CLEAR_TASK
                                         }
                                         context.startActivity(intent)
@@ -136,7 +136,7 @@ fun LanguageSettingsScreen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
@@ -172,7 +172,7 @@ fun LanguageItem(
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary
         )
-        
+
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -188,7 +188,7 @@ fun LanguageItem(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-        
+
         if (isSelected) {
             Icon(
                 imageVector = Icons.Default.Check,
@@ -197,10 +197,10 @@ fun LanguageItem(
             )
         }
     }
-    
+
     HorizontalDivider(
         modifier = Modifier.fillMaxWidth(),
         thickness = 0.5.dp,
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
     )
-} 
+}

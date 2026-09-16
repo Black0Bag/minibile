@@ -413,7 +413,7 @@ fun FunctionConfigCard(
                                     }
                                 }
                             }
-                            
+
                             // 测试结果显示
                             androidx.compose.animation.AnimatedVisibility(
                                 visible = testResult != null,
@@ -733,9 +733,9 @@ fun FunctionConfigCard(
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(stringResource(id = R.string.test), style = MaterialTheme.typography.bodySmall)
                             }
-                            
+
                             Spacer(modifier = Modifier.width(8.dp))
-                            
+
                             Icon(
                                     imageVector =
                                             if (expanded) Icons.Default.KeyboardArrowUp
@@ -844,7 +844,7 @@ fun FunctionConfigCard(
                                                 )
                                             }
                                         }
-                                        
+
                                         if (hasMultipleModels) {
                                             Icon(
                                                 imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
@@ -855,7 +855,7 @@ fun FunctionConfigCard(
                                         }
                                     }
                                 }
-                                
+
                                 // 如果有多个模型且已展开，显示模型列表
                                 androidx.compose.animation.AnimatedVisibility(visible = hasMultipleModels && isExpanded) {
                                     Column(

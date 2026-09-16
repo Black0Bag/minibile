@@ -566,20 +566,20 @@ open class RootUITools(context: Context) : AdminUITools(context) {
                 return ToolResult(tool.name, false, StringResultData(""), "Failed to read UI dump: ${readResult.stderr}")
             }
             val xml = readResult.stdout
-            
+
             val partialMatch = tool.parameters.find { it.name == "partialMatch" }?.value?.toBoolean() ?: false
 
             fun buildPattern(name: String, value: String?) = value?.let {
                 if (partialMatch) "$name=\".*?${Regex.escape(it)}.*?\""
                 else "$name=\"(?:.*?:id/)?${Regex.escape(it)}\""
             }
-            
+
             val attributes = listOfNotNull(
                 buildPattern("resource-id", resourceId),
                 buildPattern("class", className),
                 buildPattern("content-desc", contentDesc)
             ).joinToString(".*?")
-            
+
             if (attributes.isEmpty()) {
                  return ToolResult(tool.name, false, StringResultData(""), "No element identifiers provided for click.")
             }

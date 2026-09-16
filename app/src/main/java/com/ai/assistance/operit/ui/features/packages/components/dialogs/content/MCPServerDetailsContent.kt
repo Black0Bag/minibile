@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 
 /**
  * Content component for the MCP server details diaAppLogger.
- * 
+ *
  * @param server The MCP server to display details for
  * @param modifier Modifier for the component
  * @param mdFontSize Font size for markdown content

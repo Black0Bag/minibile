@@ -7,7 +7,7 @@ import com.ai.assistance.operit.util.AppLogger
  */
 object CodeFormatter {
     private const val TAG = "CodeFormatter"
-    
+
     /**
      * 根据语言类型格式化代码
      * @param code 原始代码
@@ -30,7 +30,7 @@ object CodeFormatter {
             code // 出错时返回原始代码
         }
     }
-    
+
     /**
      * 格式化 JavaScript 代码
      */
@@ -42,10 +42,10 @@ object CodeFormatter {
         var stringChar = ' '
         var inComment = false
         var inMultiLineComment = false
-        
+
         while (i < code.length) {
             val char = code[i]
-            
+
             // 处理多行注释
             if (!inString && i + 1 < code.length && code.substring(i, i + 2) == "/*") {
                 inMultiLineComment = true
@@ -53,7 +53,7 @@ object CodeFormatter {
                 i += 2
                 continue
             }
-            
+
             if (inMultiLineComment) {
                 result.append(char)
                 if (i + 1 < code.length && code.substring(i, i + 2) == "*/") {
@@ -65,7 +65,7 @@ object CodeFormatter {
                 i++
                 continue
             }
-            
+
             // 处理单行注释
             if (!inString && i + 1 < code.length && code.substring(i, i + 2) == "//") {
                 inComment = true
@@ -73,7 +73,7 @@ object CodeFormatter {
                 i += 2
                 continue
             }
-            
+
             if (inComment) {
                 result.append(char)
                 if (char == '\n') {
@@ -82,7 +82,7 @@ object CodeFormatter {
                 i++
                 continue
             }
-            
+
             // 处理字符串
             if (char == '"' || char == '\'' || char == '`') {
                 if (!inString) {
@@ -95,28 +95,28 @@ object CodeFormatter {
                 i++
                 continue
             }
-            
+
             if (inString) {
                 result.append(char)
                 i++
                 continue
             }
-            
+
             // 处理缩进
             when (char) {
                 '{', '[' -> {
                     result.append(char)
-                    
+
                     // 检查是否是空的 {} 或 []
                     var nextNonWhitespace = i + 1
                     while (nextNonWhitespace < code.length && code[nextNonWhitespace] in listOf(' ', '\t', '\n', '\r')) {
                         nextNonWhitespace++
                     }
-                    
-                    val isEmptyBracket = nextNonWhitespace < code.length && 
-                        ((char == '{' && code[nextNonWhitespace] == '}') || 
+
+                    val isEmptyBracket = nextNonWhitespace < code.length &&
+                        ((char == '{' && code[nextNonWhitespace] == '}') ||
                          (char == '[' && code[nextNonWhitespace] == ']'))
-                    
+
                     if (!isEmptyBracket) {
                         indentLevel++
                         // 换行但不立即添加缩进
@@ -131,11 +131,11 @@ object CodeFormatter {
                     while (lastNonWhitespace >= 0 && result[lastNonWhitespace] in listOf(' ', '\t', '\n', '\r')) {
                         lastNonWhitespace--
                     }
-                    
+
                     val isEmptyBracket = lastNonWhitespace >= 0 &&
                         ((char == '}' && result[lastNonWhitespace] == '{') ||
                          (char == ']' && result[lastNonWhitespace] == '['))
-                    
+
                     if (!isEmptyBracket) {
                         indentLevel = maxOf(0, indentLevel - 1)
                         // 如果前面不是换行，添加换行
@@ -184,13 +184,13 @@ object CodeFormatter {
                     result.append(char)
                 }
             }
-            
+
             i++
         }
-        
+
         return result.toString().trim()
     }
-    
+
     /**
      * 格式化 CSS 代码
      */
@@ -199,10 +199,10 @@ object CodeFormatter {
         var indentLevel = 0
         var i = 0
         var inComment = false
-        
+
         while (i < code.length) {
             val char = code[i]
-            
+
             // 处理注释
             if (!inComment && i + 1 < code.length && code.substring(i, i + 2) == "/*") {
                 inComment = true
@@ -210,7 +210,7 @@ object CodeFormatter {
                 i += 2
                 continue
             }
-            
+
             if (inComment) {
                 result.append(char)
                 if (i + 1 < code.length && code.substring(i, i + 2) == "*/") {
@@ -222,7 +222,7 @@ object CodeFormatter {
                 i++
                 continue
             }
-            
+
             // 处理缩进
             when (char) {
                 '{' -> {
@@ -266,13 +266,13 @@ object CodeFormatter {
                     result.append(char)
                 }
             }
-            
+
             i++
         }
-        
+
         return result.toString().trim()
     }
-    
+
     /**
      * 格式化 HTML 代码
      */
@@ -286,14 +286,14 @@ object CodeFormatter {
         var inStyle = false
         var inString = false
         var stringChar = ' '
-        
+
         // 自闭合标签和内联标签列表
         val selfClosingTags = setOf("br", "img", "input", "hr", "meta", "link", "area", "base", "col", "embed", "param", "source", "track", "wbr")
         val inlineTags = setOf("span", "a", "strong", "em", "b", "i", "u", "small", "code", "kbd", "var", "samp", "sub", "sup", "mark", "del", "ins", "abbr", "cite", "dfn", "q", "time")
-        
+
         while (i < code.length) {
             val char = code[i]
-            
+
             // 处理字符串（在标签属性中）
             if (inTag && (char == '"' || char == '\'' || char == '`')) {
                 if (!inString) {
@@ -306,13 +306,13 @@ object CodeFormatter {
                 i++
                 continue
             }
-            
+
             if (inString) {
                 result.append(char)
                 i++
                 continue
             }
-            
+
             // 处理注释
             if (!inComment && !inScript && !inStyle && i + 3 < code.length && code.substring(i, i + 4) == "<!--") {
                 inComment = true
@@ -324,7 +324,7 @@ object CodeFormatter {
                 i += 4
                 continue
             }
-            
+
             if (inComment) {
                 result.append(char)
                 if (i + 2 < code.length && code.substring(i, i + 3) == "-->") {
@@ -336,7 +336,7 @@ object CodeFormatter {
                 i++
                 continue
             }
-            
+
             // 处理script和style标签内的内容
             if (inScript) {
                 result.append(char)
@@ -346,7 +346,7 @@ object CodeFormatter {
                 i++
                 continue
             }
-            
+
             if (inStyle) {
                 result.append(char)
                 if (char == '<' && i + 7 < code.length && code.substring(i, i + 8).lowercase() == "</style>") {
@@ -355,7 +355,7 @@ object CodeFormatter {
                 i++
                 continue
             }
-            
+
             // 处理DOCTYPE
             if (!inTag && char == '<' && i + 8 < code.length && code.substring(i, i + 9).lowercase() == "<!doctype") {
                 // 找到DOCTYPE结束位置
@@ -367,12 +367,12 @@ object CodeFormatter {
                     continue
                 }
             }
-            
+
             // 处理标签
             if (char == '<') {
                 inTag = true
                 val isClosingTag = i + 1 < code.length && code[i + 1] == '/'
-                
+
                 // 获取标签名
                 var tagEnd = i + 1
                 if (isClosingTag) tagEnd++
@@ -380,12 +380,12 @@ object CodeFormatter {
                     tagEnd++
                 }
                 val tagName = code.substring(if (isClosingTag) i + 2 else i + 1, tagEnd).lowercase()
-                
+
                 // 闭合标签减少缩进
                 if (isClosingTag && tagName !in inlineTags) {
                     indentLevel = maxOf(0, indentLevel - 1)
                 }
-                
+
                 // 添加换行和缩进（除非是内联标签）
                 if (tagName !in inlineTags) {
                     if (result.isNotEmpty() && result.last() != '\n') {
@@ -394,7 +394,7 @@ object CodeFormatter {
                     result.append("    ".repeat(indentLevel))
                 }
                 result.append(char)
-                
+
                 // 检测script和style标签
                 if (!isClosingTag && tagName == "script") {
                     inScript = true
@@ -403,14 +403,14 @@ object CodeFormatter {
                 }
             } else if (char == '>') {
                 result.append(char)
-                
+
                 // 获取刚刚闭合的标签名
                 val tagStart = result.lastIndexOf('<')
                 if (tagStart != -1 && inTag) {
                     val tagContent = result.substring(tagStart + 1, result.length - 1).trim()
                     val isClosingTag = tagContent.startsWith('/')
                     val isSelfClosing = tagContent.endsWith('/') || result[result.length - 2] == '/'
-                    
+
                     var tagNameEnd = 0
                     for (j in (if (isClosingTag) 1 else 0) until tagContent.length) {
                         if (tagContent[j] in listOf(' ', '/', '>')) {
@@ -420,13 +420,13 @@ object CodeFormatter {
                     }
                     if (tagNameEnd == 0) tagNameEnd = tagContent.length
                     val tagName = tagContent.substring(if (isClosingTag) 1 else 0, tagNameEnd).lowercase()
-                    
+
                     // 开始标签且非自闭合且非内联标签，增加缩进
                     if (!isClosingTag && !isSelfClosing && tagName !in selfClosingTags && tagName !in inlineTags) {
                         indentLevel++
                     }
                 }
-                
+
                 inTag = false
             } else if (inTag) {
                 result.append(char)
@@ -443,10 +443,10 @@ object CodeFormatter {
                     }
                 }
             }
-            
+
             i++
         }
-        
+
         return result.toString().trim()
     }
 }

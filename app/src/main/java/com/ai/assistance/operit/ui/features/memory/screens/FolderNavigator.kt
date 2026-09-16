@@ -128,7 +128,7 @@ fun FolderNavigator(
         defaultValue = FolderExpandedState(),
         serializer = serializer()
     )
-    
+
     // 对话框状态
     var showCreateDialog by remember { mutableStateOf(false) }
     var showRenameDialog by remember { mutableStateOf(false) }
@@ -166,7 +166,7 @@ fun FolderNavigator(
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.weight(1f)
                     )
-                    
+
                     // 收起按钮
                     IconButton(
                         onClick = onDismissRequest
@@ -187,7 +187,7 @@ fun FolderNavigator(
                     selectedProfileId = selectedProfileId,
                     onProfileSelected = onProfileSelected
                 )
-                
+
                 // 新建文件夹按钮和刷新按钮
                 Row(
                     modifier = Modifier
@@ -262,7 +262,7 @@ fun FolderNavigator(
                 }
             }
     }
-    
+
     // 对话框
     if (showCreateDialog) {
         FolderCreateDialog(
@@ -273,7 +273,7 @@ fun FolderNavigator(
             }
         )
     }
-    
+
     if (showRenameDialog && contextMenuFolder != null) {
         FolderRenameDialog(
             currentPath = contextMenuFolder!!,
@@ -288,7 +288,7 @@ fun FolderNavigator(
             }
         )
     }
-    
+
     if (showDeleteDialog && contextMenuFolder != null) {
         FolderDeleteDialog(
             folderPath = contextMenuFolder!!,
@@ -303,7 +303,7 @@ fun FolderNavigator(
             }
         )
     }
-    
+
     // 右键菜单（不与其他对话框同时显示）
     if (contextMenuFolder != null && !showRenameDialog && !showDeleteDialog) {
         FolderContextMenu(
@@ -394,7 +394,7 @@ private fun FolderItem(
     } else {
         MaterialTheme.colorScheme.onSurface
     }
-    
+
     // 展开箭头的旋转动画
     val rotationAngle by animateFloatAsState(
         targetValue = if (isExpanded) 90f else 0f,
@@ -548,7 +548,7 @@ private fun FolderCreateDialog(
     onCreate: (String) -> Unit
 ) {
     var folderName by remember { mutableStateOf("") }
-    
+
     androidx.compose.material3.AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.memory_create_folder)) },
@@ -591,7 +591,7 @@ private fun FolderRenameDialog(
     onRename: (String) -> Unit
 ) {
     var newName by remember { mutableStateOf(currentPath) }
-    
+
     androidx.compose.material3.AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.memory_rename_folder)) },

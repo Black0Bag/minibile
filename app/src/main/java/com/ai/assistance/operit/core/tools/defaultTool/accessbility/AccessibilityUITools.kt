@@ -48,7 +48,7 @@ open class AccessibilityUITools(context: Context) : StandardUITools(context) {
         }
         return block()
     }
-    
+
     /**
      * 获取UI层次结构，失败时重试
      * @return UI层次结构XML字符串，获取失败返回空字符串
@@ -62,14 +62,14 @@ open class AccessibilityUITools(context: Context) : StandardUITools(context) {
             if (uiXml.isNotEmpty()) {
                 return uiXml
             }
-            
+
             retryCount++
             if (retryCount < MAX_RETRY_COUNT) {
                 AppLogger.d(TAG, "获取UI层次结构失败，正在重试 #$retryCount")
                 delay(RETRY_DELAY_MS)
             }
         }
-        
+
         AppLogger.w(TAG, "获取UI层次结构失败，已重试${MAX_RETRY_COUNT}次")
         return uiXml
     }
@@ -276,7 +276,7 @@ open class AccessibilityUITools(context: Context) : StandardUITools(context) {
                     if(contentDesc != null && (actualDesc == null || !actualDesc.equals(contentDesc, ignoreCase = true))){
                         return@findNodesInXml false
                     }
-                    
+
                     true
                 }
 

@@ -14,7 +14,7 @@ class HtmlSupport : BaseLanguageSupport() {
             "line", "polyline", "polygon", "text", "g", "defs", "use", "symbol", "marker", "pattern",
             "clipPath", "mask", "filter", "feGaussianBlur", "feOffset", "feBlend", "feColorMatrix"
         )
-        
+
         private val ATTRIBUTES = setOf(
             "id", "class", "style", "href", "src", "alt", "title", "width", "height", "type",
             "value", "name", "placeholder", "disabled", "checked", "selected", "readonly", "required",
@@ -24,24 +24,24 @@ class HtmlSupport : BaseLanguageSupport() {
             "novalidate", "onsubmit", "onclick", "onchange", "onkeyup", "onkeydown", "onkeypress",
             "onmouseover", "onmouseout", "onmousedown", "onmouseup", "onload", "onerror"
         )
-        
+
         private val FILE_EXTENSIONS = listOf("html", "htm", "xhtml")
-        
+
         init {
             // 注册语言支持
             LanguageSupportRegistry.register(HtmlSupport())
         }
     }
-    
+
     override fun getName(): String = "html"
-    
+
     override fun getKeywords(): Set<String> = TAGS
-    
+
     override fun getBuiltInFunctions(): Set<String> = ATTRIBUTES
-    
+
     override fun getCommentStart(): List<String> = listOf("<!--")
-    
+
     override fun getMultiLineCommentEnd(): String? = "-->"
-    
+
     override fun getFileExtensions(): List<String> = FILE_EXTENSIONS
-} 
+}

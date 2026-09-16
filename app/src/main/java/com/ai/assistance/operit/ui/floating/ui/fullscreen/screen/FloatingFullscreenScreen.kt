@@ -98,7 +98,7 @@ fun FloatingFullscreenMode(floatContext: FloatContext) {
     val autoEnterVoiceChat = remember(service) { service?.consumeAutoEnterVoiceChat() == true }
     var autoEnteringVoice by remember(autoEnterVoiceChat) { mutableStateOf(autoEnterVoiceChat) }
     val viewModel = rememberFloatingFullscreenModeViewModel(context, floatContext, coroutineScope, initialWaveActive = autoEnterVoiceChat)
-    
+
     // 偏好设置
     val preferencesManager = UserPreferencesManager.getInstance(context)
     val characterCardManager = remember { CharacterCardManager.getInstance(context) }
@@ -183,12 +183,12 @@ fun FloatingFullscreenMode(floatContext: FloatContext) {
     val speechServiceProfiles = remember { SpeechServiceProfilesPreferences(context) }
     val currentTtsProfile by speechServiceProfiles.currentTtsProfileOrNullFlow.collectAsState(initial = null)
     val ttsCleanerRegexs = currentTtsProfile?.cleanerRegexs
-    
+
     val wakePrefs = remember { WakeWordPreferences(context.applicationContext) }
     val autoNewChatGroup by wakePrefs.autoNewChatGroupFlow.collectAsState(initial = WakeWordPreferences.DEFAULT_AUTO_NEW_CHAT_GROUP)
-    
+
     val volumeLevel by viewModel.volumeLevelFlow.collectAsState()
-    
+
     var pendingSpeechPreview by remember { mutableStateOf<String?>(null) }
     var lastUserMessageTimestampBeforeSpeech by remember { mutableStateOf<Long?>(null) }
 
@@ -223,14 +223,14 @@ fun FloatingFullscreenMode(floatContext: FloatContext) {
             pendingSpeechPreview = null
         }
     }
-    
+
     // 监听语音识别结果
     LaunchedEffect(Unit) {
         viewModel.recognitionResultFlow.collectLatest { result ->
             viewModel.handleRecognitionResult(result.text, result.isFinal)
         }
     }
-    
+
     // 初始化
     LaunchedEffect(Unit) {
         viewModel.initialize(
@@ -315,14 +315,14 @@ fun FloatingFullscreenMode(floatContext: FloatContext) {
             controller.setEmotion(request.emotion)
         }
     }
-    
+
     // 清理资源
     DisposableEffect(Unit) {
         onDispose {
             viewModel.cleanup()
         }
     }
-    
+
     // 监听是否需要自动勾选"圈选识别" (来自圈选识别返回)
     LaunchedEffect(floatContext.currentMode, floatContext.pendingScreenSelection) {
         if (floatContext.currentMode == FloatingMode.FULLSCREEN && floatContext.pendingScreenSelection) {
@@ -478,7 +478,7 @@ fun FloatingFullscreenMode(floatContext: FloatContext) {
                 )
             }
         }
-        
+
         // 主内容区域
         val isBottomBarVisible = viewModel.showBottomControls && !viewModel.isEditMode && !effectiveWaveActive
         Box(
@@ -544,7 +544,7 @@ fun FloatingFullscreenMode(floatContext: FloatContext) {
                         }
                 )
             }
-            
+
             // 消息显示区域 - 根据模式切换位置
             AnimatedContent(
                 targetState = effectiveWaveActive,
@@ -585,7 +585,7 @@ fun FloatingFullscreenMode(floatContext: FloatContext) {
                 }
             }
         }
-        
+
         // 编辑面板
         EditPanel(
             visible = viewModel.isEditMode,
@@ -595,7 +595,7 @@ fun FloatingFullscreenMode(floatContext: FloatContext) {
             onSend = { viewModel.sendEditedMessage() },
             modifier = Modifier.align(Alignment.BottomCenter)
         )
-        
+
         // 底部控制栏
         BottomControlBar(
             visible = isBottomBarVisible,

@@ -174,7 +174,7 @@ fun ColorPickerDialog(
     var hsvH by remember { mutableStateOf("") }
     var hsvS by remember { mutableStateOf("") }
     var hsvV by remember { mutableStateOf("") }
-    
+
     val clipboardManager = LocalClipboardManager.current
 
     // Update input fields when picked color changes
@@ -182,12 +182,12 @@ fun ColorPickerDialog(
         val color = pickedColor
         // Update HEX
         hexInput = String.format("#%06X", (0xFFFFFF and color.toArgb()))
-        
+
         // Update RGB
         rgbR = (color.red * 255).toInt().toString()
         rgbG = (color.green * 255).toInt().toString()
         rgbB = (color.blue * 255).toInt().toString()
-        
+
         // Update HSV
         val hsv = color.toHsv()
         hsvH = hsv[0].toInt().toString()
@@ -217,7 +217,7 @@ fun ColorPickerDialog(
             }
             else -> null
         }
-        
+
         newColor?.let { color ->
             pickerController.selectByColor(color, fromUser = true)
         }
@@ -634,4 +634,4 @@ fun ColorPickerDialog(
             }
         }
     )
-} 
+}

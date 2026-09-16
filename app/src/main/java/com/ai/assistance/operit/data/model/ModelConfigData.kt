@@ -197,7 +197,7 @@ fun getModelList(modelName: String): List<String> {
     return modelName.split(",").map { it.trim() }.filter { it.isNotEmpty() }
 }
 
-/** 
+/**
  * 计算有效的模型索引（处理越界情况）
  * 如果索引超出范围，自动返回0（第一个模型）
  * @param modelName 逗号分隔的模型名称字符串

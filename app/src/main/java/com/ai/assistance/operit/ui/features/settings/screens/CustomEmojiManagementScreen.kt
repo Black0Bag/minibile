@@ -132,7 +132,7 @@ fun CustomEmojiManagementScreen(
                 onCategorySelected = { viewModel.selectCategory(it) },
                 modifier = Modifier.padding(16.dp)
             )
-            
+
             // 分组管理和重置按钮
             Row(
                 modifier = Modifier

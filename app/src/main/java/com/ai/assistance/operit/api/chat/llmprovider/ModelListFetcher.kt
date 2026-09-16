@@ -587,28 +587,28 @@ object ModelListFetcher {
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
                     "Operit/models/mnn"
                 )
-                
+
                 AppLogger.d(TAG, "读取MNN模型目录: ${modelsDir.absolutePath}")
-                
+
                 if (!modelsDir.exists()) {
                     AppLogger.w(TAG, "MNN模型目录不存在")
                     return@withContext Result.success(emptyList())
                 }
-                
+
                 // 遍历所有模型文件夹
-                val models = modelsDir.listFiles { file -> 
+                val models = modelsDir.listFiles { file ->
                     file.isDirectory
                 }?.mapNotNull { folder ->
                     // 在文件夹中查找 llm.mnn 主文件
                     val mnnFile = File(folder, "llm.mnn")
                     val mnnWeightFile = File(folder, "llm.mnn.weight")
-                    
+
                     if (mnnFile.exists()) {
                         // 计算文件夹总大小
                         val totalSize = folder.listFiles()?.sumOf { it.length() } ?: 0L
-                        
+
                         AppLogger.d(TAG, "找到MNN模型: ${folder.name}, 主文件: ${mnnFile.exists()}, 权重文件: ${mnnWeightFile.exists()}, 总大小: ${formatFileSize(totalSize)}")
-                        
+
                         ModelOption(
                             id = folder.name,  // 使用文件夹名称作为ID（与其他提供商保持一致）
                             name = "${folder.name} (${formatFileSize(totalSize)})"
@@ -618,7 +618,7 @@ object ModelListFetcher {
                         null
                     }
                 }?.sortedBy { it.name } ?: emptyList()
-                
+
                 AppLogger.d(TAG, "找到 ${models.size} 个可用的MNN模型")
                 Result.success(models)
             } catch (e: Exception) {

@@ -46,7 +46,7 @@ class MNNProvider(
 
     companion object {
         private const val TAG = "MNNProvider"
-        
+
         /**
          * 根据模型名称获取模型目录路径
          */
@@ -94,10 +94,10 @@ class MNNProvider(
 
     override fun cancelStreaming() {
         isCancelled = true
-        
+
         // 调用底层 native 取消方法，立即中断推理
         llmSession?.cancel()
-        
+
         AppLogger.d(TAG, "已取消MNN推理（已通知底层中断）")
     }
 
@@ -133,11 +133,11 @@ class MNNProvider(
         try {
             if (llmSession == null) {
                 AppLogger.d(TAG, "初始化MNN LLM模型: $modelName")
-                
+
                 // 获取模型目录
                 val modelDir = getModelDir(context, modelName)
                 AppLogger.d(TAG, "模型目录: $modelDir")
-                
+
                 // 检查目录是否存在
                 val modelDirFile = File(modelDir)
                 if (!modelDirFile.exists() || !modelDirFile.isDirectory) {
@@ -166,9 +166,9 @@ class MNNProvider(
                         "cpu"
                     }
                 }
-                
+
                 AppLogger.d(TAG, "创建MNN LLM会话，后端: $backendType, 线程数: $threadCount")
-                
+
                 // Vulkan/OpenCL 后端需要 normal 内存模式以避免 Clone error
                 // CPU 后端可以使用 low 内存模式
                 val memoryMode = if (backendType in listOf("vulkan", "opencl", "opengl")) {
@@ -176,9 +176,9 @@ class MNNProvider(
                 } else {
                     "low"
                 }
-                
+
                 AppLogger.d(TAG, "内存模式: $memoryMode (后端: $backendType)")
-                
+
                 // 创建缓存目录（用于存放 mnn_cachefile.bin 等临时文件）
                 val cacheDir = File(context.cacheDir, "mnn_cache")
                 if (!cacheDir.exists()) {
@@ -187,7 +187,7 @@ class MNNProvider(
                 }
                 AppLogger.d(TAG, "MNN缓存目录: ${cacheDir.absolutePath}")
                 AppLogger.d(TAG, "缓存目录存在: ${cacheDir.exists()}, 可写: ${cacheDir.canWrite()}")
-                
+
                 // 创建 LLM Session（配置必须在创建时传入！）
                 llmSession = MNNLlmSession.create(
                     modelDir = modelDir,
@@ -197,7 +197,7 @@ class MNNProvider(
                     memory = memoryMode,    // 根据后端选择内存模式
                     tmpPath = cacheDir.absolutePath  // 指定缓存目录
                 )
-                
+
                 if (llmSession == null) {
                     return@withContext Result.failure(
                         Exception(context.getString(R.string.mnn_cannot_create_session))
@@ -578,7 +578,7 @@ class MNNProvider(
         chatHistory: List<Pair<String, String>>
     ): String {
         val promptBuilder = StringBuilder()
-        
+
         // 添加历史记录
         for ((role, content) in chatHistory) {
             when (role.lowercase()) {
@@ -590,7 +590,7 @@ class MNNProvider(
         }
 
         promptBuilder.append(context.getString(R.string.mnn_assistant))
-        
+
         return promptBuilder.toString()
     }
 
@@ -795,11 +795,11 @@ class MNNProvider(
             Result.failure(e)
         }
     }
-    
+
     /**
      * 应用模型参数到 MNN Session
      * MNN 支持的采样参数：temperature, topP, topK, minP, penalty, tfsZ, typical, nGram 等
-     * 
+     *
      * 参数映射说明：
      * - temperature: 温度参数，控制输出随机性
      * - top_p -> topP: Top-P 采样（核采样）
@@ -812,60 +812,60 @@ class MNNProvider(
         try {
             // 构建配置 JSON（只包含启用的参数）
             val configMap = mutableMapOf<String, Any>()
-            
+
             parameters.filter { it.isEnabled }.forEach { param ->
                 when (param.apiName.lowercase()) {
                     "temperature" -> {
-                        (param.currentValue as? Number)?.toFloat()?.let { 
+                        (param.currentValue as? Number)?.toFloat()?.let {
                             configMap["temperature"] = it
                         }
                     }
                     "top_p", "topp" -> {
-                        (param.currentValue as? Number)?.toFloat()?.let { 
+                        (param.currentValue as? Number)?.toFloat()?.let {
                             configMap["topP"] = it  // MNN 使用 topP 而不是 top_p
                         }
                     }
                     "top_k", "topk" -> {
-                        (param.currentValue as? Number)?.toInt()?.let { 
+                        (param.currentValue as? Number)?.toInt()?.let {
                             configMap["topK"] = it  // MNN 使用 topK 而不是 top_k
                         }
                     }
                     "min_p", "minp" -> {
-                        (param.currentValue as? Number)?.toFloat()?.let { 
+                        (param.currentValue as? Number)?.toFloat()?.let {
                             configMap["minP"] = it
                         }
                     }
                     "presence_penalty", "frequency_penalty", "repetition_penalty" -> {
                         // MNN 使用统一的 penalty 参数
-                        (param.currentValue as? Number)?.toFloat()?.let { 
+                        (param.currentValue as? Number)?.toFloat()?.let {
                             configMap["penalty"] = it
                         }
                     }
                     "max_tokens", "max_new_tokens" -> {
                         // max_tokens 在 generateStream 中单独处理，这里不设置
                         // 但 MNN 也支持 maxNewTokens 配置
-                        (param.currentValue as? Number)?.toInt()?.let { 
+                        (param.currentValue as? Number)?.toInt()?.let {
                             configMap["max_new_tokens"] = it
                         }
                     }
                     // MNN 高级采样参数
                     "tfsz", "tfs_z" -> {
-                        (param.currentValue as? Number)?.toFloat()?.let { 
+                        (param.currentValue as? Number)?.toFloat()?.let {
                             configMap["tfsZ"] = it
                         }
                     }
                     "typical" -> {
-                        (param.currentValue as? Number)?.toFloat()?.let { 
+                        (param.currentValue as? Number)?.toFloat()?.let {
                             configMap["typical"] = it
                         }
                     }
                     "n_gram", "ngram" -> {
-                        (param.currentValue as? Number)?.toInt()?.let { 
+                        (param.currentValue as? Number)?.toInt()?.let {
                             configMap["n_gram"] = it
                         }
                     }
                     "ngram_factor" -> {
-                        (param.currentValue as? Number)?.toFloat()?.let { 
+                        (param.currentValue as? Number)?.toFloat()?.let {
                             configMap["ngram_factor"] = it
                         }
                     }
@@ -915,7 +915,7 @@ class MNNProvider(
                     }
                 }
             }
-            
+
             if (configMap.isNotEmpty()) {
                 // 将 Map 转换为 JSON 字符串
                 val configJson = buildString {
@@ -934,7 +934,7 @@ class MNNProvider(
                     }
                     append("}")
                 }
-                
+
                 AppLogger.d(TAG, "应用模型参数: $configJson")
                 val success = session.setConfig(configJson)
                 if (!success) {
@@ -947,19 +947,19 @@ class MNNProvider(
             AppLogger.e(TAG, "应用模型参数时出错", e)
         }
     }
-    
+
     /**
      * 应用硬件后端配置（backend_type 和 thread_num）
      * 将用户在 UI 中选择的 forwardType 和 threadCount 应用到 MNN Session
-     * 
+     *
      * forwardType 映射:
      * - 0 -> "cpu"
-     * - 3 -> "opencl" 
+     * - 3 -> "opencl"
      * - 4 -> "auto"
      * - 6 -> "opengl"
      * - 7 -> "vulkan"
      */
-    
+
     /**
      * 格式化文件大小
      */

@@ -669,7 +669,7 @@ private fun MessageItem(
                         showHiddenUserMessageDialog = true
                     }
                 },
-                onLongClick = { 
+                onLongClick = {
                     if (!isMultiSelectMode && isActionable) {
                         showContextMenu = true
                     }

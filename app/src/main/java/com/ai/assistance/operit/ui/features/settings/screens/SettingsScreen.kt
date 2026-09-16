@@ -75,7 +75,7 @@ fun SettingsScreen(
         }
 
         val hasBackgroundImage = LocalThemePreferenceSnapshot.current.useBackgroundImage
-        
+
         val cardContainerColor = if (hasBackgroundImage) {
                 MaterialTheme.colorScheme.surface
         } else {
@@ -148,21 +148,21 @@ fun SettingsScreen(
                                 icon = Icons.Default.Language,
                                 onClick = navigateToLanguageSettings
                         )
-                        
+
                         CompactSettingsItem(
                                 title = stringResource(id = R.string.settings_theme_appearance),
                                 subtitle = stringResource(id = R.string.settings_theme_subtitle),
                                 icon = Icons.Default.Palette,
                                 onClick = navigateToThemeSettings
                         )
-                        
+
                         CompactSettingsItem(
                                 title = stringResource(R.string.settings_global_display),
                                 subtitle = stringResource(R.string.settings_global_display_subtitle),
                                 icon = Icons.Default.Visibility,
                                 onClick = navigateToGlobalDisplaySettings
                         )
-                        
+
                         CompactSettingsItem(
                                 title = stringResource(R.string.layout_adjustment),
                                 subtitle = stringResource(R.string.layout_adjustment_subtitle),
@@ -183,21 +183,21 @@ fun SettingsScreen(
                                 icon = Icons.Default.Api,
                                 onClick = navigateToModelConfig
                         )
-                        
+
                         CompactSettingsItem(
                                 title = stringResource(id = R.string.settings_functional_model),
                                 subtitle = stringResource(id = R.string.settings_functional_model_subtitle),
                                 icon = Icons.Default.Tune,
                                 onClick = navigateToFunctionalConfig
                         )
-                        
+
                         CompactSettingsItem(
                                 title = stringResource(id = R.string.settings_speech_services),
                                 subtitle = stringResource(id = R.string.settings_speech_services_subtitle),
                                 icon = Icons.Default.RecordVoiceOver,
                                 onClick = navigateToSpeechServicesSettings
                         )
-                        
+
                 }
 
                 // ======= 提示词配置 =======
@@ -212,7 +212,7 @@ fun SettingsScreen(
                                 icon = Icons.Default.ChatBubble,
                                 onClick = navigateToModelPrompts
                         )
-                        
+
                         // 新增：人设卡生成
                         CompactSettingsItem(
                                 title = stringResource(R.string.persona_card_generation),
@@ -220,7 +220,7 @@ fun SettingsScreen(
                                 icon = Icons.Default.Face,
                                 onClick = navigateToPersonaCardGeneration
                         )
-                        
+
                         // 新增：Waifu模式设置
                         CompactSettingsItem(
                                 title = stringResource(R.string.waifu_mode_settings),
@@ -263,7 +263,7 @@ fun SettingsScreen(
                                 icon = Icons.Default.CloudUpload,
                                 onClick = navigateToChatBackupSettings
                         )
-                        
+
                         CompactSettingsItem(
                                 title = stringResource(id = R.string.settings_chat_history_management),
                                 subtitle = stringResource(id = R.string.settings_chat_history_management_subtitle),
@@ -377,7 +377,7 @@ private fun SettingsSection(
                                 color = MaterialTheme.colorScheme.primary
                         )
                 }
-                
+
                 // 内容区域
                 Card(
                         modifier = Modifier.fillMaxWidth(),
@@ -414,9 +414,9 @@ private fun CompactSettingsItem(
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(20.dp)
                 )
-                
+
                 Spacer(modifier = Modifier.width(12.dp))
-                
+
                 Column(modifier = Modifier.weight(1f)) {
                         Text(
                                 text = title,
@@ -433,7 +433,7 @@ private fun CompactSettingsItem(
                                 overflow = TextOverflow.Ellipsis
                         )
                 }
-                
+
                 Icon(
                         imageVector = Icons.Default.ChevronRight,
                         contentDescription = null,

@@ -25,4 +25,4 @@ enum class AvatarEmotion {
 
     /** Reacting with surprise. */
     SURPRISED
-} 
+}

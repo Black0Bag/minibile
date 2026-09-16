@@ -10,13 +10,13 @@ enum class BillingMode {
      * 根据输入/输出token数量和对应价格计算费用
      */
     TOKEN,
-    
+
     /**
      * 按次计费
      * 每次API请求收取固定费用
      */
     COUNT;
-    
+
     companion object {
         /**
          * 从字符串解析计费方式

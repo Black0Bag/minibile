@@ -53,12 +53,12 @@ fun WebPRenderer(
 
     // Listen to controller state changes to get the current animation path
     val controllerState by webpController.state.collectAsState()
-    
+
     // Listen to transform properties
     val scale by webpController.scale.collectAsState()
     val translateX by webpController.translateX.collectAsState()
     val translateY by webpController.translateY.collectAsState()
-    
+
     val animationName = controllerState.currentAnimation
     val animationPath = model.animationPathFor(animationName)
     val animationKey =
@@ -80,7 +80,7 @@ fun WebPRenderer(
         val assets = context.assets
         AppLogger.d("WebPRenderer", "Decode start: $animationPath")
         var animationCallback: Animatable2.AnimationCallback? = null
-        
+
         try {
             if (Build.VERSION.SDK_INT >= 28) {
                 // Always decode from bytes to support compressed assets in APK
@@ -93,7 +93,7 @@ fun WebPRenderer(
                 val src = ImageDecoder.createSource(ByteBuffer.wrap(bytes))
                 val drawable = ImageDecoder.decodeDrawable(src)
                 drawableState.value = drawable
-                
+
                 if (drawable is AnimatedImageDrawable) {
                     drawable.repeatCount = if (controllerState.isLooping) {
                         AnimatedImageDrawable.REPEAT_INFINITE
@@ -160,4 +160,4 @@ fun WebPRenderer(
             }
         )
     }
-} 
+}

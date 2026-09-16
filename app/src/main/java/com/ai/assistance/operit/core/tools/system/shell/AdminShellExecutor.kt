@@ -165,7 +165,7 @@ private class AdminShellProcess(
     private var completed = false
     private var exitCode = -1
     private var result: ShellExecutor.CommandResult? = null
-    
+
     init {
         // 异步执行命令
         CoroutineScope(Dispatchers.IO).launch {
@@ -174,7 +174,7 @@ private class AdminShellProcess(
             completed = true
         }
     }
-    
+
     override val stdout: Flow<String> = callbackFlow {
         while (!completed) {
             kotlinx.coroutines.delay(10)

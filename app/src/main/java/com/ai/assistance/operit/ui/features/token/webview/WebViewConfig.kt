@@ -121,10 +121,10 @@ object WebViewConfig {
                                 ): Boolean {
                                     request?.url?.let { uri ->
                                         val url = uri.toString()
-                                        
+
                                         // 处理特殊协议，仍然需要外部跳转
-                                        if (url.startsWith("alipays:") || 
-                                            url.startsWith("alipay:") || 
+                                        if (url.startsWith("alipays:") ||
+                                            url.startsWith("alipay:") ||
                                             url.startsWith("weixin:") ||
                                             url.startsWith("weixins:")) {
                                             try {

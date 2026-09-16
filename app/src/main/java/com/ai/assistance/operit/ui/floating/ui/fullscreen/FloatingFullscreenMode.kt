@@ -6,7 +6,7 @@ import com.ai.assistance.operit.ui.floating.ui.fullscreen.screen.FloatingFullscr
 
 /**
  * 全屏浮动窗口模式 - 主入口文件
- * 
+ *
  * 该文件作为向后兼容的入口点，将实际实现委托给重构后的组件结构：
  * - screen/FloatingFullscreenScreen.kt - 主屏幕组件和流程编排
  * - viewmodel/FloatingFullscreenModeViewModel.kt - 状态管理和业务逻辑

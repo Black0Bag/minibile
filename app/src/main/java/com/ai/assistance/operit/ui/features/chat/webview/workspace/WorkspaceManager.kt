@@ -178,7 +178,7 @@ fun WorkspaceManager(
     val workspaceServer = remember(context) {
         LocalWebServer.getInstance(context, LocalWebServer.ServerType.WORKSPACE)
     }
-    
+
     val isSafEnv = remember(workspaceEnv) { workspaceEnv?.startsWith("repo:", ignoreCase = true) == true }
 
     // 读取工作区配置：在重新进入预览界面时从磁盘刷新
@@ -312,7 +312,7 @@ fun WorkspaceManager(
             isCommandPreviewVisible -> canCommandPreviewGoForward
             else -> false
         }
-    
+
     // 控制可展开FAB的菜单状态
     var isFabMenuExpanded by remember { mutableStateOf(false) }
 
@@ -329,13 +329,13 @@ fun WorkspaceManager(
                 }.getOrDefault(false)
         )
     }
-    
+
     // 解绑确认对话框状态
     var showUnbindConfirmDialog by remember { mutableStateOf(false) }
-    
+
     // 关闭文件确认对话框状态
     var fileToCloseIndex by remember { mutableStateOf(-1) }
-    
+
     // 当前活动的编辑器引用
     var activeEditor by remember { mutableStateOf<com.ai.assistance.operit.ui.features.chat.webview.workspace.editor.NativeCodeEditor?>(null) }
     val density = LocalDensity.current
@@ -391,12 +391,12 @@ fun WorkspaceManager(
                     val result = toolHandler.executeTool(tool)
                     if (result.success && result.result is FileContentData) {
                         val newContent = (result.result as FileContentData).content
-                        
+
                         // 如果当前文件就是这个被修改的文件，则更新编辑器内容
                         if (openFiles.getOrNull(currentFileIndex)?.path == fileInfo.path) {
                              activeEditor?.replaceAllText(newContent)
                         }
-                        
+
                         // 返回更新后的文件信息
                         fileInfo.copy(
                             content = newContent,
@@ -447,7 +447,7 @@ fun WorkspaceManager(
             workspaceWebView?.reload()
         }
     }
-    
+
     // 保存文件函数
     fun saveFile(fileInfo: OpenFileInfo) {
         if (fileInfo.isReadOnlyPreview) return
@@ -463,10 +463,10 @@ fun WorkspaceManager(
                         )
                     )
                 )
-            
+
             // 使用toolHandler代替actualViewModel.executeAITool
             toolHandler.executeTool(tool)
-            
+
             // 如果是HTML文件且正在预览，刷新WebView
             if (fileInfo.isHtml && filePreviewStates[fileInfo.path] == true) {
                 actualViewModel.refreshWebView()
@@ -484,7 +484,7 @@ fun WorkspaceManager(
 
             // 从未保存集合中移除
             unsavedFiles = unsavedFiles - fileToClose.path
-            
+
             // 更新当前选中的标签
             currentFileIndex = when {
                 updatedFiles.isEmpty() -> -1
@@ -956,7 +956,7 @@ fun WorkspaceManager(
                     .background(Color.Black.copy(alpha = 0.5f))
                     .clickable { showFileManager = false }
             )
-            
+
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -997,7 +997,7 @@ fun WorkspaceManager(
                 }
             }
         }
-        
+
         // 键盘弹起时隐藏工作区悬浮菜单，避免遮挡编辑区与输入区域
         if (!isImeVisible) {
             ExpandableFabMenu(
@@ -1018,21 +1018,21 @@ fun WorkspaceManager(
                     if (currentFile != null) {
                         val language = LanguageDetector.detectLanguage(currentFile.name)
                         val formattedCode = CodeFormatter.format(currentFile.content, language)
-                        
+
                         // 更新文件内容
                         val updatedFiles = openFiles.toMutableList()
                         updatedFiles[currentFileIndex] = currentFile.copy(content = formattedCode)
                         openFiles = updatedFiles
-                        
+
                         // 更新编辑器显示
                         activeEditor?.replaceAllText(formattedCode)
-                        
+
                         // 标记为未保存
                         unsavedFiles = unsavedFiles + currentFile.path
                     }
                     isFabMenuExpanded = false
                 },
-                onUnbindClick = { 
+                onUnbindClick = {
                     showUnbindConfirmDialog = true
                     isFabMenuExpanded = false
                 },
@@ -1053,7 +1053,7 @@ fun WorkspaceManager(
                 } ?: false
             )
         }
-        
+
         // 解绑确认对话框
         if (showUnbindConfirmDialog) {
             AlertDialog(
@@ -1159,7 +1159,7 @@ fun WorkspaceManager(
                 }
             )
         }
-        
+
         // 关闭文件确认对话框
         if (fileToCloseIndex != -1) {
             val file = openFiles.getOrNull(fileToCloseIndex)
@@ -1406,21 +1406,21 @@ fun ExpandableFabMenu(
     canFormat: Boolean = false
 ) {
     val context = LocalContext.current
-    
+
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize()
     ) {
         val density = LocalDensity.current
         val maxWidthPx = with(density) { maxWidth.toPx() }
         val maxHeightPx = with(density) { maxHeight.toPx() }
-        
+
         // 使用 rememberLocal 持久化FAB位置，默认为null表示使用默认右下角位置
         var fabPosition by rememberLocal<FabPosition?>("fab_menu_offset", null)
-        
+
         // 计算实际的显示位置：如果没有自定义位置，使用右下角
         val actualX = fabPosition?.x ?: 0f
         val actualY = fabPosition?.y ?: 0f
-        
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -1635,13 +1635,13 @@ fun CommandButtonsView(
             modifier = Modifier.size(64.dp),
             tint = MaterialTheme.colorScheme.primary
         )
-        
+
         Text(
             text = config.title ?: "${config.projectType.uppercase()} ${stringResource(R.string.workspace_project_suffix)}",
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
-        
+
         if (config.description != null) {
             Text(
                 text = config.description,
@@ -1656,9 +1656,9 @@ fun CommandButtonsView(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-        
+
         Spacer(modifier = Modifier.height(16.dp))
-        
+
         // 浏览器预览按钮（可选）
         if (config.preview.showPreviewButton && config.preview.url.isNotEmpty()) {
             Button(
@@ -1682,12 +1682,12 @@ fun CommandButtonsView(
                     style = MaterialTheme.typography.titleMedium
                 )
             }
-            
+
             Spacer(modifier = Modifier.height(8.dp))
             HorizontalDivider()
             Spacer(modifier = Modifier.height(8.dp))
         }
-        
+
         // 显示命令按钮
         if (config.commands.isEmpty()) {
             Card(
@@ -1729,9 +1729,9 @@ fun CommandButtonsView(
                 }
             }
         }
-        
+
         Spacer(modifier = Modifier.height(16.dp))
-        
+
         // 项目信息卡片
         Card(
             modifier = Modifier.fillMaxWidth(),

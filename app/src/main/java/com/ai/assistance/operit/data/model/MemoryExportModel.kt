@@ -14,7 +14,7 @@ import java.util.Date
  * 将 Date 序列化为时间戳（Long）
  */
 object DateSerializer : KSerializer<Date> {
-    override val descriptor: SerialDescriptor = 
+    override val descriptor: SerialDescriptor =
         PrimitiveSerialDescriptor("Date", PrimitiveKind.LONG)
 
     override fun serialize(encoder: Encoder, value: Date) {
@@ -82,12 +82,12 @@ enum class ImportStrategy {
      * 跳过已存在的记忆
      */
     SKIP,
-    
+
     /**
      * 更新已存在的记忆
      */
     UPDATE,
-    
+
     /**
      * 创建新的记忆（即使UUID相同也创建新记录）
      */

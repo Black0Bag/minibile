@@ -11,7 +11,7 @@ fun <T> emptyStream(): Stream<T> = object : AbstractStream<T>() {
         StreamLogger.d("emptyStream", "收集空Stream")
         // 不发射任何值
     }
-    
+
     override suspend fun emitBufferedItem(item: T) {
         // 空Stream不会有缓冲项
     }
@@ -22,7 +22,7 @@ fun <T> emptyStream(): Stream<T> = object : AbstractStream<T>() {
  */
 fun <T> streamOf(value: T): Stream<T> = object : AbstractStream<T>() {
     private var activeCollector: StreamCollector<T>? = null
-    
+
     override suspend fun collect(collector: StreamCollector<T>) {
         StreamLogger.d("streamOf", "创建单值Stream: $value")
         activeCollector = collector
@@ -30,7 +30,7 @@ fun <T> streamOf(value: T): Stream<T> = object : AbstractStream<T>() {
             collector.emit(value)
         }
     }
-    
+
     override suspend fun emitBufferedItem(item: T) {
         activeCollector?.emit(item)
     }
@@ -41,7 +41,7 @@ fun <T> streamOf(value: T): Stream<T> = object : AbstractStream<T>() {
  */
 fun <T> streamOf(vararg values: T): Stream<T> = object : AbstractStream<T>() {
     private var activeCollector: StreamCollector<T>? = null
-    
+
     override suspend fun collect(collector: StreamCollector<T>) {
         StreamLogger.d("streamOf", "创建多值Stream, 元素数量: ${values.size}")
         activeCollector = collector
@@ -52,7 +52,7 @@ fun <T> streamOf(vararg values: T): Stream<T> = object : AbstractStream<T>() {
             }
         }
     }
-    
+
     override suspend fun emitBufferedItem(item: T) {
         activeCollector?.emit(item)
     }
@@ -63,11 +63,11 @@ fun <T> streamOf(vararg values: T): Stream<T> = object : AbstractStream<T>() {
  */
 fun <T> Collection<T>.asStream(): Stream<T> = object : AbstractStream<T>() {
     private var activeCollector: StreamCollector<T>? = null
-    
+
     override suspend fun collect(collector: StreamCollector<T>) {
         StreamLogger.d("Collection.asStream", "从集合创建Stream, 元素数量: ${this@asStream.size}")
         activeCollector = collector
-        
+
         for (item in this@asStream) {
             StreamLogger.v("Collection.asStream", "发射元素: $item")
             if (!tryBuffer(item)) {
@@ -75,7 +75,7 @@ fun <T> Collection<T>.asStream(): Stream<T> = object : AbstractStream<T>() {
             }
         }
     }
-    
+
     override suspend fun emitBufferedItem(item: T) {
         activeCollector?.emit(item)
     }
@@ -86,7 +86,7 @@ fun <T> Collection<T>.asStream(): Stream<T> = object : AbstractStream<T>() {
  */
 fun <T> Sequence<T>.asStream(): Stream<T> = object : AbstractStream<T>() {
     private var activeCollector: StreamCollector<T>? = null
-    
+
     override suspend fun collect(collector: StreamCollector<T>) {
         StreamLogger.d("Sequence.asStream", "从序列创建Stream")
         activeCollector = collector
@@ -100,7 +100,7 @@ fun <T> Sequence<T>.asStream(): Stream<T> = object : AbstractStream<T>() {
         }
         StreamLogger.d("Sequence.asStream", "序列Stream收集完成, 共$count 个元素")
     }
-    
+
     override suspend fun emitBufferedItem(item: T) {
         activeCollector?.emit(item)
     }
@@ -118,7 +118,7 @@ fun <T> stream(block: suspend StreamCollector<T>.() -> Unit): Stream<T> = object
             }
         }
     }
-    
+
     override suspend fun collect(collector: StreamCollector<T>) {
         try {
             activeCollector = collector
@@ -134,7 +134,7 @@ fun <T> stream(block: suspend StreamCollector<T>.() -> Unit): Stream<T> = object
         } finally {
             // 流收集完成时标记为关闭
             markClosed()
-            
+
             // 如果流在关闭时处于锁定状态，解锁以处理缓冲的数据
             if (isLocked) {
                 StreamLogger.i("stream", "流关闭时处于锁定状态，尝试解锁处理缓冲数据")
@@ -146,7 +146,7 @@ fun <T> stream(block: suspend StreamCollector<T>.() -> Unit): Stream<T> = object
             }
         }
     }
-    
+
     override suspend fun emitBufferedItem(item: T) {
         // 即使流已关闭，也尝试发送缓冲的数据
         activeCollector?.emit(item)
@@ -185,4 +185,4 @@ fun rangeStream(start: Int, count: Int): Stream<Int> = stream {
 fun <T> streamError(exception: Throwable): Stream<T> = stream {
     StreamLogger.e("streamError", "创建错误Stream, 异常: ${exception.message}", exception)
     throw exception
-} 
+}

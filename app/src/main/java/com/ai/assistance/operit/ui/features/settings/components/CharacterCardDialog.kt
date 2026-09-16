@@ -98,10 +98,10 @@ fun CharacterCardDialog(
     var showFixedMemoryProfilePickerDialog by remember(characterCard.id) { mutableStateOf(false) }
     var showToolAccessDialog by remember(characterCard.id) { mutableStateOf(false) }
     var showAdvanced by remember { mutableStateOf(false) }
-    
+
     // 翻译相关状态
     var isTranslating by remember { mutableStateOf(false) }
-    
+
     // 大屏编辑状态
     var showFullScreenEdit by remember { mutableStateOf(false) }
     var fullScreenEditTitle by remember { mutableStateOf("") }
@@ -263,9 +263,9 @@ fun CharacterCardDialog(
                         onAvatarChange = onAvatarChange,
                         onAvatarReset = onAvatarReset
                     )
-                    
+
                     Spacer(modifier = Modifier.width(12.dp))
-                    
+
                     // 基本信息
                     Column(
                         modifier = Modifier.weight(1f)
@@ -282,9 +282,9 @@ fun CharacterCardDialog(
                                 showFullScreenEdit = true
                             }
                         )
-                        
+
                         Spacer(modifier = Modifier.height(6.dp))
-                        
+
                         CompactTextFieldWithExpand(
                             value = description,
                             onValueChange = { description = it },
@@ -344,7 +344,7 @@ fun CharacterCardDialog(
                             color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.weight(1f)
                         )
-                        
+
                         // 翻译按钮
                         IconButton(
                             onClick = {
@@ -381,7 +381,7 @@ fun CharacterCardDialog(
                             }
                         }
                     }
-                    
+
                     CompactTextFieldWithExpand(
                         value = openingStatement,
                         onValueChange = { openingStatement = it },
@@ -913,7 +913,7 @@ fun CharacterCardDialog(
                     ) {
                         Text(stringResource(R.string.cancel), fontSize = 13.sp)
                     }
-                    
+
                     Button(
                         onClick = {
                             val selectedFixedConfig = configSummaries.find { it.id == fixedChatModelConfigId }
@@ -995,7 +995,7 @@ fun CharacterCardDialog(
         onConfirm = { toolAccessConfig = it.normalized() },
         onDismiss = { showToolAccessDialog = false }
     )
-    
+
     // 全屏编辑对话框
     if (showFullScreenEdit) {
         FullScreenEditDialog(
@@ -1678,7 +1678,7 @@ fun CompactTextFieldWithExpand(
             maxLines = maxLines,
             shape = RoundedCornerShape(6.dp)
         )
-        
+
         // 右上角展开按钮
         IconButton(
             onClick = onExpandClick,
@@ -1706,7 +1706,7 @@ fun FullScreenEditDialog(
     onSave: (String) -> Unit
 ) {
     var editValue by remember { mutableStateOf(value) }
-    
+
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -1740,7 +1740,7 @@ fun FullScreenEditDialog(
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
-                    
+
                     IconButton(onClick = onDismiss) {
                         Icon(
                             imageVector = Icons.Default.Close,
@@ -1748,9 +1748,9 @@ fun FullScreenEditDialog(
                         )
                     }
                 }
-                
+
                 Spacer(modifier = Modifier.height(16.dp))
-                
+
                 // 编辑区域
                 OutlinedTextField(
                     value = editValue,
@@ -1761,9 +1761,9 @@ fun FullScreenEditDialog(
                     shape = RoundedCornerShape(8.dp),
                     placeholder = { Text(stringResource(R.string.character_card_fullscreen_edit_placeholder)) }
                 )
-                
+
                 Spacer(modifier = Modifier.height(16.dp))
-                
+
                 // 底部按钮
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -1775,7 +1775,7 @@ fun FullScreenEditDialog(
                     ) {
                         Text(stringResource(R.string.cancel))
                     }
-                    
+
                     Button(
                         onClick = { onSave(editValue) },
                         modifier = Modifier.weight(1f)

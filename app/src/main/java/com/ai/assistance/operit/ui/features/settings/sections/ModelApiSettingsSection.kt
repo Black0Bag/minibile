@@ -205,7 +205,7 @@ fun ModelApiSettingsSection(
     var enableDirectAudioProcessingInput by remember(config.id) { mutableStateOf(config.enableDirectAudioProcessing) }
 
     var enableDirectVideoProcessingInput by remember(config.id) { mutableStateOf(config.enableDirectVideoProcessing) }
-    
+
     // Google Search Grounding 配置状态 (仅Gemini)
     var enableGoogleSearchInput by remember(config.id) { mutableStateOf(config.enableGoogleSearch) }
 
@@ -213,7 +213,7 @@ fun ModelApiSettingsSection(
     var enableClaude1hPromptCacheInput by remember(config.id) {
         mutableStateOf(config.enableClaude1hPromptCache)
     }
-    
+
     // Tool Call配置状态
     var enableToolCallInput by remember(config.id) { mutableStateOf(config.enableToolCall) }
 
@@ -760,7 +760,7 @@ fun ModelApiSettingsSection(
                             val defaultConfigNoModelsText = context.getString(R.string.default_config_no_models_list)
                             val fillEndpointKeyText = context.getString(R.string.fill_endpoint_and_key)
                             val modelsListSuccessText = context.getString(R.string.models_list_success)
-                            
+
                             showNotification(gettingModelsText)
 
                             scope.launch {
@@ -858,7 +858,7 @@ fun ModelApiSettingsSection(
                      onCheckedChange = { enableDirectVideoProcessingInput = it }
                  )
              }
-            
+
             // Google Search Grounding 开关 (仅Gemini支持)
             if (selectedApiProvider == ApiProviderType.GOOGLE ||
                 selectedApiProvider == ApiProviderType.GEMINI_GENERIC) {
@@ -880,7 +880,7 @@ fun ModelApiSettingsSection(
                         onCheckedChange = { enableClaude1hPromptCacheInput = it }
                     )
             }
-            
+
             // Tool Call 开关
             SettingsSwitchRow(
                 title = stringResource(R.string.enable_tool_call),
@@ -1068,7 +1068,7 @@ fun ModelApiSettingsSection(
                             items(filteredModelsList.size) { index ->
                                 val model = filteredModelsList[index]
                                 val isSelected = selectedModels.value.contains(model.id)
-                                
+
                                 // 使用带Checkbox的Row实现多选
                                 Row(
                                         modifier =
@@ -1110,9 +1110,9 @@ fun ModelApiSettingsSection(
                                             style = MaterialTheme.typography.bodyMedium,
                                             modifier = Modifier.weight(1f),
                                             fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-                                            color = if (isSelected) 
-                                                    MaterialTheme.colorScheme.primary 
-                                                else 
+                                            color = if (isSelected)
+                                                    MaterialTheme.colorScheme.primary
+                                                else
                                                     MaterialTheme.colorScheme.onSurface
                                     )
                                 }
@@ -1154,7 +1154,7 @@ fun ModelApiSettingsSection(
                                 onClick = { showModelsDialog = false },
                                 modifier = Modifier.height(36.dp)
                         ) { Text(stringResource(R.string.close), fontSize = 14.sp) }
-                        
+
                         Button(
                                 onClick = {
                                     // 将选中的模型用逗号连接
@@ -1168,12 +1168,12 @@ fun ModelApiSettingsSection(
                                 },
                                 modifier = Modifier.height(36.dp),
                                 enabled = selectedModels.value.isNotEmpty()
-                        ) { 
+                        ) {
                             Text(
-                                stringResource(R.string.confirm_action) + 
+                                stringResource(R.string.confirm_action) +
                                     if (selectedModels.value.isNotEmpty()) " (${selectedModels.value.size})" else "",
                                 fontSize = 14.sp
-                            ) 
+                            )
                         }
                     }
                 }
@@ -1900,7 +1900,7 @@ private fun ApiProviderDialog(
     val context = LocalContext.current
     val providers = remember { getProviderSelectionOptions(context) }
     var searchQuery by remember { mutableStateOf("") }
-    
+
     val filteredProviders = remember(searchQuery) {
         if (searchQuery.isEmpty()) {
             providers
@@ -1927,7 +1927,7 @@ private fun ApiProviderDialog(
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.padding(bottom = 12.dp)
                 )
-                
+
                 // 搜索框
                 OutlinedTextField(
                         value = searchQuery,
@@ -2016,9 +2016,9 @@ private fun ApiProviderDialog(
                                         )
                                     }
                                 }
-                                
+
                                 Spacer(modifier = Modifier.width(16.dp))
-                                
+
                                 Text(
                                         text = provider.displayName,
                                         style = MaterialTheme.typography.bodyLarge
@@ -2027,7 +2027,7 @@ private fun ApiProviderDialog(
                         }
                     }
                 }
-                
+
                 // 底部按钮
                 Row(
                         modifier = Modifier.fillMaxWidth().padding(top = 16.dp),

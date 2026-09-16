@@ -41,7 +41,7 @@ class GitHubAuthPreferences(private val context: Context) {
     companion object {
         const val GITHUB_SCOPE = "notifications,public_repo,user:email,read:user"
         private const val REQUIRED_AUTH_VERSION = 3
-        
+
         // 认证相关键
         private val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
         private val ACCESS_TOKEN = stringPreferencesKey("access_token")
@@ -55,10 +55,10 @@ class GitHubAuthPreferences(private val context: Context) {
         private val ACTIVE_OAUTH_TRANSACTION_ID = stringPreferencesKey("active_oauth_transaction_id")
         private val ACTIVE_OAUTH_DELIVERY_CREDENTIAL = stringPreferencesKey("active_oauth_delivery_credential")
         private val ACTIVE_OAUTH_EXPIRES_AT = longPreferencesKey("active_oauth_expires_at")
-        
+
         @Volatile
         private var INSTANCE: GitHubAuthPreferences? = null
-        
+
         fun getInstance(context: Context): GitHubAuthPreferences {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: GitHubAuthPreferences(context.applicationContext).also { INSTANCE = it }
@@ -67,7 +67,7 @@ class GitHubAuthPreferences(private val context: Context) {
 
     }
 
-    private val json = Json { 
+    private val json = Json {
         ignoreUnknownKeys = true
         isLenient = true
     }
@@ -144,11 +144,11 @@ class GitHubAuthPreferences(private val context: Context) {
             preferences[LAST_LOGIN_TIME] = System.currentTimeMillis()
             preferences[AUTH_VERSION] = REQUIRED_AUTH_VERSION.toLong()
             preferences[GRANTED_SCOPE] = grantedScope.orEmpty()
-            
+
             expiresIn?.let {
                 preferences[TOKEN_EXPIRES_AT] = System.currentTimeMillis() + (it * 1000)
             }
-            
+
             refreshToken?.let {
                 preferences[REFRESH_TOKEN] = it
             }

@@ -321,9 +321,9 @@ fun ClassicChatInputSection(
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(16.dp)
                         )
-                        
+
                         Spacer(modifier = Modifier.width(8.dp))
-                        
+
                         val previewText = message.content
                             .replace(Regex("<[^>]*>"), "") // 移除XML标签
                             .trim()
@@ -336,7 +336,7 @@ fun ClassicChatInputSection(
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.weight(1f)
                         )
-                        
+
                         IconButton(
                             onClick = { onClearReply?.invoke() },
                             modifier = Modifier.size(24.dp)

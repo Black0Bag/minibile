@@ -114,7 +114,7 @@ open class StandardFileSystemTools(protected val context: Context) {
     protected fun getLinuxFileSystem(): FileSystemProvider {
         // 先尝试获取SSH连接的文件系统
         val sshProvider = sshFileManager.getFileSystemProvider()
-        
+
         // 如果SSH已登录，使用SSH文件系统
         if (sshProvider != null) {
             if (lastLinuxFileSystemProviderLabel != "ssh") {
@@ -123,7 +123,7 @@ open class StandardFileSystemTools(protected val context: Context) {
             }
             return sshProvider
         }
-        
+
         // 否则使用本地Terminal的文件系统
         if (lastLinuxFileSystemProviderLabel != "local") {
             AppLogger.d(TAG, "Using local terminal file system provider")
@@ -1446,7 +1446,7 @@ open class StandardFileSystemTools(protected val context: Context) {
             }
 
             val fileExt = file.extension.lowercase()
-            
+
             // 如果启用了 text_only 模式，检查文件是否为文本
             if (textOnly) {
                 // 读取文件前 512 字节进行判断
@@ -1747,7 +1747,7 @@ open class StandardFileSystemTools(protected val context: Context) {
                     (endLineParam
                             ?: (startLine + ToolExecutionLimits.DEFAULT_FILE_READ_PART_LINES - 1))
                         .coerceIn(startLine, maxOf(1, totalLines))
-                
+
                 // 转换为0-based索引
                 val startIndex = startLine - 1
                 val endIndex = endLine // endLine 本身就是最后一行的1-based行号，转成exclusive的end需要不减1

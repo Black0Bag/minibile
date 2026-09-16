@@ -6,7 +6,7 @@ import com.ai.assistance.operit.ui.floating.FloatingMode
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-/** 
+/**
  * 渲染悬浮窗的聊天球模式界面 - Siri风格动感球体
  * 逻辑已提取到 SiriBall.kt
  * 点击切换到窗口模式
@@ -21,7 +21,7 @@ fun FloatingChatBallMode(floatContext: FloatContext) {
         onTriggerResult = {
             // 切换到结果展示模式显示结果
             floatContext.onModeChange(FloatingMode.RESULT_DISPLAY)
-            
+
             // 3秒后自动切回球模式
             floatContext.coroutineScope.launch {
                 delay(3000)

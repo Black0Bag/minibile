@@ -1,6 +1,14 @@
 # 更新日志
 本文件记录每个可安装版本的实际交付内容。每个版本只对应一个 Git 提交、一个 Tag 和一个 GitHub Release。
 
+## 0.8.0 - 2026-09-17
+
+### 删除
+
+- Phase H Wave 1：删除工作流模块（15 源文件 + Manifest 组件 + 权限）
+- 删除 QUERY_ALL_PACKAGES 权限
+- 精确清理 15 个文件中的工作流引用（AIForegroundService, OperitApplication, PluginRegistry, ToolRegistration, ToolGetter, ToolResultDataClasses, PackageManager, PackageManagerToolPkgFacade, PackageDetailsDialog, PackageSearch, NavItem, OperitApp, DrawerContent, OperitScreens, ToolPolicyGate）
+
 ## 0.7.0 - 2026-09-16
 
 ### 新功能

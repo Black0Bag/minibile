@@ -234,7 +234,7 @@ object ActivityLifecycleManager : Application.ActivityLifecycleCallbacks {
         if (currentActivity?.get() == activity) {
             currentActivity?.clear()
         }
-        
+
         activityCount--
         AppLogger.d(TAG, "Activity destroyed: ${activity.javaClass.simpleName}, count=$activityCount")
         AppLifecycleHookPluginRegistry.dispatchAsync(
@@ -248,7 +248,7 @@ object ActivityLifecycleManager : Application.ActivityLifecycleCallbacks {
                         )
                 )
         )
-        
+
         // 当最后一个 Activity 被销毁时（包括从最近任务列表滑动关闭），清理虚拟屏幕和 Shower 连接
         if (activityCount <= 0) {
             AppLogger.d(TAG, "最后一个 Activity 被销毁，清理虚拟屏幕资源")
@@ -266,4 +266,4 @@ object ActivityLifecycleManager : Application.ActivityLifecycleCallbacks {
             }
         }
     }
-} 
+}

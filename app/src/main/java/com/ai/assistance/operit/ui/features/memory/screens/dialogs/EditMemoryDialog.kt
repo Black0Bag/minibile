@@ -49,7 +49,7 @@ fun EditMemoryDialog(
     var importance by remember { mutableStateOf(memory?.importance ?: 0.5f) }
     var folderPath by remember { mutableStateOf(memory?.folderPath ?: defaultFolder) }
     val tags = remember { mutableStateListOf<String>() }
-    
+
     LaunchedEffect(memory) {
         memory?.tags?.let {
             tags.clear()

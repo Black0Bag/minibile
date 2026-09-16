@@ -230,7 +230,7 @@ fun ChatScreenHeader(
                         onClick = {},
                         enabled = false
                     )
-                    
+
                     DropdownMenuItem(
                             text = { Text(stringResource(R.string.input_tokens, inputTokenCount)) },
                             onClick = {},
@@ -259,7 +259,7 @@ fun ChatScreenHeader(
                             onClick = {},
                             enabled = false
                     )
-                    
+
                 }
             }
         }

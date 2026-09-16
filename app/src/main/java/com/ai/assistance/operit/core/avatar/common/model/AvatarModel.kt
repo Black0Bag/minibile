@@ -13,4 +13,4 @@ interface AvatarModel {
 
     /** The underlying rendering technology used by this avatar. */
     val type: AvatarType
-} 
+}

@@ -1433,7 +1433,7 @@ data class AutomationConfigSearchResult(
     val foundConfigs: List<ConfigInfo>,
     val totalFound: Int
 ) : ToolResultData() {
-    
+
     @Serializable
     data class ConfigInfo(
         val appName: String,
@@ -1483,7 +1483,7 @@ data class AutomationPlanParametersResult(
     val planSteps: Int,
     val planDescription: String
 ) : ToolResultData() {
-    
+
     @Serializable
     data class ParameterInfo(
         val key: String,
@@ -1532,7 +1532,7 @@ data class AutomationExecutionResult(
     val finalState: UIStateInfo?,
     val executionSteps: Int
 ) : ToolResultData() {
-    
+
     @Serializable
     data class UIStateInfo(
         val nodeId: String,
@@ -1578,7 +1578,7 @@ data class AutomationFunctionListResult(
     val functions: List<FunctionInfo>,
     val totalCount: Int
 ) : ToolResultData() {
-    
+
     @Serializable
     data class FunctionInfo(
         val name: String,
@@ -1665,13 +1665,13 @@ data class GrepResultData(
     @EncodeDefault
     val env: String = "android"
 ) : ToolResultData() {
-    
+
     @Serializable
     data class FileMatch(
         val filePath: String,
         val lineMatches: List<LineMatch>
     )
-    
+
     @Serializable
     data class LineMatch(
         val lineNumber: Int,
@@ -1696,7 +1696,7 @@ data class GrepResultData(
             append(line.substring(separatorIndex + 1))
         }
     }
-    
+
     override fun toString(): String {
         val sb = StringBuilder()
         sb.appendLine("[$env] Grep Search Result:")
@@ -1787,196 +1787,6 @@ data class GrepResultData(
     }
 }
 
-/** 工作流基本信息结果数据 */
-@Serializable
-data class WorkflowResultData(
-    val id: String,
-    val name: String,
-    val description: String,
-    val nodeCount: Int,
-    val connectionCount: Int,
-    val enabled: Boolean,
-    val createdAt: Long,
-    val updatedAt: Long,
-    val lastExecutionTime: Long? = null,
-    val lastExecutionStatus: String? = null,
-    val totalExecutions: Int = 0,
-    val successfulExecutions: Int = 0,
-    val failedExecutions: Int = 0
-) : ToolResultData() {
-    override fun toString(): String {
-        val sb = StringBuilder()
-        sb.appendLine("ID: $id")
-        sb.appendLine("Name: $name")
-        sb.appendLine("Description: $description")
-        sb.appendLine("Status: ${if (enabled) "Enabled" else "Disabled"}")
-        sb.appendLine("Node Count: $nodeCount")
-        sb.appendLine("Connection Count: $connectionCount")
-        sb.appendLine("Total Executions: $totalExecutions")
-        sb.appendLine("Successful Executions: $successfulExecutions")
-        sb.appendLine("Failed Executions: $failedExecutions")
-        if (lastExecutionTime != null) {
-            sb.appendLine("Last Execution Time: ${java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(java.util.Date(lastExecutionTime))}")
-            sb.appendLine("Last Execution Status: ${lastExecutionStatus ?: "Unknown"}")
-        }
-        return sb.toString().trim()
-    }
-}
-
-/** 工作流列表结果数据 */
-@Serializable
-data class WorkflowListResultData(
-    val workflows: List<WorkflowResultData>,
-    val totalCount: Int
-) : ToolResultData() {
-    override fun toString(): String {
-        if (workflows.isEmpty()) {
-            return "No workflows"
-        }
-        val sb = StringBuilder()
-        sb.appendLine("Workflow List ($totalCount total):")
-        sb.appendLine()
-        workflows.forEach { workflow ->
-            sb.appendLine("ID: ${workflow.id}")
-            sb.appendLine("Name: ${workflow.name}")
-            sb.appendLine("Description: ${workflow.description}")
-            sb.appendLine("Status: ${if (workflow.enabled) "Enabled" else "Disabled"}")
-            sb.appendLine("Node Count: ${workflow.nodeCount}")
-            sb.appendLine("Connection Count: ${workflow.connectionCount}")
-            sb.appendLine("Total Executions: ${workflow.totalExecutions}")
-            sb.appendLine("---")
-        }
-        return sb.toString().trim()
-    }
-    
-    companion object {
-        /**
-         * 创建一个空的WorkflowListResultData，用于错误情况
-         */
-        fun empty() = WorkflowListResultData(
-            workflows = emptyList(),
-            totalCount = 0
-        )
-    }
-}
-
-/** 工作流详细信息结果数据（包含完整的节点和连接信息） */
-@Serializable
-data class WorkflowDetailResultData(
-    val id: String,
-    val name: String,
-    val description: String,
-    val nodes: List<com.ai.assistance.operit.data.model.WorkflowNode>,
-    val connections: List<com.ai.assistance.operit.data.model.WorkflowNodeConnection>,
-    val enabled: Boolean,
-    val createdAt: Long,
-    val updatedAt: Long,
-    val lastExecutionTime: Long? = null,
-    val lastExecutionStatus: String? = null,
-    val totalExecutions: Int = 0,
-    val successfulExecutions: Int = 0,
-    val failedExecutions: Int = 0
-) : ToolResultData() {
-    override fun toString(): String {
-        val sb = StringBuilder()
-        sb.appendLine("Workflow Details:")
-        sb.appendLine("ID: $id")
-        sb.appendLine("Name: $name")
-        sb.appendLine("Description: $description")
-        sb.appendLine("Status: ${if (enabled) "Enabled" else "Disabled"}")
-        sb.appendLine()
-
-        sb.appendLine("Nodes (${nodes.size}):")
-        nodes.forEach { node ->
-            when (node) {
-                is com.ai.assistance.operit.data.model.TriggerNode -> {
-                    sb.appendLine("  - [Trigger] ${node.name} (${node.id})")
-                    sb.appendLine("    Type: ${node.triggerType}")
-                    if (node.description.isNotBlank()) {
-                        sb.appendLine("    Description: ${node.description}")
-                    }
-                }
-                is com.ai.assistance.operit.data.model.ExecuteNode -> {
-                    sb.appendLine("  - [Execute] ${node.name} (${node.id})")
-                    sb.appendLine("    Action: ${node.actionType}")
-                    if (node.description.isNotBlank()) {
-                        sb.appendLine("    Description: ${node.description}")
-                    }
-                }
-                is com.ai.assistance.operit.data.model.ConditionNode -> {
-                    sb.appendLine("  - [Condition] ${node.name} (${node.id})")
-                    sb.appendLine("    Operator: ${node.operator}")
-                    if (node.description.isNotBlank()) {
-                        sb.appendLine("    Description: ${node.description}")
-                    }
-                }
-                is com.ai.assistance.operit.data.model.LogicNode -> {
-                    sb.appendLine("  - [Logic] ${node.name} (${node.id})")
-                    sb.appendLine("    Operator: ${node.operator}")
-                    if (node.description.isNotBlank()) {
-                        sb.appendLine("    Description: ${node.description}")
-                    }
-                }
-                is com.ai.assistance.operit.data.model.ExtractNode -> {
-                    sb.appendLine("  - [Extract] ${node.name} (${node.id})")
-                    sb.appendLine("    Mode: ${node.mode}")
-                    if (node.expression.isNotBlank()) {
-                        sb.appendLine("    Expression: ${node.expression}")
-                    }
-                    if (node.description.isNotBlank()) {
-                        sb.appendLine("    Description: ${node.description}")
-                    }
-                }
-            }
-        }
-        sb.appendLine()
-
-        sb.appendLine("Connections (${connections.size}):")
-        connections.forEach { conn ->
-            val sourceName = nodes.find { it.id == conn.sourceNodeId }?.name ?: conn.sourceNodeId
-            val targetName = nodes.find { it.id == conn.targetNodeId }?.name ?: conn.targetNodeId
-            sb.append("  - $sourceName → $targetName")
-            if (conn.condition != null) {
-                sb.append(" (Condition: ${conn.condition})")
-            }
-            sb.appendLine()
-        }
-        sb.appendLine()
-
-        sb.appendLine("Execution Statistics:")
-        sb.appendLine("  Total Executions: $totalExecutions")
-        sb.appendLine("  Successful Executions: $successfulExecutions")
-        sb.appendLine("  Failed Executions: $failedExecutions")
-        if (lastExecutionTime != null) {
-            sb.appendLine("  Last Execution Time: ${java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(java.util.Date(lastExecutionTime))}")
-            sb.appendLine("  Last Execution Status: ${lastExecutionStatus ?: "Unknown"}")
-        }
-
-        return sb.toString().trim()
-    }
-    
-    companion object {
-        /**
-         * 创建一个空的WorkflowDetailResultData，用于错误情况
-         */
-        fun empty() = WorkflowDetailResultData(
-            id = "",
-            name = "",
-            description = "",
-            nodes = emptyList(),
-            connections = emptyList(),
-            enabled = false,
-            createdAt = 0L,
-            updatedAt = 0L,
-            lastExecutionTime = null,
-            lastExecutionStatus = null,
-            totalExecutions = 0,
-            successfulExecutions = 0,
-            failedExecutions = 0
-        )
-    }
-}
-
 /** 对话服务启动结果数据 */
 @Serializable
 data class ChatServiceStartResultData(
@@ -2010,7 +1820,7 @@ data class ChatListResultData(
     val currentChatId: String?,
     val chats: List<ChatInfo>
 ) : ToolResultData() {
-    
+
     @Serializable
     data class ChatInfo(
         val id: String,
@@ -2025,7 +1835,7 @@ data class ChatListResultData(
         val characterCardId: String? = null,
         val characterGroupId: String? = null
     )
-    
+
     override fun toString(): String {
         val sb = StringBuilder()
         sb.appendLine("Chat List ($totalCount total):")

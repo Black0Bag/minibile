@@ -1,4 +1,4 @@
- 
+
 package com.ai.assistance.operit.ui.features.settings.components
 
 import androidx.compose.foundation.background
@@ -37,4 +37,4 @@ fun ChatStyleOption(
     ) {
         Text(text = title, color = contentColor, style = MaterialTheme.typography.bodyMedium)
     }
-} 
+}

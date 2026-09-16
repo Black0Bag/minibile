@@ -176,7 +176,7 @@ fun ClassicChatSettingsBar(
             } else {
                 currentConfigMapping
             }
-    
+
     // 获取上下文长度设置，用于显示在 MaxMode 描述中
     // 新增：用户偏好（记忆）选择逻辑
     val userPreferencesManager = remember { UserPreferencesManager.getInstance(context) }
@@ -194,7 +194,7 @@ fun ClassicChatSettingsBar(
         preferenceProfiles =
                 profileIds.map { id -> userPreferencesManager.getMemorySpaceFlow(id).first() }
     }
-    
+
     // 获取聊天设置按钮右边距设置
     val chatSettingsBarRightMargin by
             userPreferencesManager.chatSettingsButtonEndPadding.collectAsState(initial = 2f)
@@ -837,7 +837,7 @@ private fun SettingItem(
     } else {
         context.getString(R.string.disabled)
     }
-    
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -1336,7 +1336,7 @@ private fun MemorySelectorItem(
     val currentProfileName = currentProfile?.name ?: stringResource(R.string.not_selected)
     val expandStateDesc = if (expanded) stringResource(R.string.expanded) else stringResource(R.string.collapsed)
     val accessibilityDesc = "${stringResource(R.string.memory)}: $currentProfileName, $expandStateDesc"
-    
+
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
                 modifier =
@@ -1485,7 +1485,7 @@ private fun ModelSelectorItem(
     val expandStateDesc =
             if (effectiveExpanded) stringResource(R.string.expanded) else stringResource(R.string.collapsed)
     val accessibilityDesc = "${stringResource(R.string.model)}: $currentModelName, $expandStateDesc"
-    
+
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
                 modifier =
@@ -1590,7 +1590,7 @@ private fun ModelSelectorItem(
                     val modelList = getModelList(config.modelName)
                     val hasMultipleModels = modelList.size > 1
                     val isExpanded = expandedConfigId == config.id
-                    
+
                     Column(modifier = Modifier.fillMaxWidth()) {
                         Box(
                                 modifier =
@@ -1674,7 +1674,7 @@ private fun ModelSelectorItem(
                                 }
                             }
                         }
-                        
+
                         // 如果有多个模型且已展开，显示模型列表
                         if (hasMultipleModels && isExpanded) {
                             Column(
@@ -1711,9 +1711,9 @@ private fun ModelSelectorItem(
                                             text = modelName,
                                             fontSize = 12.sp,
                                             fontWeight = if (isModelSelected) FontWeight.Bold else FontWeight.Normal,
-                                            color = if (isModelSelected) 
-                                                MaterialTheme.colorScheme.primary 
-                                            else 
+                                            color = if (isModelSelected)
+                                                MaterialTheme.colorScheme.primary
+                                            else
                                                 MaterialTheme.colorScheme.onSurface,
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis
@@ -1776,9 +1776,9 @@ private fun ActionSettingItem(
     ) {
         // 图标
         Icon(
-            imageVector = icon, 
-            contentDescription = null, 
-            tint = iconTint, 
+            imageVector = icon,
+            contentDescription = null,
+            tint = iconTint,
             modifier = Modifier
                 .size(16.dp)
                 .clearAndSetSemantics {}

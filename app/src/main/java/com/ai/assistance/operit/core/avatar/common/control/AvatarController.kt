@@ -72,7 +72,7 @@ interface AvatarController {
      * @param y The normalized y-coordinate (-1 to 1).
      */
     fun lookAt(x: Float, y: Float)
-    
+
     /**
      * Updates avatar-specific settings, such as scale or position.
      * Each controller implementation should handle the settings relevant to it.
@@ -92,4 +92,4 @@ interface AvatarController {
      * to model-specific animation names.
      */
     fun updateTriggerAnimationMapping(mapping: Map<String, String>) {}
-} 
+}

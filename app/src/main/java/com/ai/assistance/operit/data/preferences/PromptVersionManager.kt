@@ -48,7 +48,7 @@ class PromptVersionManager<T : PromptVersionManager.VersionSpec> {
             if (shouldUpdate(preferences, spec)) {
                 // 执行调用者定义的更新逻辑
                 updater(preferences, id, spec)
-                
+
                 // 执行通用的版本和内容更新
                 applyLatest(preferences, spec)
             }
@@ -61,14 +61,14 @@ class PromptVersionManager<T : PromptVersionManager.VersionSpec> {
 
         val currentContent = preferences[valueKey] ?: ""
         val storedVersion = preferences[defaultVersionKey]
-        
+
         val latestVersion = spec.defaultsByVersion.keys.maxOrNull() ?: return false
         val latestContent = spec.defaultsByVersion[latestVersion] ?: return false
-        
+
         val knownDefaults = spec.defaultsByVersion.values
         // 如果内容是空白，或者内容匹配已知的旧版本默认值，则允许更新
         val isUsingKnownDefault = currentContent.isBlank() || knownDefaults.contains(currentContent)
-        
+
         // 需更新条件：当前正在使用默认值 且 (内容不同 或 版本落后)
         return isUsingKnownDefault && (currentContent != latestContent || storedVersion != latestVersion)
     }
@@ -76,14 +76,14 @@ class PromptVersionManager<T : PromptVersionManager.VersionSpec> {
     private fun applyLatest(preferences: MutablePreferences, spec: VersionSpec) {
         val valueKey = stringPreferencesKey("${spec.key}_prompt_content")
         val defaultVersionKey = intPreferencesKey("${spec.key}_default_version")
-        
+
         val latestVersion = spec.defaultsByVersion.keys.maxOrNull() ?: return
         val latestContent = spec.defaultsByVersion[latestVersion] ?: return
-        
+
         preferences[valueKey] = latestContent
         preferences[defaultVersionKey] = latestVersion
     }
-    
+
     companion object {
         fun defaults(vararg values: String): Map<Int, String> {
             if (values.isEmpty()) throw IllegalArgumentException("defaults values is empty")

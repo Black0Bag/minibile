@@ -20,16 +20,16 @@ import com.ai.assistance.operit.terminal.main.TerminalScreen
 @Composable
 fun ComputerScreen() {
     val context = LocalContext.current
-    
+
     // Create a TerminalManager and TerminalEnv instance for the terminal
     val terminalManager = remember { TerminalManager.getInstance(context) }
     val terminalEnv = rememberTerminalEnv(terminalManager)
-    
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             // 移除背景色，避免遮挡 SurfaceView
-            // .background(Color.Black) 
+            // .background(Color.Black)
             // 使用 pointerInput 拦截触摸事件，防止穿透到下层聊天界面
             // 相比 clickable，这种方式对无障碍服务更友好，不会阻止内部组件的无障碍访问
             .pointerInput(Unit) {
@@ -48,4 +48,4 @@ fun ComputerScreen() {
             checkUpdatesOnEnter = false,
         )
     }
-} 
+}

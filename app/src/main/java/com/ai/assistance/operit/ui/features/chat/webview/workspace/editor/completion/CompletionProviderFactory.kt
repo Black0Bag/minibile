@@ -18,4 +18,4 @@ object CompletionProviderFactory {
             else -> DefaultCompletionProvider()
         }
     }
-} 
+}

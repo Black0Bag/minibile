@@ -212,7 +212,7 @@ fun ChatScreenContent(
     val hasOlderDisplayHistory by actualViewModel.hasOlderDisplayHistory.collectAsState()
     val hasNewerDisplayHistory by actualViewModel.hasNewerDisplayHistory.collectAsState()
     val isLoadingDisplayWindow by actualViewModel.isLoadingDisplayWindow.collectAsState()
-    
+
     // 监听朗读状态
     val isSpeechSessionActive by actualViewModel.isSpeechSessionActive.collectAsState()
     val isSpeechPaused by actualViewModel.isSpeechPaused.collectAsState()
@@ -521,7 +521,7 @@ fun ChatScreenContent(
                                 modifier = Modifier.size(18.dp)
                             )
                         }
-                        
+
                         Text(
                             text = if (selectedMessageIndices.isEmpty()) {
                                 stringResource(R.string.multi_select)

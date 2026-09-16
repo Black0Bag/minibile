@@ -20,7 +20,7 @@ fun SimpleAnimatedVisibility(
         targetValue = if (visible) 1f else 0f,
         label = "Visibility Animation"
     )
-    
+
     if (alpha > 0f) {
         Box(
             modifier = modifier.alpha(alpha)
@@ -28,4 +28,4 @@ fun SimpleAnimatedVisibility(
             content()
         }
     }
-} 
+}

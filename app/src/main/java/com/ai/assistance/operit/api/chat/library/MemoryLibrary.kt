@@ -100,7 +100,7 @@ object MemoryLibrary {
      */
     fun autoCategorizeMemoriesAsync(context: Context, aiService: AIService) {
         ensureInitialized(context)
-        
+
         coroutineScope.launch {
             try {
                 autoCategorizeMemories(context, aiService)
@@ -198,23 +198,23 @@ object MemoryLibrary {
         mutex.withLock {
             val profileId = preferencesManager.activeMemorySpaceIdFlow.first()
             val memoryRepository = MemoryRepository(context, profileId)
-            
+
             // 使用 searchMemories("") 获取所有记忆，然后过滤未分类的
             val allMemories = memoryRepository.searchMemories("")
             val uncategorizedMemories = allMemories.filter { memory ->
                 memory.folderPath.isNullOrEmpty()
             }
-            
+
             if (uncategorizedMemories.isEmpty()) {
                 AppLogger.d(TAG, "没有未分类的记忆，跳过自动分类")
                 return@withLock
             }
-            
+
             AppLogger.d(TAG, "找到 ${uncategorizedMemories.size} 条未分类记忆，开始批量分类...")
-            
+
             // 获取现有文件夹列表
             val existingFolders = memoryRepository.getAllFolderPaths()
-            
+
             // 分批处理（每批10条）
             val batches = uncategorizedMemories.chunked(10)
             batches.forEachIndexed { batchIndex: Int, batch: List<Memory> ->
@@ -225,7 +225,7 @@ object MemoryLibrary {
                     AppLogger.e(TAG, "处理第 ${batchIndex + 1} 批记忆失败", e)
                 }
             }
-            
+
             AppLogger.d(TAG, "自动分类完成")
         }
     }
@@ -251,7 +251,7 @@ object MemoryLibrary {
         val userMessage = FunctionalPrompts.memoryAutoCategorizeUserMessage(useEnglish)
             val messages = listOf(Pair("system", systemPrompt), Pair("user", userMessage)).toPromptTurns()
         val result = StringBuilder()
-        
+
         withContext(Dispatchers.IO) {
             val stream =
                 aiService.sendMessage(
@@ -276,23 +276,23 @@ object MemoryLibrary {
         try {
             val cleanJson = ChatUtils.extractJsonArray(jsonString)
             if (cleanJson.isEmpty() || !cleanJson.startsWith("[")) return
-            
+
             val jsonArray = JSONArray(cleanJson)
             val titleToFolderMap = mutableMapOf<String, String>()
-            
+
             for (i in 0 until jsonArray.length()) {
                 val obj = jsonArray.getJSONObject(i)
                 val title = obj.getString("title")
                 val folder = obj.getString("folder")
                 titleToFolderMap[title] = folder
             }
-            
+
             // 为每个记忆更新分类和重新生成 embedding
             memories.forEach { memory ->
                 val newFolder = titleToFolderMap[memory.title]
                 if (newFolder != null) {
                     AppLogger.d(TAG, "更新记忆 '${memory.title}' 的分类为: $newFolder")
-                    
+
                     // 直接调用 updateMemory，它会自动重新生成 embedding
                     repository.updateMemory(
                         memory = memory,
@@ -520,13 +520,13 @@ object MemoryLibrary {
                 AppLogger.d(TAG, "3. 开始创建记忆链接...")
                 analysis.links.forEach { link ->
                     // Try to find source: first in newly created/updated memories, then in existing DB
-                    val source = createdMemories[link.sourceTitle] 
+                    val source = createdMemories[link.sourceTitle]
                         ?: memoryRepository.findMemoryByTitle(link.sourceTitle)
-                    
+
                     // Try to find target: first in newly created/updated memories, then in existing DB
-                    val target = createdMemories[link.targetTitle] 
+                    val target = createdMemories[link.targetTitle]
                         ?: memoryRepository.findMemoryByTitle(link.targetTitle)
-                    
+
                     if (source != null && target != null) {
                         AppLogger.d(TAG, "   -> 正在链接: '${link.sourceTitle}' --(${link.type}, weight=${link.weight})--> '${link.targetTitle}'")
                         memoryRepository.linkMemories(source, target, link.type, weight = link.weight, description = link.description)

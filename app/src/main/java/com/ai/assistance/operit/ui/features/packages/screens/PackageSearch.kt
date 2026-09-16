@@ -52,11 +52,6 @@ fun pluginMatchesSearch(
                 add(subpackage.displayName)
                 add(subpackage.description)
             }
-            details.workflowTemplates.forEach { template ->
-                add(template.templateId)
-                add(template.displayName)
-                add(template.description)
-            }
             details.workspaceTemplates.forEach { template ->
                 add(template.templateId)
                 add(template.displayName)

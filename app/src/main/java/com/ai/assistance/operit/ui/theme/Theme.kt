@@ -188,7 +188,7 @@ fun OperitTheme(content: @Composable () -> Unit) {
             val insetsController = window.decorView.let { decorView ->
                 androidx.core.view.WindowCompat.getInsetsController(window, decorView)
             }
-            
+
             // 始终保持沉浸式模式，让Compose处理状态栏背景
             WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -196,12 +196,12 @@ fun OperitTheme(content: @Composable () -> Unit) {
             if (statusBarHidden) {
                 // 隐藏状态栏
                 insetsController?.hide(WindowInsetsCompat.Type.statusBars())
-                insetsController?.systemBarsBehavior = 
+                insetsController?.systemBarsBehavior =
                     WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             } else {
                 // 显示状态栏
                 insetsController?.show(WindowInsetsCompat.Type.statusBars())
-                
+
                 // 状态栏颜色和图标颜色控制
                 val statusBarColor = when {
                     statusBarTransparent -> Color.Transparent.toArgb()
@@ -216,7 +216,7 @@ fun OperitTheme(content: @Composable () -> Unit) {
                 // isAppearanceLightStatusBars = false 表示图标为浅色（适用于深色背景）
                 insetsController?.isAppearanceLightStatusBars = !isColorLight(Color(statusBarColor))
             }
-            
+
             // 设置导航栏颜色（底部小白条所在的区域）
             // 在有背景图片时，让导航栏透明
             if (useBackgroundImage && backgroundImageUri != null) {
@@ -301,16 +301,16 @@ fun OperitTheme(content: @Composable () -> Unit) {
             }
 
     // 释放ExoPlayer资源
-    DisposableEffect(key1 = Unit) { 
-        onDispose { 
+    DisposableEffect(key1 = Unit) {
+        onDispose {
             try {
                 exoPlayer?.stop()
                 exoPlayer?.clearMediaItems()
-                exoPlayer?.release() 
+                exoPlayer?.release()
             } catch (e: Exception) {
                 AppLogger.e("OperitTheme", "ExoPlayer释放错误", e)
             }
-        } 
+        }
     }
 
     // 监听应用生命周期，控制视频播放

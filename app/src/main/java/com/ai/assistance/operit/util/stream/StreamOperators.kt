@@ -392,7 +392,7 @@ fun Stream<Char>.splitBy(plugins: List<StreamPlugin>): Stream<StreamGroup<Stream
 
                                 if (successfulPlugin != null) {
                                     // --- 转换：评估中 -> 处理中 ---
-                                    
+
                                     // 如果有多个插件可能同时匹配，记录潜在冲突
                                     val otherTryingPlugins =
                                             plugins.filter {

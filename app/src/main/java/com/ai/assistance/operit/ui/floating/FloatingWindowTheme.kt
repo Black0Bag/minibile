@@ -58,7 +58,7 @@ fun FloatingWindowTheme(
         // 轮廓
         outline = Color(0xFF79747E)                 // 标准轮廓色
     )
-    
+
     // 创建调整大小后的默认Typography，如果没有传入typography参数则使用此默认值
     val defaultSmallTypography = Typography(
         // 正文大字号
@@ -69,7 +69,7 @@ fun FloatingWindowTheme(
             lineHeight = 18.sp,
             letterSpacing = 0.5.sp
         ),
-        // 正文中字号 
+        // 正文中字号
         bodyMedium = TextStyle(
             fontFamily = FontFamily.Default,
             fontWeight = FontWeight.Normal,
@@ -77,7 +77,7 @@ fun FloatingWindowTheme(
             lineHeight = 16.sp,
             letterSpacing = 0.25.sp
         ),
-        // 正文小字号 
+        // 正文小字号
         bodySmall = TextStyle(
             fontFamily = FontFamily.Default,
             fontWeight = FontWeight.Normal,
@@ -121,10 +121,10 @@ fun FloatingWindowTheme(
 
     // 优先使用传入的typography，如果没有则使用默认的小型typography
     val finalTypography = typography ?: defaultSmallTypography
-    
+
     MaterialTheme(
         colorScheme = finalColorScheme,
         typography = finalTypography,
         content = content
     )
-} 
+}

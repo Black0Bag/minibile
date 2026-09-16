@@ -43,7 +43,7 @@ fun LinkPreviewDialog(
             .padding(if (dialogMetrics.isCompactWidth) 16.dp else 24.dp)
             .fillMaxWidth()
             .verticalScrollWhenCompact(dialogMetrics, scrollState)
-    
+
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -68,9 +68,9 @@ fun LinkPreviewDialog(
                     color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center
                 )
-                
+
                 Spacer(modifier = Modifier.height(16.dp))
-                
+
                 // 链接内容显示区域
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
@@ -95,9 +95,9 @@ fun LinkPreviewDialog(
                         )
                     }
                 }
-                
+
                 Spacer(modifier = Modifier.height(24.dp))
-                
+
                 // 按钮区域
                 val openLink = {
                     try {
@@ -192,9 +192,9 @@ fun LinkPreviewDialog(
                         }
                     }
                 }
-                
+
                 Spacer(modifier = Modifier.height(8.dp))
-                
+
                 // 提示文字
                 Text(
                     text = context.getString(R.string.confirm_link_safety),

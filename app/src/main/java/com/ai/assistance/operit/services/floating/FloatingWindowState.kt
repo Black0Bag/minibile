@@ -39,7 +39,7 @@ class FloatingWindowState(context: Context) {
     var lastBallPositionY: Int = 0
     var isTransitioning = false
     val transitionDebounceTime = 500L // 防抖时间
-    
+
     // Ball explosion animation state
     val ballExploding = mutableStateOf(false)
 

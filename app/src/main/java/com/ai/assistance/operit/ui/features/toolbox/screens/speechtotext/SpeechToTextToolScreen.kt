@@ -17,4 +17,4 @@ fun SpeechToTextToolScreen(navController: NavController) {
             SpeechToTextScreen(navController = navController)
         }
     }
-} 
+}

@@ -21,7 +21,7 @@ private val Context.urlConfigDataStore: DataStore<Preferences> by
 class UrlConfigManager(private val context: Context) {
     companion object {
         private val URL_CONFIG_KEY = stringPreferencesKey("url_config")
-        
+
         // 预设配置
         val PRESET_CONFIGS = listOf(
             UrlConfig(

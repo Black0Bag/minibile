@@ -435,14 +435,14 @@ class MemoryViewModel(
         viewModelScope.launch {
             val selectedIds = _uiState.value.boxSelectedNodeIds
             if (selectedIds.isEmpty()) return@launch
-            
+
             _uiState.update { it.copy(isLoading = true) }
             try {
                 // 将UUID转换为Memory ID
                 val memoryIds = selectedIds.mapNotNull { uuid ->
                     repository.findMemoryByUuid(uuid)?.id
                 }
-                
+
                 val success = repository.moveMemoriesToFolder(memoryIds, targetFolderPath)
                 if (success) {
                     loadFolderPaths()

@@ -58,7 +58,7 @@ class SherpaMnnSpeechProvider(private val context: Context) : SpeechService {
 
     private val _isInitialized = MutableStateFlow(false)
     override val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
-    
+
     private val _volumeLevelFlow = MutableStateFlow(0f)
     override val volumeLevelFlow: StateFlow<Float> = _volumeLevelFlow.asStateFlow()
 
@@ -83,7 +83,7 @@ class SherpaMnnSpeechProvider(private val context: Context) : SpeechService {
                     vad = null
                     sileroVad = null
                 }
-                
+
                 if (recognizer != null) {
                     AppLogger.d(
                         TAG,
@@ -167,7 +167,7 @@ class SherpaMnnSpeechProvider(private val context: Context) : SpeechService {
         // TODO: 需要检查 VAD 模型格式或使用兼容的模型版本
         AppLogger.w(TAG, "VAD is temporarily disabled due to compatibility issues")
         vad = null
-        
+
         // 原始代码（已注释，等待修复）:
         /*
         try {
@@ -177,20 +177,20 @@ class SherpaMnnSpeechProvider(private val context: Context) : SpeechService {
                 assetVadPath,
                 File(context.filesDir, assetVadPath.substringAfterLast('/'))
             )
-            
+
             // 验证文件是否存在且可读
             if (!vadModelFile.exists() || !vadModelFile.canRead()) {
                 AppLogger.e(TAG, "VAD model file does not exist or is not readable: ${vadModelFile.absolutePath}")
                 return
             }
-            
+
             // 验证文件大小（silero_vad.onnx 通常约 1-2MB）
             val fileSize = vadModelFile.length()
             if (fileSize < 1024) { // 小于 1KB 可能是损坏的文件
                 AppLogger.e(TAG, "VAD model file seems too small (${fileSize} bytes): ${vadModelFile.absolutePath}")
                 return
             }
-            
+
             AppLogger.d(TAG, "Loading VAD model from: ${vadModelFile.absolutePath} (size: ${fileSize} bytes)")
 
             val vadConfig = VadModelConfig(
@@ -262,20 +262,20 @@ class SherpaMnnSpeechProvider(private val context: Context) : SpeechService {
      */
     private fun calculateVolumeLevel(buffer: ShortArray, size: Int): Float {
         if (size <= 0) return 0f
-        
+
         var sum = 0.0
         for (i in 0 until size) {
             sum += abs(buffer[i].toDouble())
         }
-        
+
         val average = sum / size
         val maxAmplitude = 32768.0
         val db = if (average > 0) 20 * log10(average / maxAmplitude) else -160.0
         val normalizedDb = (db + 60.0) / 60.0
         val volume = normalizedDb.coerceIn(0.0, 1.0).toFloat()
-        
+
         currentVolume = currentVolume * (1 - VOLUME_SMOOTHING_FACTOR) + volume * VOLUME_SMOOTHING_FACTOR
-        
+
         return currentVolume
     }
 
@@ -292,7 +292,7 @@ class SherpaMnnSpeechProvider(private val context: Context) : SpeechService {
 
         _recognitionState.value = SpeechService.RecognitionState.PREPARING
         _recognitionResult.value = SpeechService.RecognitionResult(text = "", isFinal = false, confidence = 0f)
-        
+
         // 重置 VAD 和创建新的 stream
         vad?.reset()
         sileroVad?.reset()
@@ -395,9 +395,9 @@ class SherpaMnnSpeechProvider(private val context: Context) : SpeechService {
                     // 计算并更新音量级别
                     val volumeLevel = calculateVolumeLevel(audioBuffer, ret)
                     _volumeLevelFlow.value = volumeLevel
-                    
+
                     val samples = FloatArray(ret) { i -> audioBuffer[i] / 32768.0f }
-                    
+
                     // VAD 检测
                     val silero = sileroVad
                     if (silero != null) {
@@ -410,16 +410,16 @@ class SherpaMnnSpeechProvider(private val context: Context) : SpeechService {
                             // 有语音时送入识别器
                             stream?.let { streamInstance: OnlineStream ->
                                 streamInstance.acceptWaveform(samples, sampleRateInHz)
-                                
+
                                 // 检查是否可以解码
                                 recognizer?.let { recognizerInstance: OnlineRecognizer ->
                                     while (recognizerInstance.isReady(streamInstance)) {
                                         recognizerInstance.decode(streamInstance)
                                     }
-                                    
+
                                     val result = recognizerInstance.getResult(streamInstance)
                                     val isEndpoint = recognizerInstance.isEndpoint(streamInstance)
-                                    
+
                                     if (result.text.isNotBlank() && lastText != result.text) {
                                         lastText = result.text
                                         _recognitionResult.value = SpeechService.RecognitionResult(
@@ -427,7 +427,7 @@ class SherpaMnnSpeechProvider(private val context: Context) : SpeechService {
                                             isFinal = isEndpoint
                                         )
                                     }
-                                    
+
                                     if (isEndpoint) {
                                         recognizerInstance.reset(streamInstance)
                                         if (!continuousMode) {
@@ -459,10 +459,10 @@ class SherpaMnnSpeechProvider(private val context: Context) : SpeechService {
                                 while (recognizerInstance.isReady(streamInstance)) {
                                     recognizerInstance.decode(streamInstance)
                                 }
-                                
+
                                 val result = recognizerInstance.getResult(streamInstance)
                                 val isEndpoint = recognizerInstance.isEndpoint(streamInstance)
-                                
+
                                 if (result.text.isNotBlank() && lastText != result.text) {
                                     lastText = result.text
                                     _recognitionResult.value = SpeechService.RecognitionResult(
@@ -470,7 +470,7 @@ class SherpaMnnSpeechProvider(private val context: Context) : SpeechService {
                                         isFinal = isEndpoint
                                     )
                                 }
-                                
+
                                 if (isEndpoint) {
                                     recognizerInstance.reset(streamInstance)
                                     if (!continuousMode) {
@@ -502,7 +502,7 @@ class SherpaMnnSpeechProvider(private val context: Context) : SpeechService {
                 _recognitionState.value == SpeechService.RecognitionState.RECOGNIZING
         ) {
             AppLogger.d(TAG, "Stopping recognition...")
-            
+
             // 先停止录音，这样 recordingJob 的循环会自然退出
             try {
                 audioRecord?.stop()
@@ -510,14 +510,14 @@ class SherpaMnnSpeechProvider(private val context: Context) : SpeechService {
                 AppLogger.w(TAG, "Error stopping AudioRecord", e)
             }
             _recognitionState.value = SpeechService.RecognitionState.PROCESSING
-            
+
             // 等待 recordingJob 完成，确保它不再使用 stream
             try {
                 recordingJob?.join()
             } catch (e: Exception) {
                 AppLogger.w(TAG, "Error waiting for recording job", e)
             }
-            
+
             // 现在在 IO 线程上安全地完成识别
             withContext(Dispatchers.IO) {
                 try {
@@ -525,13 +525,13 @@ class SherpaMnnSpeechProvider(private val context: Context) : SpeechService {
                     if (streamInstance != null && recognizer != null) {
                         // 标记输入完成
                         streamInstance.inputFinished()
-                        
+
                         // 完成所有解码
                         val recognizerInstance = recognizer!!
                         while (recognizerInstance.isReady(streamInstance)) {
                             recognizerInstance.decode(streamInstance)
                         }
-                        
+
                         // 获取最终结果
                         val result = recognizerInstance.getResult(streamInstance)
                         withContext(Dispatchers.Main) {
@@ -555,7 +555,7 @@ class SherpaMnnSpeechProvider(private val context: Context) : SpeechService {
             } catch (e: Exception) {
                 AppLogger.w(TAG, "Error releasing stream", e)
             }
-            
+
             try {
                 audioRecord?.release()
             } catch (e: Exception) {
@@ -571,14 +571,14 @@ class SherpaMnnSpeechProvider(private val context: Context) : SpeechService {
 
     override suspend fun cancelRecognition() {
         AppLogger.d(TAG, "Cancelling recognition...")
-        
+
         // 先停止录音，让 recordingJob 自然退出
         try {
             audioRecord?.stop()
         } catch (e: Exception) {
             AppLogger.w(TAG, "Error stopping AudioRecord", e)
         }
-        
+
         // 取消 recordingJob 并等待完成
         if (recordingJob?.isActive == true) {
             recordingJob?.cancel()
@@ -588,7 +588,7 @@ class SherpaMnnSpeechProvider(private val context: Context) : SpeechService {
                 AppLogger.w(TAG, "Error waiting for recording job to cancel", e)
             }
         }
-        
+
         // 现在安全地释放资源
         try {
             audioRecord?.release()
@@ -596,12 +596,12 @@ class SherpaMnnSpeechProvider(private val context: Context) : SpeechService {
             AppLogger.w(TAG, "Error releasing AudioRecord", e)
         }
         audioRecord = null
-        
+
         // 注意：不要在这里释放 stream，因为它可能被 recordingJob 使用
         // stream 会在下次 startRecognition 时重新创建
         // stream?.release()
         // stream = null
-        
+
         vad?.reset()
         _recognitionState.value = SpeechService.RecognitionState.IDLE
         _volumeLevelFlow.value = 0f

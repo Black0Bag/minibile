@@ -18,4 +18,4 @@ data class Embedding(val vector: FloatArray) {
     override fun hashCode(): Int {
         return vector.contentHashCode()
     }
-} 
+}

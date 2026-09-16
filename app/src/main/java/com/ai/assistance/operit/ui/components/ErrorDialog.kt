@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.ai.assistance.operit.R
 
-/** 
+/**
  * 错误弹窗组件，完整显示错误消息内容，包括堆栈跟踪
  * 不做任何简化或截取处理，保持错误消息的原始格式
  */
@@ -34,7 +34,7 @@ fun ErrorDialog(
         onDismiss: () -> Unit,
         properties: DialogProperties =
                 DialogProperties(
-                    dismissOnBackPress = true, 
+                    dismissOnBackPress = true,
                     dismissOnClickOutside = true
                 )
 ) {

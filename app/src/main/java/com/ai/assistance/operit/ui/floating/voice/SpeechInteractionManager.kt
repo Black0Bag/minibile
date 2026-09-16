@@ -126,7 +126,7 @@ class SpeechInteractionManager(
 
         // 重置超时
         timeoutJob?.cancel()
-        
+
         // 重置文本状态
         isRecording = true
         userMessage = ""
@@ -191,7 +191,7 @@ class SpeechInteractionManager(
 
     fun stopListening(isCancel: Boolean) {
         if (!isRecording) return
-        
+
         isRecording = false
         silenceTimeoutJob?.cancel()
 
@@ -232,7 +232,7 @@ class SpeechInteractionManager(
                 }
             }
             userMessage = accumulatedText + (if (accumulatedText.isNotEmpty() || latestPartialText.isNotEmpty()) latestPartialText else "")
-            
+
         } else if (isProcessingSpeech && isFinal) {
             timeoutJob?.cancel()
             accumulatedText += (if (accumulatedText.isNotEmpty() && effectiveText.isNotBlank()) "。" else "") + effectiveText
@@ -288,7 +288,7 @@ class SpeechInteractionManager(
     private fun finalizeSpeechInput() {
         isProcessingSpeech = false
         val text = userMessage.ifBlank { accumulatedText }
-        
+
         if (text.isNotBlank()) {
             onSpeechResult(text, true)
             onStateChange(context.getString(R.string.floating_thinking_2))
@@ -302,9 +302,9 @@ class SpeechInteractionManager(
         accumulatedText = ""
         latestPartialText = ""
     }
-    
+
     // ===== TTS 辅助 =====
-    
+
     fun speak(text: String, interrupt: Boolean = true) {
         if (text.isBlank()) return
         coroutineScope.launch {
@@ -315,7 +315,7 @@ class SpeechInteractionManager(
             }
         }
     }
-    
+
     fun cleanTextForTts(text: String, regexs: List<String>): String {
         return WaifuMessageProcessor.cleanContentForWaifu(TtsCleaner.clean(text, regexs))
     }

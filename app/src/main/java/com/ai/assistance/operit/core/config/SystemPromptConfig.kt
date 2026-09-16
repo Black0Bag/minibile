@@ -468,7 +468,7 @@ AVAILABLE_TOOLS_SECTION""".trimIndent()
 
     return prompt
   }
-  
+
   /**
    * Generates workspace guidelines only when a workspace is actually bound.
    *

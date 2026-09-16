@@ -81,7 +81,7 @@ abstract class BaseJsonPlugin : StreamPlugin {
         }
         return shouldEmit(c)
     }
-    
+
     private fun finishProcessing() {
         StreamLogger.d(this::class.java.simpleName, "JSON structure complete.")
         // The reset will be called by the collector loop when it sees the IDLE state.
@@ -108,4 +108,4 @@ abstract class BaseJsonPlugin : StreamPlugin {
      * Abstract method for subclasses to decide whether a character should be emitted.
      */
     protected abstract fun shouldEmit(c: Char): Boolean
-} 
+}

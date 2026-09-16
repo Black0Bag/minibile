@@ -909,17 +909,17 @@ private fun MicrophoneButton(
             .pointerInput(isRecording) {
                 // 仅在录音时追踪拖动和释放
                 if (!isRecording) return@pointerInput
-                
+
                 awaitPointerEventScope {
                     var previousPosition: Offset? = null
                     var currentOffset = 0f
-                    
+
                     while (true) {
                         val event = awaitPointerEvent(PointerEventPass.Main)
                         val change = event.changes.firstOrNull()
-                        
+
                         if (change == null) break
-                        
+
                         // 检查是否手指抬起
                         if (!change.pressed) {
                             // 释放时的 处理
@@ -937,9 +937,9 @@ private fun MicrophoneButton(
                             }
                             break
                         }
-                        
+
                         val position = change.position
-                        
+
                         if (previousPosition == null) {
                             previousPosition = position
                         } else {
@@ -963,7 +963,7 @@ private fun MicrophoneButton(
                                     onDraggingToEditChange(false)
                                 }
                             }
-                            
+
                             previousPosition = position
                         }
                     }

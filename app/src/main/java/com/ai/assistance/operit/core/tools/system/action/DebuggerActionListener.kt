@@ -140,15 +140,15 @@ class DebuggerActionListener(private val context: Context) : ActionListener {
      */
     private fun startSystemEventMonitoring() {
         AppLogger.d(TAG, "开始系统级事件监控 - 使用startProcess启动持续监控进程")
-        
+
         monitoringJob = CoroutineScope(Dispatchers.IO).launch {
             try {
                 // 启动窗口焦点监控进程
                 startWindowFocusMonitoring()
-                
+
                 // 启动Activity栈监控进程
                 startActivityStackMonitoring()
-                
+
             } catch (e: Exception) {
                 AppLogger.e(TAG, "启动系统事件监控进程失败", e)
             }
@@ -160,14 +160,14 @@ class DebuggerActionListener(private val context: Context) : ActionListener {
      */
     private fun stopSystemEventMonitoring() {
         AppLogger.d(TAG, "停止系统级事件监控")
-        
+
         // 停止监控进程
         windowMonitorProcess?.destroy()
         windowMonitorProcess = null
-        
+
         activityMonitorProcess?.destroy()
         activityMonitorProcess = null
-        
+
         monitoringJob?.cancel()
         monitoringJob = null
         lastFocusedWindow = null
@@ -182,7 +182,7 @@ class DebuggerActionListener(private val context: Context) : ActionListener {
             // 使用watch命令每秒检查窗口焦点变化
             val command = "while true; do dumpsys window windows | grep -E 'mCurrentFocus|mFocusedApp' | head -2; sleep 1; done"
             windowMonitorProcess = shellExecutor.startProcess(command)
-            
+
             // 监听输出流
             windowMonitorProcess?.stdout?.onEach { output ->
                 if (output.isNotEmpty() && output != lastFocusedWindow) {
@@ -190,7 +190,7 @@ class DebuggerActionListener(private val context: Context) : ActionListener {
                     parseWindowFocusEvents(output)
                 }
             }?.launchIn(CoroutineScope(Dispatchers.IO))
-            
+
             AppLogger.d(TAG, "窗口焦点监控进程已启动")
         } catch (e: Exception) {
             AppLogger.e(TAG, "启动窗口焦点监控进程失败", e)
@@ -205,7 +205,7 @@ class DebuggerActionListener(private val context: Context) : ActionListener {
             // 使用watch命令每秒检查Activity栈变化
             val command = "while true; do dumpsys activity activities | grep -E 'Running activities|TaskRecord' | head -5; sleep 1; done"
             activityMonitorProcess = shellExecutor.startProcess(command)
-            
+
             // 监听输出流
             activityMonitorProcess?.stdout?.onEach { output ->
                 if (output.isNotEmpty() && output != lastActivityStack) {
@@ -213,7 +213,7 @@ class DebuggerActionListener(private val context: Context) : ActionListener {
                     parseActivityStackEvents(output)
                 }
             }?.launchIn(CoroutineScope(Dispatchers.IO))
-            
+
             AppLogger.d(TAG, "Activity栈监控进程已启动")
         } catch (e: Exception) {
             AppLogger.e(TAG, "启动Activity栈监控进程失败", e)
@@ -229,10 +229,10 @@ class DebuggerActionListener(private val context: Context) : ActionListener {
     private fun parseWindowFocusEvents(windowInfo: String) {
         if (windowInfo.contains("mCurrentFocus") || windowInfo.contains("mFocusedApp")) {
             AppLogger.v(TAG, "检测到窗口焦点变化: ${windowInfo.take(100)}")
-            
+
             // 尝试从窗口信息中提取应用包名
             val packageName = extractPackageNameFromWindowInfo(windowInfo)
-            
+
             actionCallback?.let { callback ->
                 val event = ActionListener.ActionEvent(
                     timestamp = System.currentTimeMillis(),
@@ -256,10 +256,10 @@ class DebuggerActionListener(private val context: Context) : ActionListener {
      */
     private fun parseActivityStackEvents(activityStack: String) {
         AppLogger.v(TAG, "检测到Activity栈变化: ${activityStack.take(100)}")
-        
+
         // 从Activity栈信息中提取当前前台Activity
         val currentActivity = extractCurrentActivityFromStack(activityStack)
-        
+
         actionCallback?.let { callback ->
             val event = ActionListener.ActionEvent(
                 timestamp = System.currentTimeMillis(),
@@ -344,4 +344,4 @@ class DebuggerActionListener(private val context: Context) : ActionListener {
         val activityPattern = Regex("""ActivityRecord\{[^}]*\s+([^/]+/[^}]+)""")
         return activityPattern.find(activityStack)?.groupValues?.get(1)
     }
-} 
+}

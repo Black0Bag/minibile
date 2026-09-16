@@ -528,7 +528,7 @@ class WebViewHandler(private val context: Context) {
                 """
         if (!window.blobDownloaderInjected) {
             window.blobDownloaderInjected = true;
-            
+
             // 拦截所有a标签的下载
             document.addEventListener('click', function(e) {
                 const a = e.target.closest('a');
@@ -538,19 +538,19 @@ class WebViewHandler(private val context: Context) {
                     return false;
                 }
             });
-            
+
             // 监听自定义下载事件
             window.addEventListener('download-blob', function(e) {
                 if (e.detail && e.detail.url && e.detail.url.startsWith('blob:')) {
                     downloadBlobUrl(e.detail.url, e.detail.filename || 'download_' + Date.now());
                 }
             });
-            
+
             // 在全局提供下载Blob URL的函数
             window.downloadBlobUrl = function(blobUrl, filename) {
                 try {
                     NativeBridge.log('正在下载Blob: ' + blobUrl + ', 文件名: ' + filename);
-                    
+
                     // 获取Blob数据
                     fetch(blobUrl)
                         .then(response => response.blob())

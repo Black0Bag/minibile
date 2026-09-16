@@ -111,12 +111,12 @@ fun BubbleAiMessageComposable(
     val bubbleAiFontType = themeSnapshot.bubbleAiFontType
     val bubbleAiSystemFontName = themeSnapshot.bubbleAiSystemFontName
     val bubbleAiCustomFontPath = themeSnapshot.bubbleAiCustomFontPath
-    
+
     val showModelProvider = themeSnapshot.showModelProvider
     val showModelName = themeSnapshot.showModelName
     val showRoleName = themeSnapshot.showRoleName
     val toolCollapseMode by displayPreferencesManager.toolCollapseMode.collectAsState(initial = ToolCollapseMode.ALL)
-    
+
     // 根据角色名获取头像
     val aiAvatarUri by remember(message.roleName, themeSnapshot.customAiAvatarUri) {
         if (message.roleName != null) {
@@ -163,7 +163,7 @@ fun BubbleAiMessageComposable(
     // 链接预览弹窗状态
     var showLinkDialog by remember { mutableStateOf(false) }
     var linkToPreview by remember { mutableStateOf("") }
-    
+
     // 创建并保存StreamMarkdownRenderer的状态，使用message.timestamp作为key确保同一条消息共享状态
     val rendererState = remember(message.timestamp) { StreamMarkdownRendererState() }
 
@@ -522,13 +522,13 @@ fun BubbleAiMessageComposable(
                 if (showRoleName && message.roleName.isNotEmpty()) {
                     append(message.roleName)
                 }
-                
+
                 // 根据用户设置添加模型名称
                 if (showModelName && message.modelName.isNotEmpty()) {
                     if (isNotEmpty()) append(" | ")
                     append(message.modelName)
                 }
-                
+
                 // 根据用户设置添加供应商
                 if (showModelProvider && message.provider.isNotEmpty()) {
                     if (showModelName && message.modelName.isNotEmpty()) {
@@ -539,7 +539,7 @@ fun BubbleAiMessageComposable(
                     append(message.provider)
                 }
             }
-            
+
             if (displayText.isNotEmpty()) {
                 Text(
                     text = displayText,
@@ -548,7 +548,7 @@ fun BubbleAiMessageComposable(
                     modifier = Modifier.padding(bottom = 4.dp, start = 4.dp)
                 )
             }
-            
+
             BoxWithConstraints {
                 val maxBubbleWidth = maxWidth * 0.85f
                 if (imageUrl != null) {

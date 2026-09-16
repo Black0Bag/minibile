@@ -388,27 +388,27 @@ open class ClaudeProvider(
             // 从文本内容中移除tool标签
             textContent = textContent.replace(match.value, "")
         }
-        
+
         return Pair(textContent.trim(), toolUses)
     }
-    
+
     /**
      * 解析XML格式的tool_result，转换为Claude Tool Result格式
      * @return Pair<文本内容, tool_result数组>
      */
     private fun parseXmlToolResults(content: String): Pair<String, List<Pair<String, String>>?> {
         if (!enableToolCall) return Pair(content, null)
-        
+
         val matches = ChatMarkupRegex.toolResultAnyPattern.findAll(content)
-        
+
         if (!matches.any()) {
             return Pair(content, null)
         }
-        
+
         val results = mutableListOf<Pair<String, String>>()
         var textContent = content
         var resultIndex = 0
-        
+
         matches.forEach { match ->
             val fullContent = match.groupValues[2].trim()
             val contentMatch = ChatMarkupRegex.contentTag.find(fullContent)
@@ -417,23 +417,23 @@ open class ClaudeProvider(
             } else {
                 fullContent
             }
-            
+
             results.add(Pair("toolu_result_${resultIndex}", resultContent))
             textContent = textContent.replace(match.value, "").trim()
-            
+
             AppLogger.d("AIService", "解析Claude tool_result #$resultIndex, content length=${resultContent.length}")
             resultIndex++
         }
-        
+
         return Pair(textContent.trim(), results)
     }
-    
+
     /**
      * 从ToolPrompt列表构建Claude格式的Tool Definitions
      */
     private fun buildToolDefinitionsForClaude(toolPrompts: List<ToolPrompt>): JSONArray {
         val tools = JSONArray()
-        
+
         for (tool in toolPrompts) {
             tools.put(JSONObject().apply {
                 put("name", tool.name)
@@ -444,16 +444,16 @@ open class ClaudeProvider(
                     tool.description
                 }
                 put("description", fullDescription)
-                
+
                 // 使用结构化参数构建input_schema
                 val inputSchema = buildSchemaFromStructured(tool.parametersStructured ?: emptyList())
                 put("input_schema", inputSchema)
             })
         }
-        
+
         return tools
     }
-    
+
     /**
      * 从结构化参数构建JSON Schema（Claude格式）
      */
@@ -461,10 +461,10 @@ open class ClaudeProvider(
         val schema = JSONObject().apply {
             put("type", "object")
         }
-        
+
         val properties = JSONObject()
         val required = JSONArray()
-        
+
         for (param in params) {
             properties.put(param.name, JSONObject().apply {
                 put("type", param.type)
@@ -473,20 +473,20 @@ open class ClaudeProvider(
                     put("default", param.default)
                 }
             })
-            
+
             if (param.required) {
                 required.put(param.name)
             }
         }
-        
+
         schema.put("properties", properties)
         if (required.length() > 0) {
             schema.put("required", required)
         }
-        
+
         return schema
     }
-    
+
     /**
      * 构建包含文本和图片的content数组
      */
@@ -514,12 +514,12 @@ open class ClaudeProvider(
         } else {
             text
         }
-        
+
         // 检查是否包含图片链接
         if (MediaLinkParser.hasImageLinks(textAfterMediaRemoval)) {
             val imageLinks = MediaLinkParser.extractImageLinks(textAfterMediaRemoval)
             val textWithoutLinks = MediaLinkParser.removeImageLinks(textAfterMediaRemoval).trim()
-            
+
             // 添加图片
             imageLinks.forEach { link ->
                 contentArray.put(JSONObject().apply {
@@ -531,7 +531,7 @@ open class ClaudeProvider(
                     })
                 })
             }
-            
+
             // 添加文本（如果有）
             appendTextContentBlock(contentArray, textWithoutLinks)
         } else {
@@ -543,7 +543,7 @@ open class ClaudeProvider(
             AppLogger.d("AIService", "发现空的Claude消息，填充为[空消息]")
             appendTextContentBlock(contentArray, EMPTY_MESSAGE_TEXT)
         }
-        
+
         return contentArray
     }
 

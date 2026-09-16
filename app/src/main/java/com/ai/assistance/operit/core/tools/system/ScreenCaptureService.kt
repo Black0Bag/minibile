@@ -28,7 +28,7 @@ class ScreenCaptureService : Service() {
         @Volatile
         var isMediaProjectionForegroundReady: Boolean = false
             private set
-        
+
         fun start(context: Context) {
             isMediaProjectionForegroundReady = false
             val intent = Intent(context, ScreenCaptureService::class.java).apply {
@@ -80,7 +80,7 @@ class ScreenCaptureService : Service() {
     private fun startForegroundService() {
         try {
             val notification = createNotification()
-            
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val serviceType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                     ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION

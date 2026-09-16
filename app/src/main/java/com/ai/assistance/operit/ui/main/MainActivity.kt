@@ -232,7 +232,7 @@ class MainActivity : ComponentActivity() {
         if (handledShortcutIntent) {
             return
         }
-        
+
         // 如果是分享或打开内容，立即处理
         if (intent?.action == Intent.ACTION_VIEW ||
             intent?.action == Intent.ACTION_SEND ||
@@ -403,12 +403,12 @@ class MainActivity : ComponentActivity() {
             AppLogger.d(TAG, "No pending shared files to process")
             return
         }
-        
+
         AppLogger.d(TAG, "Processing ${uris.size} pending shared file(s)")
         uris.forEachIndexed { index, uri ->
             AppLogger.d(TAG, "  [$index] URI: $uri")
         }
-        
+
         lifecycleScope.launch {
             try {
                 // Pass the URIs to the chat screen via SharedFileHandler
@@ -490,7 +490,7 @@ class MainActivity : ComponentActivity() {
                 showOrientationChangeDialog = false
                 return
             }
-            
+
             // 如果不是“转回去”，或者弹窗还未显示，则显示弹窗
             showOrientationChangeDialog = true
         }

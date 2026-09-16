@@ -44,7 +44,7 @@ class FloatingFullscreenModeViewModel(
 ) {
     // ===== 状态定义 =====
     var aiMessage by mutableStateOf(context.getString(R.string.floating_hold_microphone_to_speak))
-    
+
     // UI状态
     var isWaveActive by mutableStateOf(initialWaveActive)
     var showBottomControls by mutableStateOf(true)
@@ -60,7 +60,7 @@ class FloatingFullscreenModeViewModel(
     var isStreamingTtsMuted by mutableStateOf(false)
     var voiceAvatarMotionRequest by mutableStateOf(VoiceAvatarMotionRequest())
         private set
-    
+
     val isInitialLoad = mutableStateOf(true)
 
      private var aiStreamJob: Job? = null
@@ -83,12 +83,12 @@ class FloatingFullscreenModeViewModel(
     private var voiceAvatarSequence: Long = 0L
     private var lastHandledVoiceAvatarMessageKey: String? = null
     private var hasInitializedVoiceAvatarFromSnapshot: Boolean = false
-    
+
     // ===== 语音交互管理器 =====
     val speechManager = SpeechInteractionManager(
         context = context,
         coroutineScope = coroutineScope,
-        onSpeechResult = { text, _ -> 
+        onSpeechResult = { text, _ ->
             // 收到最终语音结果后直接发送，不再写入底部输入框
             val finalText = text.trim()
             if (finalText.isNotEmpty()) {
@@ -107,7 +107,7 @@ class FloatingFullscreenModeViewModel(
         },
         onStateChange = { msg -> aiMessage = msg }
     )
-    
+
     // 代理属性，方便 UI 访问
     val isRecording: Boolean get() = speechManager.isRecording
     val isProcessingSpeech: Boolean get() = speechManager.isProcessingSpeech
@@ -195,15 +195,15 @@ class FloatingFullscreenModeViewModel(
              activeAiStreamIdentity = null
          }
          activeAiMessageTimestamp = message.timestamp
-        
+
         if (isInitialLoad.value) {
             isInitialLoad.value = false
             if (message.sender == "ai") aiMessage = stripVoiceAvatarTags(message.content)
             return
         }
-        
+
         stopCurrentTtsPlayback()
-        
+
         when (message.sender) {
             "think" -> {
                 aiStreamJob?.cancel()
@@ -247,7 +247,7 @@ class FloatingFullscreenModeViewModel(
             }
             aiMessage += char
             sb.append(char)
-            
+
             val cutIdx = TtsSegmenter.nextSegmentEnd(sb)
             if (cutIdx >= 0) {
                 val segment = sb.substring(0, cutIdx)
@@ -311,13 +311,13 @@ class FloatingFullscreenModeViewModel(
     fun startVoiceCapture() {
         // 如果AI正在生成，尝试取消
         val lastMessage = floatContext.messages.lastOrNull()
-        val isAiWorking = lastMessage?.sender == "think" || 
+        val isAiWorking = lastMessage?.sender == "think" ||
                           (lastMessage?.sender == "ai" && lastMessage.contentStream != null)
-        
+
         if (isAiWorking) {
             floatContext.onCancelMessage?.invoke()
         }
-        
+
         speechManager.startListening { errorMsg ->
             aiMessage = errorMsg
         }
@@ -353,7 +353,7 @@ class FloatingFullscreenModeViewModel(
             }
         }
     }
-    
+
     fun exitWaveMode() {
         wakeEnterJob?.cancel()
         wakeEnterJob = null
@@ -543,13 +543,13 @@ class FloatingFullscreenModeViewModel(
         isEditMode = true
         aiMessage = context.getString(R.string.floating_edit_your_message)
     }
-    
+
     fun exitEditMode() {
         isEditMode = false
         editableText = ""
         aiMessage = context.getString(R.string.floating_hold_microphone_to_speak)
     }
-    
+
     fun sendEditedMessage() {
         if (editableText.isNotBlank()) {
             startVoiceAvatarThinking()
@@ -561,7 +561,7 @@ class FloatingFullscreenModeViewModel(
             aiMessage = context.getString(R.string.floating_thinking)
         }
     }
-    
+
     fun sendInputMessage() {
         val text = inputText.trim()
         if (text.isEmpty() && !attachScreenContent && !attachNotifications && !attachLocation && !hasOcrSelection) return
@@ -570,7 +570,7 @@ class FloatingFullscreenModeViewModel(
         val shouldCaptureScreen = attachScreenContent
         val shouldCaptureNotifications = attachNotifications
         val shouldCaptureLocation = attachLocation
-        
+
         inputText = ""
         attachScreenContent = false
         attachNotifications = false

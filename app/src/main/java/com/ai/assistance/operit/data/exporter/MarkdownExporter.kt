@@ -10,9 +10,9 @@ import java.time.format.DateTimeFormatter
  * Markdown 格式导出器
  */
 object MarkdownExporter {
-    
+
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    
+
     /**
      * 导出单个对话为 Markdown
      */
@@ -64,7 +64,7 @@ object MarkdownExporter {
 
         return sb.toString()
     }
-    
+
     /**
      * 导出多个对话为 Markdown
      */
@@ -92,39 +92,39 @@ object MarkdownExporter {
 
         return sb.toString()
     }
-    
+
     /**
      * 添加单条消息
      */
     private fun appendMessage(sb: StringBuilder, message: ChatMessage) {
         // 消息元数据注释 (简化格式)
         val msgParts = mutableListOf<String>()
-        
+
         // 角色直接作为第一个参数，或者使用 role=xxx
         // 为了简洁，我们使用 role=xxx，但导入时支持简写
         val role = if (message.sender == "user") "user" else "ai"
         msgParts.add(role) // 简写: <!-- msg: user -->
-        
+
         if (message.modelName.isNotEmpty() && message.modelName != "markdown") {
             msgParts.add("model=${message.modelName}")
         }
-        
+
         msgParts.add("timestamp=${message.timestamp}")
-        
+
         sb.appendLine("<!-- msg: ${msgParts.joinToString(", ")} -->")
-        
+
         // 角色标题 (保留用于可读性)
         val roleIcon = if (message.sender == "user") "👤" else "🤖"
         val roleText = if (message.sender == "user") "User" else "Assistant"
         sb.appendLine("## $roleIcon $roleText")
         sb.appendLine()
-        
+
         // 消息元数据（可选，视觉展示）
         if (message.modelName.isNotEmpty() && message.modelName != "markdown" && message.modelName != "unknown") {
             sb.appendLine("*Model: ${message.modelName}*")
             sb.appendLine()
         }
-        
+
         // 消息内容
         sb.appendLine(message.content)
         sb.appendLine()

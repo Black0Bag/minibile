@@ -48,7 +48,7 @@ fun AccessibilityWizardCard(
     var showWarningDialog by remember { mutableStateOf(false) }
     var confirmText by remember { mutableStateOf("") }
     var isError by remember { mutableStateOf(false) }
-    
+
     Surface(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
         color = MaterialTheme.colorScheme.surface,
@@ -270,7 +270,7 @@ fun AccessibilityWizardCard(
             }
         }
     }
-    
+
     // 警告对话框
     if (showWarningDialog) {
         val warningTitle = stringResource(R.string.accessibility_risk_warning_title)
@@ -306,12 +306,12 @@ fun AccessibilityWizardCard(
                         style = MaterialTheme.typography.bodyMedium,
                         textAlign = TextAlign.Center
                     )
-                    
+
                     Spacer(modifier = Modifier.height(16.dp))
-                    
+
                     OutlinedTextField(
                         value = confirmText,
-                        onValueChange = { 
+                        onValueChange = {
                             confirmText = it
                             isError = false
                         },
@@ -342,7 +342,7 @@ fun AccessibilityWizardCard(
             },
             dismissButton = {
                 TextButton(
-                    onClick = { 
+                    onClick = {
                         showWarningDialog = false
                         confirmText = ""
                         isError = false
@@ -395,4 +395,4 @@ private fun UpdateAvailableInfo(
             }
         }
     }
-} 
+}

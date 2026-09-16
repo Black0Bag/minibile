@@ -78,7 +78,7 @@ private const val FALLBACK_MAX_TEXT_CHARS = 20_000
 
 /**
  * 通用性能优化 Modifier：仅在组件进入屏幕可见区域时才进行绘制。
- * 
+ *
  * 实现原理：
  * 1.  使用 `onGloballyPositioned` 监听组件的布局位置和大小。
  * 2.  获取 `LocalView.current.getGlobalVisibleRect()` 来确定当前窗口的可见区域。
@@ -346,7 +346,7 @@ internal sealed class DrawInstruction {
         val y: Float,
         val paint: android.graphics.Paint
     ) : DrawInstruction()
-    
+
     data class Line(
         val startX: Float,
         val startY: Float,
@@ -354,7 +354,7 @@ internal sealed class DrawInstruction {
         val endY: Float,
         val paint: android.graphics.Paint
     ) : DrawInstruction()
-    
+
     data class TextLayout(
         val layout: StaticLayout,
         val x: Float,
@@ -402,12 +402,12 @@ private fun extractAccessibleText(instructions: List<DrawInstruction>): String {
 
 /**
  * Canvas 版本的 Markdown 节点渲染器
- * 
+ *
  * 优化策略：
  * - 使用单个大 Canvas 绘制所有简单文本（标题、段落、列表项）
  * - 复杂组件（代码块、表格、LaTeX）保留原有的 Compose 组件
  * - 最大程度减少组件数量，提高流式渲染性能
- * 
+ *
  * 稳定性优化：
  * - 使用 remember 缓存字体大小，避免每次从 MaterialTheme 读取
  * - 稳定化 lambda 参数，减少不必要的 recompose
@@ -427,9 +427,9 @@ internal fun CanvasMarkdownNodeRenderer(
     fillMaxWidth: Boolean = true,
     isLastNode: Boolean = false
 ) {
-    
+
     val density = LocalDensity.current
-    
+
     // 缓存字体大小 - 避免每次 recompose 都从 MaterialTheme 读取
     // 只有当 MaterialTheme 真正变化时才会重新计算
     val typography = MaterialTheme.typography
@@ -457,18 +457,18 @@ internal fun CanvasMarkdownNodeRenderer(
             titleSmall = scaleMarkdownTextUnit(typography.titleSmall.fontSize, scale)
         )
     }
-    
+
     // 【关键优化】稳定化 xmlRenderer 和 onLinkClick
     // 这两个参数虽然每次传入的引用可能不同，但实际功能是相同的
     // 使用 rememberUpdatedState 确保我们总是使用最新的值，但不会因为引用变化而触发不必要的重组
     val currentXmlRenderer = rememberUpdatedState(xmlRenderer)
     val currentOnLinkClick = rememberUpdatedState(onLinkClick)
-    
+
     // 直接从 node 读取内容，不使用外层 key()
     // 让 Compose 根据节点的实际变化自然地触发 recompose，而不是强制重建
     // 这样可以保持 XML 渲染器等组件的内部状态（如折叠/展开状态）
     val content = node.content
-    
+
     // 【不使用 key() 包裹】直接调用 renderNodeContent
     // 让内部的 remember 和组件自己根据 content 的变化来决定是否重组
     // 这样 xmlRenderer 和 onLinkClick 的引用变化不会导致重组
@@ -585,7 +585,7 @@ private fun renderNodeContent(
                 modifier = Modifier.fillMaxWidth()
             )
         }
-        
+
         // ========== 代码块：保留原组件 ==========
         MarkdownProcessorType.CODE_BLOCK -> {
             val codeLines = content.trimAll().lines()
@@ -593,12 +593,12 @@ private fun renderNodeContent(
             val language = if (firstLine.startsWith("```")) {
                 firstLine.removePrefix("```").trim()
             } else ""
-            
+
             val codeContent = codeLines
                 .dropWhile { it.startsWith("```") }
                 .dropLastWhile { it.endsWith("```") }
                 .joinToString("\n")
-            
+
             // 不使用 key()，让 Compose 根据位置自然识别组件
             // 这样可以保留内部状态（如"已复制"提示、Mermaid 渲染状态）
             EnhancedCodeBlock(
@@ -607,7 +607,7 @@ private fun renderNodeContent(
                 modifier = Modifier.fillMaxWidth()
             )
         }
-        
+
         // ========== 表格：保留原组件 ==========
         MarkdownProcessorType.TABLE -> {
             // 不使用 key()，让 Compose 根据位置自然识别组件
@@ -618,7 +618,7 @@ private fun renderNodeContent(
                 onLinkClick = onLinkClick,
             )
         }
-        
+
         // ========== 引用块：使用 Canvas 绘制文本 + 边框 ==========
         MarkdownProcessorType.BLOCK_QUOTE -> {
             Surface(
@@ -651,7 +651,7 @@ private fun renderNodeContent(
                 }
             }
         }
-        
+
         // ========== 分隔线 ==========
         MarkdownProcessorType.HORIZONTAL_RULE -> {
             HorizontalDivider(
@@ -660,7 +660,7 @@ private fun renderNodeContent(
                 color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
             )
         }
-        
+
         // ========== XML块：保留原组件 ==========
         MarkdownProcessorType.XML_BLOCK -> {
             xmlRenderer.RenderXmlContent(
@@ -671,7 +671,7 @@ private fun renderNodeContent(
                 renderInstanceKey = nodeKey
             )
         }
-        
+
         // ========== 图片：保留原组件 ==========
         MarkdownProcessorType.IMAGE -> {
             val imageContent = content.trimAll()
@@ -698,7 +698,7 @@ private fun renderNodeContent(
                 )
             }
         }
-        
+
         // ========== 块级 LaTeX：保留原组件 ==========
         MarkdownProcessorType.BLOCK_LATEX -> {
             val formulaTextSizePx = with(density) { fontSizes.bodyMedium.toPx() }
@@ -716,7 +716,7 @@ private fun renderNodeContent(
                     // 提取LaTeX内容，移除各种分隔符
                     val latexContent = extractLatexContent(content.trimAll())
                     val horizontalScrollState = rememberScrollState()
-                    
+
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -775,11 +775,11 @@ private fun renderNodeContent(
                 }
             }
         }
-        
+
         // ========== 其他：Canvas 绘制 ==========
         else -> {
             if (content.trimAll().isEmpty()) return
-            
+
             SingleTextCanvas(
                 text = content.trimAll(),
                 textColor = textColor,
@@ -934,7 +934,7 @@ private fun UnifiedCanvasRenderer(
         } else {
             1f
         }
-        
+
         // 提取文本内容用于无障碍朗读
         val accessibleText = remember(layoutResult.instructions) {
             extractAccessibleText(layoutResult.instructions)
@@ -965,7 +965,7 @@ private fun UnifiedCanvasRenderer(
                 .semantics {
                     contentDescription = safeAccessibleText
                 }
-        
+
         // 使用单个 Canvas 绘制所有内容
         SafeMeasureOrFallback(
             fallback = {
@@ -1110,7 +1110,7 @@ private fun UnifiedCanvasRenderer(
                                         val safeNextLen =
                                             (localBaseLen + 1).coerceAtMost(layoutLength)
                                         val x0 = layout.getPrimaryHorizontal(safeBaseLen)
-                                        
+
                                         // 检查下一个字符是否换行
                                         val lineOfNext = if (safeNextLen < layout.text.length) layout.getLineForOffset(safeNextLen) else line
                                         val x1 = if (lineOfNext != line) {
@@ -1239,12 +1239,12 @@ private fun calculateLayout(
     val instructions = mutableListOf<DrawInstruction>()
     var currentY = 0f
     var maxWidth = 0f  // 追踪实际使用的最大宽度
-    
+
     when (node.type) {
         MarkdownProcessorType.HEADER -> {
             val level = determineHeaderLevel(content)
             val headerText = content.trimStart('#', ' ').trimAll()
-            
+
             // 减小标题字号：使用更小一级的字体
             val fontSize = when (level) {
                 1 -> headlineMediumSize  // 原：headlineLargeSize
@@ -1254,7 +1254,7 @@ private fun calculateLayout(
                 5 -> titleSmallSize      // 原：titleMediumSize
                 else -> bodyMediumSize   // 原：titleSmallSize
             }
-            
+
             // 增大上下间距，提高可读性
             val topPadding = when (level) {
                 1 -> 12f  // 原：8f
@@ -1262,15 +1262,15 @@ private fun calculateLayout(
                 3 -> 8f   // 原：4f
                 else -> 6f // 原：3f
             } * density.density
-            
+
             val bottomPadding = when (level) {
                 1, 2 -> 4f  // 原：2f
                 else -> 2f  // 原：1f
             }
             val bottomPaddingPx = bottomPadding * density.density
-            
+
             currentY += topPadding
-            
+
             val textSizePx = with(density) { fontSize.toPx() }
             val textPaint = PaintCache.getTextPaint(
                 textColor,
@@ -1309,29 +1309,29 @@ private fun calculateLayout(
                     lineSpacingMultiplier
                 )
             }
-            
+
             instructions.add(DrawInstruction.TextLayout(layout, 0f, currentY, layout.text))
             currentY += layout.height
             maxWidth = maxOf(maxWidth, calculateActualWidth(layout, 0f, safeAvailableWidthPx))
-            
+
             // 最后一个节点不添加底部间距
             if (!isLastNode) {
                 currentY += bottomPaddingPx
             }
         }
-        
+
         MarkdownProcessorType.ORDERED_LIST -> {
             val itemContent = content.trimAll()
             val numberMatch = Regex("""^(\d+)\.\s*""").find(itemContent)
             val numberStr = numberMatch?.groupValues?.getOrNull(1) ?: ""
-            val itemText = numberMatch?.let { 
+            val itemText = numberMatch?.let {
                 val startIndex = (it.range.last + 1).coerceAtMost(itemContent.length)
                 itemContent.substring(startIndex)
             } ?: itemContent
-            
+
             val startPadding = 4f * density.density
             val markerEndPadding = 4f * density.density
-            
+
             val textSizePx = with(density) { bodyMediumSize.toPx() }
             val boldPaint = PaintCache.getPaint(textColor, textSizePx, boldTypeface)
             val textPaint = PaintCache.getTextPaint(
@@ -1340,11 +1340,11 @@ private fun calculateLayout(
                 normalTypeface,
                 calculateCanvasLetterSpacingEm(bodyMediumSize, globalLetterSpacingSp)
             )
-            
+
             // 测量标记宽度
             val markerWidth = boldPaint.measureText("$numberStr.")
             val contentX = startPadding + markerWidth + markerEndPadding
-            
+
             // 绘制标记
             val markerY = currentY + textSizePx
             instructions.add(
@@ -1355,10 +1355,10 @@ private fun calculateLayout(
                     paint = boldPaint,
                 )
             )
-            
+
             // 使用 StaticLayout 绘制内容（支持自动换行）
             val contentWidth = (safeAvailableWidthPx - contentX.toInt()).coerceAtLeast(1)
-            
+
             val layout = if (node.children.isNotEmpty()) {
                 // 处理子节点列表，去除第一个子节点中的列表标记
                 val modifiedChildren = node.children.toMutableList()
@@ -1402,24 +1402,24 @@ private fun calculateLayout(
             )
             currentY += layout.height
             maxWidth = maxOf(maxWidth, calculateActualWidth(layout, contentX, safeAvailableWidthPx))
-            
+
             // 最后一个节点不添加底部间距
             if (!isLastNode) {
                 currentY += 2f * density.density
             }
         }
-        
+
         MarkdownProcessorType.UNORDERED_LIST -> {
             val itemContent = content.trimAll()
             val markerMatch = Regex("""^[-*+]\s+""").find(itemContent)
-            val itemText = markerMatch?.let { 
+            val itemText = markerMatch?.let {
                 val startIndex = (it.range.last + 1).coerceAtMost(itemContent.length)
                 itemContent.substring(startIndex)
             } ?: itemContent
-            
+
             val startPadding = 4f * density.density
             val markerEndPadding = 4f * density.density
-            
+
             val textSizePx = with(density) { bodyMediumSize.toPx() }
             val textPaint = PaintCache.getTextPaint(
                 textColor,
@@ -1428,14 +1428,14 @@ private fun calculateLayout(
                 calculateCanvasLetterSpacingEm(bodyMediumSize, globalLetterSpacingSp)
             )
             val markerPaint = PaintCache.getPaint(textColor, textSizePx, normalTypeface)
-            
+
             // 测量标记宽度
             val markerWidth = markerPaint.measureText("•")
             val contentX = startPadding + markerWidth + markerEndPadding
 
             // 使用 StaticLayout 绘制内容（支持自动换行）
             val contentWidth = (safeAvailableWidthPx - contentX.toInt()).coerceAtLeast(1)
-            
+
             val layout = if (node.children.isNotEmpty()) {
                 // 处理子节点列表，去除第一个子节点中的列表标记
                 val modifiedChildren = node.children.toMutableList()
@@ -1490,16 +1490,16 @@ private fun calculateLayout(
             )
             currentY += layout.height
             maxWidth = maxOf(maxWidth, calculateActualWidth(layout, contentX, safeAvailableWidthPx))
-            
+
             // 最后一个节点不添加底部间距
             if (!isLastNode) {
                 currentY += 2f * density.density
             }
         }
-        
+
         MarkdownProcessorType.PLAIN_TEXT -> {
             if (content.trimAll().isEmpty()) return LayoutResult(0f, 0f, emptyList())
-            
+
             val textSizePx = with(density) { bodyMediumSize.toPx() }
             val textPaint = PaintCache.getTextPaint(
                 textColor,
@@ -1575,7 +1575,7 @@ private fun calculateLayout(
                     currentY += paragraphBreakHeight + paragraphSpacingPx
                 }
             }
-            
+
             // 最后一个节点不添加底部间距
             if (!isLastNode) {
                 currentY += 6f * density.density
@@ -1586,7 +1586,7 @@ private fun calculateLayout(
             // 其他类型暂不处理
         }
     }
-    
+
     return LayoutResult(currentY, maxWidth, instructions)
 }
 
@@ -1651,7 +1651,7 @@ private fun SingleTextCanvas(
                 lineSpacingMultiplier
             )
         }
-        
+
         val totalHeight = layout.height.toFloat()
         val maxHeightPx = minOf(MAX_CANVAS_HEIGHT_PX, MAX_COMPOSE_CONSTRAINT_HEIGHT_PX)
         val clampedHeightDp = with(localDensity) {
@@ -1689,7 +1689,7 @@ private fun SingleTextCanvas(
                     // 获取可见区域
                     val clipBounds = android.graphics.Rect()
                     canvas.nativeCanvas.getClipBounds(clipBounds)
-                    
+
                     // 判断是否在可见区域内
                     if (totalHeight >= clipBounds.top && 0f <= clipBounds.bottom) {
                         drawInlineCodeBackgrounds(layout, canvas.nativeCanvas)

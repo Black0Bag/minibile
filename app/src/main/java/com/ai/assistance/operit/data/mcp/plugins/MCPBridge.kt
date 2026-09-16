@@ -91,19 +91,19 @@ class MCPBridge private constructor(private val context: Context) {
 
         @Volatile
         private var lastStartCommandAtMs: Long = 0L
-        
+
         @Volatile
         private var INSTANCE: MCPBridge? = null
-        
+
         fun getInstance(context: Context): MCPBridge {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: MCPBridge(context.applicationContext).also { 
+                INSTANCE ?: MCPBridge(context.applicationContext).also {
                     INSTANCE = it
                     appContext = context.applicationContext
                 }
             }
         }
-        
+
         /**
          * 智能检测可用端口
          * 优先尝试 8752（本地直连），失败后尝试 8751（SSH转发）
@@ -136,7 +136,7 @@ class MCPBridge private constructor(private val context: Context) {
                 return@withLock detectedPort
             }
         }
-        
+
         /**
          * 检查端口是否可用（快速检测，无日志污染）
          */
@@ -228,7 +228,7 @@ class MCPBridge private constructor(private val context: Context) {
                     // 2. 确保终端目录存在并复制文件
                     // 获取终端管理器
                     val terminal = Terminal.getInstance(context)
-                    
+
                     // 确保已连接到终端服务
                     if (!terminal.isConnected()) {
                         val connected = terminal.initialize()
@@ -250,19 +250,19 @@ class MCPBridge private constructor(private val context: Context) {
 
                     // 使用sdcard路径而不是Android storage路径
                     val sdcardBridgePath = OperitPaths.bridgePathSdcard()
-                    
+
                     // 获取 AIToolHandler 实例
                     val toolHandler = AIToolHandler.getInstance(context)
-                    
+
                     // 先创建目标目录
                     val mkdirCommand = "mkdir -p $TERMUX_BRIDGE_PATH"
                     terminal.executeCommand(actualSessionId, mkdirCommand)
                     delay(100) // 等待目录创建
-                    
+
                     // 使用 AIToolHandler 复制打包后的文件（跨环境复制：Android -> Linux）
                     // 打包后的文件已包含所有依赖，不需要 package.json 和 node_modules
                     val filesToCopy = listOf("index.js", "spawn-helper.js")
-                    
+
                     for (fileName in filesToCopy) {
                         val copyTool = AITool(
                             name = "copy_file",
@@ -274,7 +274,7 @@ class MCPBridge private constructor(private val context: Context) {
                                 ToolParameter("recursive", "false")
                             )
                         )
-                        
+
                         val result = toolHandler.executeTool(copyTool)
                         if (!result.success) {
                             AppLogger.e(TAG, "复制文件 $fileName 失败: ${result.error}")
@@ -282,7 +282,7 @@ class MCPBridge private constructor(private val context: Context) {
                         }
                         AppLogger.d(TAG, "成功复制文件: $fileName")
                     }
-                    
+
                     // 打包后的文件已包含所有依赖，无需安装 node_modules
 
                     AppLogger.d(TAG, "桥接器成功部署到终端")
@@ -335,7 +335,7 @@ class MCPBridge private constructor(private val context: Context) {
 
                         // 获取终端管理器
                         val terminal = Terminal.getInstance(ctx)
-                        
+
                         // 确保已连接到终端服务
                         if (!terminal.isConnected()) {
                             val connected = terminal.initialize()
@@ -498,7 +498,7 @@ class MCPBridge private constructor(private val context: Context) {
                         // 自动检测端口（如果未指定）
                         val actualPort = port ?: detectPort()
                         val nowMs = System.currentTimeMillis()
-                        
+
                         // Extract command details for better logging
                         val cmdType = command.optString("command", "unknown")
                         val cmdId = command.optString("id", "no-id")

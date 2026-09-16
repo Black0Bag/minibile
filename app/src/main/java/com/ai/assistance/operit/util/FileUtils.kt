@@ -49,7 +49,7 @@ object FileUtils {
 
     // Common text files without extensions
     private val TEXT_BASED_FILENAMES = setOf(
-        "readme", "makefile", "dockerfile", "license", "changelog", "authors", 
+        "readme", "makefile", "dockerfile", "license", "changelog", "authors",
         "contributors", "copying", "install", "news", "todo", "version",
         "gemfile", "rakefile", "vagrantfile", "buildfile"
     )
@@ -78,7 +78,7 @@ object FileUtils {
     /**
      * Checks if a file appears to be text-like by reading its first few bytes.
      * This is more reliable than extension checking as it analyzes actual content.
-     * 
+     *
      * @param file The file to check
      * @param sampleSize Number of bytes to read for analysis (default: 512)
      * @return True if the file appears to contain text, false otherwise
@@ -97,7 +97,7 @@ object FileUtils {
             file.inputStream().use { input ->
                 val buffer = ByteArray(minOf(sampleSize.toLong(), file.length()).toInt())
                 val bytesRead = input.read(buffer)
-                
+
                 if (bytesRead <= 0) {
                     return true // Empty or unreadable, treat as text
                 }
@@ -113,7 +113,7 @@ object FileUtils {
     /**
      * Checks if a file appears to be text-like by reading its first few bytes from a path.
      * This version accepts a file path string.
-     * 
+     *
      * @param path The file path to check
      * @param sampleSize Number of bytes to read for analysis (default: 512)
      * @return True if the file appears to contain text, false otherwise
@@ -125,7 +125,7 @@ object FileUtils {
     /**
      * Check if the given byte array appears to be text content.
      * This is useful when you already have a byte sample and want to check if it's text.
-     * 
+     *
      * @param bytes The byte array to analyze
      * @return True if content appears to be text
      */
@@ -135,13 +135,13 @@ object FileUtils {
 
     /**
      * Analyzes a byte array to determine if it contains text-like content.
-     * 
+     *
      * Algorithm:
      * - Checks for null bytes (strong indicator of binary)
      * - Counts printable characters (ASCII 32-126)
      * - Counts common whitespace characters (tab, newline, carriage return)
      * - Counts UTF-8 continuation bytes and common UTF-8 patterns
-     * 
+     *
      * @param bytes The byte array to analyze
      * @param length Number of bytes to analyze
      * @return True if content appears to be text
@@ -204,7 +204,7 @@ object FileUtils {
         // If there are any, and the ratio of non-text to text is high, it's binary.
         // We can define "binary" as having more than 10% non-text characters.
         if (nonTextChars == 0) return true
-        
+
         // Avoid division by zero for empty or invalid files
         val totalChars = textChars + nonTextChars
         if (totalChars == 0) return true // Or false, depending on desired behavior for empty/unreadable
@@ -305,7 +305,7 @@ object FileUtils {
 
             // 获取原始文件的扩展名
             val originalExtension = getFileExtensionFromUri(context, uri) ?: "dat"
-            
+
             // Use the unique name to create a distinct file with correct extension
             val file = File(context.filesDir, "${uniqueName}_${UUID.randomUUID()}.${originalExtension}")
             outputStream = FileOutputStream(file)
@@ -316,7 +316,7 @@ object FileUtils {
                 outputStream.write(buffer, 0, read)
             }
             outputStream.flush()
-            
+
             AppLogger.d("FileUtils", "File copied successfully to internal storage: ${file.absolutePath}")
             return@withContext Uri.fromFile(file)
         } catch (e: Exception) {
@@ -331,7 +331,7 @@ object FileUtils {
             }
         }
     }
-    
+
     /**
      * Get the file extension from a URI
      * @param context The application context
@@ -347,7 +347,7 @@ object FileUtils {
                 return@withContext pathExtension.lowercase()
             }
         }
-        
+
         // Try to get from content resolver
         val mimeType = context.contentResolver.getType(uri)
         if (mimeType != null) {
@@ -356,7 +356,7 @@ object FileUtils {
                 return@withContext extension.lowercase()
             }
         }
-        
+
         // Try to get filename from content resolver
         context.contentResolver.query(uri, arrayOf(android.provider.OpenableColumns.DISPLAY_NAME), null, null, null)?.use { cursor ->
             if (cursor.moveToFirst()) {
@@ -370,7 +370,7 @@ object FileUtils {
                 }
             }
         }
-        
+
         return@withContext null
     }
 

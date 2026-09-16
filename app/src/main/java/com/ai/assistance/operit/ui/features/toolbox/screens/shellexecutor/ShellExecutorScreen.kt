@@ -84,10 +84,10 @@ fun ShellExecutorScreen(navController: NavController? = null) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
-    
+
     // 创建命令管理器
     val commandManager = remember { ShellCommandManager(context) }
-    
+
     // 状态管理
     var commandInput by remember { mutableStateOf("") }
     var isExecuting by remember { mutableStateOf(false) }
@@ -97,15 +97,15 @@ fun ShellExecutorScreen(navController: NavController? = null) {
     var showError by remember { mutableStateOf(false) }
     var showSuggestions by remember { mutableStateOf(false) }
     var suggestionsList by remember { mutableStateOf(listOf<String>()) }
-    
+
     // 从管理器获取预设命令
     val presetCommands = remember { commandManager.getPresetCommands() }
-    
+
     // 加载历史记录
     LaunchedEffect(Unit) {
         commandHistory = commandManager.getCommandHistory()
     }
-    
+
     // 命令建议更新
     LaunchedEffect(commandInput) {
         if (commandInput.isNotEmpty()) {
@@ -120,14 +120,14 @@ fun ShellExecutorScreen(navController: NavController? = null) {
     fun executeCommand(command: String) {
         val trimmedCommand = command.trim()
         if (trimmedCommand.isBlank()) return
-        
+
         isExecuting = true
         focusManager.clearFocus()
-        
+
         coroutineScope.launch {
             try {
                 val record = commandManager.executeCommand(trimmedCommand)
-                
+
                 // 添加到历史记录
                 commandHistory = listOf(record) + commandHistory
                 commandInput = "" // 清空输入
@@ -209,7 +209,7 @@ fun ShellExecutorScreen(navController: NavController? = null) {
                                 unfocusedBorderColor = MaterialTheme.colorScheme.outline
                             )
                         )
-                        
+
                         // 命令建议下拉菜单
                         if (showSuggestions && commandInput.isNotEmpty()) {
                             Surface(
@@ -245,7 +245,7 @@ fun ShellExecutorScreen(navController: NavController? = null) {
                                                 fontFamily = FontFamily.Monospace
                                             )
                                         }
-                                        
+
                                         if (suggestion != suggestionsList.last()) {
                                             HorizontalDivider(
                                                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -257,9 +257,9 @@ fun ShellExecutorScreen(navController: NavController? = null) {
                             }
                         }
                     }
-                    
+
                     Spacer(modifier = Modifier.width(8.dp))
-                    
+
                     // 执行按钮
                     FilledTonalButton(
                         onClick = { executeCommand(commandInput) },
@@ -362,7 +362,7 @@ fun ShellExecutorScreen(navController: NavController? = null) {
                 val presetsByCategory = remember(presetCommands) {
                     presetCommands.groupBy { it.category }
                 }
-                
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -388,7 +388,7 @@ fun ShellExecutorScreen(navController: NavController? = null) {
                                 color = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.padding(vertical = 8.dp)
                             )
-                            
+
                             FlowRow(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -406,7 +406,7 @@ fun ShellExecutorScreen(navController: NavController? = null) {
                                     )
                                 }
                             }
-                            
+
                             Spacer(modifier = Modifier.height(8.dp))
                         }
                     }
@@ -429,9 +429,9 @@ fun ShellExecutorScreen(navController: NavController? = null) {
                         tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
                         modifier = Modifier.size(72.dp)
                     )
-                    
+
                     Spacer(modifier = Modifier.height(16.dp))
-                    
+
                     Text(
                         text = stringResource(R.string.shell_executor_input_command_hint),
                         style = MaterialTheme.typography.titleMedium,
@@ -522,9 +522,9 @@ fun PresetCommandChip(presetCommand: PresetCommand, modifier: Modifier = Modifie
                 tint = MaterialTheme.colorScheme.onSecondaryContainer,
                 modifier = Modifier.size(16.dp)
             )
-            
+
             Spacer(modifier = Modifier.width(8.dp))
-            
+
             Text(
                 text = presetCommand.name,
                 style = MaterialTheme.typography.bodySmall,
@@ -541,10 +541,10 @@ fun PresetCommandChip(presetCommand: PresetCommand, modifier: Modifier = Modifie
 fun CommandResultCard(record: CommandRecord, onReExecute: () -> Unit = {}) {
     val dateFormatter = remember { SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()) }
     val formattedDate = remember(record) { dateFormatter.format(Date(record.timestamp)) }
-    
+
     var expanded by remember { mutableStateOf(false) }
     val backgroundColor = MaterialTheme.colorScheme.surface
-    
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -580,9 +580,9 @@ fun CommandResultCard(record: CommandRecord, onReExecute: () -> Unit = {}) {
                         modifier = Modifier.size(20.dp)
                     )
                 }
-                
+
                 Spacer(modifier = Modifier.width(12.dp))
-                
+
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = record.command,
@@ -593,14 +593,14 @@ fun CommandResultCard(record: CommandRecord, onReExecute: () -> Unit = {}) {
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-                    
+
                     Text(
                         text = formattedDate,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                
+
                 // 状态指示
                 Box(
                     modifier = Modifier
@@ -611,9 +611,9 @@ fun CommandResultCard(record: CommandRecord, onReExecute: () -> Unit = {}) {
                             else Color(0xFFFF5252)
                         )
                 )
-                
+
                 Spacer(modifier = Modifier.width(8.dp))
-                
+
                 // 展开/收起按钮
                 IconButton(onClick = { expanded = !expanded }) {
                     Icon(
@@ -723,4 +723,4 @@ fun CommandResultCard(record: CommandRecord, onReExecute: () -> Unit = {}) {
             }
         }
     }
-} 
+}

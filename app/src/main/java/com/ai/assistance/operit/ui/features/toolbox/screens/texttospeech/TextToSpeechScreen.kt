@@ -59,7 +59,7 @@ fun TextToSpeechScreen(navController: NavController) {
         var voiceService by remember(voiceServiceVersion) {
                 mutableStateOf(VoiceServiceFactory.getInstance(context))
         }
-        
+
         // 状态变量
         var inputText by remember { mutableStateOf("") }
         var speechRate by remember { mutableStateOf(1.0f) }
@@ -574,15 +574,15 @@ fun TextToSpeechScreen(navController: NavController) {
                                                         fontWeight = FontWeight.Bold
                                                 )
                                         }
-                                        
+
                                         Spacer(modifier = Modifier.height(8.dp))
-                                        
+
                                         Text(
                                                 text = error ?: "",
                                                 color = MaterialTheme.colorScheme.onErrorContainer,
                                                 style = MaterialTheme.typography.bodyMedium
                                         )
-                                        
+
                                         // 错误详情
                                         if (errorDetails != null) {
                                                 Spacer(modifier = Modifier.height(12.dp))
@@ -599,7 +599,7 @@ fun TextToSpeechScreen(navController: NavController) {
                                                         style = MaterialTheme.typography.bodySmall
                                                 )
                                         }
-                                        
+
                                         // 调试信息
                                         if (debugInfo != null) {
                                                 Spacer(modifier = Modifier.height(12.dp))
@@ -616,7 +616,7 @@ fun TextToSpeechScreen(navController: NavController) {
                                                         style = MaterialTheme.typography.bodySmall
                                                 )
                                         }
-                                        
+
                                         // 清除错误按钮
                                         Spacer(modifier = Modifier.height(16.dp))
                                         Row(

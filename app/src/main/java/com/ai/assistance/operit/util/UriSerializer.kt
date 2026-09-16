@@ -19,4 +19,4 @@ object UriSerializer : KSerializer<Uri?> {
         val string = decoder.decodeString()
         return if (string.isEmpty()) null else Uri.parse(string)
     }
-} 
+}

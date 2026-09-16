@@ -296,7 +296,7 @@ fun ShizukuDemoScreen(
         val needRootSetupGuide =
                 currentDisplayedPermissionLevel == AndroidPermissionLevel.ROOT &&
                         (!uiState.hasRootAccess.value)
-    
+
         val needAccessibilitySetupGuide =
             currentDisplayedPermissionLevel == AndroidPermissionLevel.ACCESSIBILITY &&
                     (!uiState.isAccessibilityProviderInstalled.value ||
@@ -671,7 +671,7 @@ fun ShizukuDemoScreen(
                     isEnvironmentReady = viewModel.isNodejsPythonEnvironmentReady.value,
                     showWizard = uiState.showOperitTerminalWizard.value,
                     onToggleWizard = { viewModel.toggleOperitTerminalWizard() },
-                    onOpenTerminalScreen = { 
+                    onOpenTerminalScreen = {
                         // 跳转到TerminalSetup，直接显示配置界面
                         navigateTo?.invoke(Screen.TerminalSetup)
                     }

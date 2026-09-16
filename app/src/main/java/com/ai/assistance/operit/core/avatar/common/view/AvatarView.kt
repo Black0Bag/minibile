@@ -39,4 +39,4 @@ fun AvatarView(
         // Display a fallback UI
         Text(modifier = modifier, text = errorMessage)
     }
-} 
+}

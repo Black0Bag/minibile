@@ -1724,7 +1724,7 @@ class WebChatHttpBridge(
             contentLength = preview.contentLength,
             displayMode = preview.displayMode,
             isFavorite = preview.isFavorite
-        ) 
+        )
     }
 
     private suspend fun latestAssistantMessage(

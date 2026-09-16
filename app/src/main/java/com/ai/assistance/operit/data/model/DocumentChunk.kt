@@ -25,4 +25,4 @@ data class DocumentChunk(
     var embedding: Embedding? = null
 ) {
     lateinit var memory: ToOne<Memory>
-} 
+}

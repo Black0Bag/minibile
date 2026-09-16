@@ -35,12 +35,12 @@ fun HelpScreen(onBackPressed: () -> Unit = {}) {
                     super.onPageStarted(view, url, favicon)
                     isLoading = true
                 }
-                
+
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
                     isLoading = false
                 }
-                
+
                 override fun onReceivedError(
                     view: WebView?,
                     errorCode: Int,
@@ -83,7 +83,7 @@ fun HelpScreen(onBackPressed: () -> Unit = {}) {
                 .focusRequester(focusRequester)
                 .focusable()
         )
-        
+
         // 加载指示器
         if (isLoading) {
             Box(

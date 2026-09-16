@@ -38,13 +38,13 @@ fun MnnModelDownloadScreen(
     val scope = rememberCoroutineScope()
     val downloadManager = remember { MnnModelDownloadManager.getInstance(context) }
     val keyboardController = LocalSoftwareKeyboardController.current
-    
+
     var modelList by remember { mutableStateOf<List<MnnModel>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var showDeleteDialog by remember { mutableStateOf<String?>(null) }
     var searchQuery by remember { mutableStateOf("") }
-    
+
     // 过滤后的模型列表
     val filteredModels = remember(modelList, searchQuery) {
         if (searchQuery.isBlank()) {
@@ -71,7 +71,7 @@ fun MnnModelDownloadScreen(
         }
         isLoading = false
     }
-    
+
     CustomScaffold() { paddingValues ->
         Box(
             modifier = Modifier
@@ -182,7 +182,7 @@ fun MnnModelDownloadScreen(
                                 shape = RoundedCornerShape(12.dp)
                             )
                         }
-                        
+
                         // 模型列表
                         if (filteredModels.isEmpty()) {
                             Box(
@@ -226,7 +226,7 @@ fun MnnModelDownloadScreen(
             }
         }
     }
-    
+
     // 删除确认对话框
     showDeleteDialog?.let { modelName ->
         AlertDialog(
@@ -269,13 +269,13 @@ private fun ModelCard(
         is DownloadState.Idle -> downloadManager.isModelDownloaded(model.modelName)
         else -> false // Downloading, Connecting
     }
-    
+
     // 优先使用ModelScope源
-    val downloadUrl = model.sources["ModelScope"] 
-        ?: model.sources["HuggingFace"] 
+    val downloadUrl = model.sources["ModelScope"]
+        ?: model.sources["HuggingFace"]
         ?: model.sources.values.firstOrNull()
         ?: ""
-    
+
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
@@ -301,7 +301,7 @@ private fun ModelCard(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
                 )
-                
+
                 if (model.tags.isNotEmpty()) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(3.dp),
@@ -323,16 +323,16 @@ private fun ModelCard(
                     }
                 }
             }
-            
+
             Spacer(modifier = Modifier.height(4.dp))
-            
+
             // 模型大小
             Text(
                 text = stringResource(R.string.mnn_model_size, model.size_gb),
                 style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            
+
             // 描述
             if (model.description.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(3.dp))
@@ -344,9 +344,9 @@ private fun ModelCard(
                     overflow = TextOverflow.Ellipsis
                 )
             }
-            
+
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             // 下载进度和按钮
             when (downloadState) {
                 is DownloadState.Idle, is DownloadState.Completed -> {
@@ -371,7 +371,7 @@ private fun ModelCard(
                                     color = MaterialTheme.colorScheme.primary
                                 )
                             }
-                            
+
                             IconButton(
                                 onClick = { onDelete(model.modelName) },
                                 modifier = Modifier.size(32.dp),
@@ -402,7 +402,7 @@ private fun ModelCard(
                                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
                             ) {
                                 Icon(
-                                    Icons.Default.Download, 
+                                    Icons.Default.Download,
                                     contentDescription = null,
                                     modifier = Modifier.size(16.dp)
                                 )
@@ -435,7 +435,7 @@ private fun ModelCard(
                         )
                     }
                 }
-                
+
                 is DownloadState.Downloading -> {
                     val state = downloadState as DownloadState.Downloading
                     Column(modifier = Modifier.fillMaxWidth()) {
@@ -447,9 +447,9 @@ private fun ModelCard(
                                 .height(3.dp)
                                 .clip(RoundedCornerShape(2.dp))
                         )
-                        
+
                         Spacer(modifier = Modifier.height(6.dp))
-                        
+
                         // 进度信息
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -478,7 +478,7 @@ private fun ModelCard(
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
-                            
+
                             IconButton(
                                 onClick = { downloadManager.pauseDownload(model.modelName) },
                                 modifier = Modifier.size(32.dp)
@@ -492,7 +492,7 @@ private fun ModelCard(
                         }
                     }
                 }
-                
+
                 is DownloadState.Paused -> {
                     val state = downloadState as DownloadState.Paused
                     Column(modifier = Modifier.fillMaxWidth()) {
@@ -503,9 +503,9 @@ private fun ModelCard(
                                 .height(3.dp)
                                 .clip(RoundedCornerShape(2.dp))
                         )
-                        
+
                         Spacer(modifier = Modifier.height(6.dp))
-                        
+
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -562,7 +562,7 @@ private fun ModelCard(
                         }
                     }
                 }
-                
+
                 is DownloadState.Completed -> {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -583,7 +583,7 @@ private fun ModelCard(
                                 color = MaterialTheme.colorScheme.primary
                             )
                         }
-                        
+
                         IconButton(
                             onClick = { onDelete(model.modelName) },
                             modifier = Modifier.size(32.dp),
@@ -598,7 +598,7 @@ private fun ModelCard(
                         }
                     }
                 }
-                
+
                 is DownloadState.Failed -> {
                     val state = downloadState as DownloadState.Failed
                     Column(modifier = Modifier.fillMaxWidth()) {
@@ -615,9 +615,9 @@ private fun ModelCard(
                                 overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.weight(1f)
                             )
-                            
+
                             Spacer(modifier = Modifier.width(8.dp))
-                            
+
                             Button(
                                 onClick = {
                                     scope.launch {
@@ -628,7 +628,7 @@ private fun ModelCard(
                                 contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
                             ) {
                                 Icon(
-                                    Icons.Default.Refresh, 
+                                    Icons.Default.Refresh,
                                     contentDescription = null,
                                     modifier = Modifier.size(16.dp)
                                 )

@@ -32,7 +32,7 @@ class UIDebuggerViewModel : ViewModel() {
     private val TAG = "UIDebuggerViewModel"
     private var windowInteractionController: (suspend (Boolean) -> Unit)? = null
     private lateinit var context: Context
-    
+
     // Activity监听相关
     private var currentActionListener: ActionListener? = null
     private var lastEventTimestamp: Long = 0
@@ -41,7 +41,7 @@ class UIDebuggerViewModel : ViewModel() {
     companion object {
         @Volatile
         private var INSTANCE: UIDebuggerViewModel? = null
-        
+
         /**
          * 获取单例实例，确保主应用和悬浮窗使用同一个ViewModel
          */
@@ -50,7 +50,7 @@ class UIDebuggerViewModel : ViewModel() {
                 INSTANCE ?: UIDebuggerViewModel().also { INSTANCE = it }
             }
         }
-        
+
         /**
          * 清除单例实例
          */
@@ -133,11 +133,11 @@ class UIDebuggerViewModel : ViewModel() {
     /** 显示操作反馈 */
     private fun showActionFeedback(message: String) {
         viewModelScope.launch {
-            _uiState.update { 
+            _uiState.update {
                 it.copy(
-                    showActionFeedback = true, 
+                    showActionFeedback = true,
                     actionFeedbackMessage = message
-                ) 
+                )
             }
             delay(3000)
             _uiState.update { it.copy(showActionFeedback = false) }
@@ -169,13 +169,13 @@ class UIDebuggerViewModel : ViewModel() {
                     }
                 }
 
-                _uiState.update { 
+                _uiState.update {
                     it.copy(
-                        elements = elements, 
+                        elements = elements,
                         errorMessage = null,
                         currentAnalyzedActivityName = activityInfo.first,
                         currentAnalyzedPackageName = activityInfo.second
-                    ) 
+                    )
                 }
             } catch (e: Exception) {
                 AppLogger.e(TAG, "刷新UI元素失败", e)
@@ -255,7 +255,7 @@ class UIDebuggerViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 AppLogger.d(TAG, "开始启动Activity监听...")
-                
+
                 // 如果已经在监听，直接返回
                 if (currentActionListener?.isListening() == true) {
                     AppLogger.d(TAG, "监听器已在运行，同步UI状态")
@@ -274,7 +274,7 @@ class UIDebuggerViewModel : ViewModel() {
                 AppLogger.d(TAG, "获取最高权限的监听器...")
                 val (listener, status) = ActionListenerFactory.getHighestAvailableListener(context)
                 AppLogger.d(TAG, "获取到监听器类型: ${listener::class.simpleName}, 权限状态: ${status.granted}")
-                
+
                 if (!status.granted) {
                     AppLogger.w(TAG, "权限不足: ${status.reason}")
                     showActionFeedback(
@@ -296,12 +296,12 @@ class UIDebuggerViewModel : ViewModel() {
 
                 if (result.success) {
                     AppLogger.d(TAG, "监听器启动成功")
-                    _uiState.update { 
+                    _uiState.update {
                         it.copy(
                             isActivityListening = true,
                             showActivityMonitor = true,
                             activityEvents = emptyList() // 清空之前的事件
-                        ) 
+                        )
                     }
                     showActionFeedback(context.getString(R.string.uidebugger_activity_monitor_started))
                 } else {
@@ -333,10 +333,10 @@ class UIDebuggerViewModel : ViewModel() {
             try {
                 val stopped = currentActionListener?.stopListening() ?: false
                 if (stopped) {
-                    _uiState.update { 
+                    _uiState.update {
                         it.copy(
                             isActivityListening = false
-                        ) 
+                        )
                     }
                     showActionFeedback(context.getString(R.string.uidebugger_activity_monitor_stopped))
                 } else {
@@ -364,18 +364,18 @@ class UIDebuggerViewModel : ViewModel() {
         _uiState.update { currentState ->
             val newShowState = !currentState.showActivityMonitor
             AppLogger.d(TAG, "面板显示状态从 ${currentState.showActivityMonitor} 变更为 $newShowState")
-            
+
             // 如果要显示面板，同步检查实际的监听状态
             if (newShowState) {
                 val actualListeningState = currentActionListener?.isListening() == true
                 val eventsCount = currentState.activityEvents.size
                 AppLogger.d(TAG, "显示面板时同步状态: currentActionListener=${currentActionListener != null}, isListening=$actualListeningState, eventsCount=$eventsCount")
-                
+
                 // 检查AIDL连接状态
                 if (currentActionListener != null && !actualListeningState) {
                     AppLogger.w(TAG, "检测到监听器存在但未监听，可能AIDL连接断开")
                 }
-                
+
                 currentState.copy(
                     showActivityMonitor = newShowState,
                     isActivityListening = actualListeningState
@@ -391,11 +391,11 @@ class UIDebuggerViewModel : ViewModel() {
      * 清除Activity事件记录
      */
     fun clearActivityEvents() {
-        _uiState.update { 
+        _uiState.update {
             it.copy(
                 activityEvents = emptyList(),
                 currentActivityName = null
-            ) 
+            )
         }
     }
 
@@ -411,7 +411,7 @@ class UIDebuggerViewModel : ViewModel() {
             }
             _uiState.update { state ->
                 val newEvents = (state.activityEvents + event).takeLast(100) // 保留最近100个事件
-                
+
                 // 更新当前活动名称
                 val currentActivity = event.elementInfo?.let { elementInfo ->
                     if (elementInfo.packageName != null && elementInfo.className != null) {
@@ -420,7 +420,7 @@ class UIDebuggerViewModel : ViewModel() {
                         elementInfo.packageName
                     }
                 }
-                
+
                 state.copy(
                     activityEvents = newEvents,
                     currentActivityName = currentActivity ?: state.currentActivityName

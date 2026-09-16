@@ -297,7 +297,7 @@ class JsEngine(private val context: Context) {
 
 
     private fun nextExecutionCallId(): String {
-        return "operit_call_${UUID.randomUUID().toString().replace("-", "")}" 
+        return "operit_call_${UUID.randomUUID().toString().replace("-", "")}"
     }
 
     private fun createExecutionSession(

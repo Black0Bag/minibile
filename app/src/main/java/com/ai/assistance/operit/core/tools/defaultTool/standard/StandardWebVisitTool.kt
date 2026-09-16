@@ -1526,7 +1526,7 @@ class StandardWebVisitTool(private val context: Context) : ToolExecutor {
                             links.push({url: href, text: text});
                         }
                     }
-                    
+
                     // 图片链接（可选）
                     var imageLinks = [];
                     if (${includeImageLinks.toString().lowercase()}) {
@@ -1569,27 +1569,27 @@ class StandardWebVisitTool(private val context: Context) : ToolExecutor {
                         links: links,
                         imageLinks: imageLinks
                     };
-                    
+
                     // 直接获取整个文档的HTML和文本内容
                     var fullHtml = document.documentElement.outerHTML;
                     var fullText = document.body.innerText;
-                    
+
                     // 添加元数据
                     var metadata = {};
-                    
+
                     // 提取所有meta标签的信息
                     var metaTags = document.querySelectorAll('meta');
                     for (var i = 0; i < metaTags.length; i++) {
-                        var name = metaTags[i].getAttribute('name') || 
-                                   metaTags[i].getAttribute('property') || 
+                        var name = metaTags[i].getAttribute('name') ||
+                                   metaTags[i].getAttribute('property') ||
                                    metaTags[i].getAttribute('itemprop');
                         var content = metaTags[i].getAttribute('content');
-                        
+
                         if (name && content) {
                             metadata[name] = content;
                         }
                     }
-                    
+
                     // 添加特别关注的元数据
                     var importantMetadata = ['description', 'keywords', 'author', 'og:title', 'og:description'];
                     var metaStr = "---METADATA---\n";
@@ -1598,13 +1598,13 @@ class StandardWebVisitTool(private val context: Context) : ToolExecutor {
                             metaStr += key + ": " + metadata[key] + "\n";
                         }
                     });
-                    
+
                     // 组合最终结果
                     result.content = "# " + result.title + "\n\n" +
                                       metaStr + "\n" +
                                       "---CONTENT---\n" +
                                       fullText;
-                                      
+
                     console.log("Content extraction complete");
                     return JSON.stringify(result);
                 } catch(e) {
@@ -1674,7 +1674,7 @@ class StandardWebVisitTool(private val context: Context) : ToolExecutor {
                     var maxScrollAttempts = 3;
                     var scrollInterval;
                     var lastScrollHeight = 0;
-                    
+
                     function smoothScroll() {
                         // 检查是否到达尝试次数上限
                         if (scrollAttempts >= maxScrollAttempts) {
@@ -1682,10 +1682,10 @@ class StandardWebVisitTool(private val context: Context) : ToolExecutor {
                             console.log('自动滚动完成 - 达到最大尝试次数');
                             return true; // 滚动完成
                         }
-                        
+
                         // 获取当前文档高度
                         var currentHeight = document.body.scrollHeight;
-                        
+
                         // 如果两次滚动后高度没有变化，认为已经滚动到底部
                         if (currentHeight === lastScrollHeight && scrollAttempts > 0) {
                             scrollAttempts++;
@@ -1694,20 +1694,20 @@ class StandardWebVisitTool(private val context: Context) : ToolExecutor {
                             // 更新上次高度
                             lastScrollHeight = currentHeight;
                         }
-                        
+
                         // 执行滚动
                         var currentPosition = window.pageYOffset || document.documentElement.scrollTop;
                         var targetPosition = currentHeight - window.innerHeight;
                         var distance = targetPosition - currentPosition;
-                        
+
                         if (Math.abs(distance) < 10) {
                             // 已接近底部，增加尝试次数
                             scrollAttempts++;
                             console.log('已接近底部，尝试次数: ' + scrollAttempts);
-                            
+
                             // 额外触发一次滚动确保触发所有加载
                             window.scrollTo(0, targetPosition + 1);
-                            
+
                             // 短暂等待后滚回正常位置
                             setTimeout(function() {
                                 window.scrollTo(0, targetPosition);
@@ -1720,16 +1720,16 @@ class StandardWebVisitTool(private val context: Context) : ToolExecutor {
                             });
                             console.log('滚动到位置: ' + targetPosition + '，总高度: ' + currentHeight);
                         }
-                        
+
                         return scrollAttempts >= maxScrollAttempts;
                     }
-                    
+
                     // 立即执行一次初始滚动
                     var isComplete = smoothScroll();
                     if (isComplete) {
                         return 'scroll-complete';
                     }
-                    
+
                     // 设置定时滚动
                     scrollInterval = setInterval(function() {
                         var isComplete = smoothScroll();
@@ -1739,13 +1739,13 @@ class StandardWebVisitTool(private val context: Context) : ToolExecutor {
                             return 'scroll-complete';
                         }
                     }, 1000); // 每秒滚动一次
-                    
+
                     // 无论如何，最多滚动8秒
                     setTimeout(function() {
                         clearInterval(scrollInterval);
                         console.log('自动滚动超时完成');
                     }, 8000);
-                    
+
                     return 'scrolling-started';
                 } catch(e) {
                     console.error('滚动过程出错: ' + e);

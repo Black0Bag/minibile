@@ -9,10 +9,10 @@ import com.ai.assistance.operit.core.chat.hooks.PromptHookRegistry
  * Utility class for processing user input
  */
 object InputProcessor {
-    
+
     /**
      * Process user input with a small delay to show processing feedback
-     * 
+     *
      * @param input The input text to process
      * @return The processed input text
      */

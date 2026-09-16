@@ -12,4 +12,4 @@ class UserCancellationException(message: String, cause: Throwable? = null) : Can
     init {
         initCause(cause)
     }
-} 
+}

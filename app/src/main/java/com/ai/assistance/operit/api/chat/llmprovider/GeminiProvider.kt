@@ -150,7 +150,7 @@ open class GeminiProvider(
 
     // Token计数
     private val tokenCacheManager = TokenCacheManager()
-    
+
     // 思考状态跟踪
     private var isInThinkingMode = false
 
@@ -231,7 +231,7 @@ open class GeminiProvider(
             updateState = false
         )
     }
-    
+
     /**
      * 构建工具定义的JSON字符串，用于token计算
      */
@@ -248,9 +248,9 @@ open class GeminiProvider(
                 null
             }
         }
-        
+
         val tools = JSONArray()
-        
+
         // 添加 Function Calling 工具
         val functionDeclarations = buildToolDefinitionsForGemini(availableTools)
         if (functionDeclarations.length() > 0) {
@@ -258,19 +258,19 @@ open class GeminiProvider(
                 put("function_declarations", functionDeclarations)
             })
         }
-        
+
         // 添加 Google Search grounding 工具（如果启用）
         if (enableGoogleSearch) {
             tools.put(JSONObject().apply {
                 put("googleSearch", JSONObject())
             })
         }
-        
+
         return if (tools.length() > 0) tools.toString() else null
     }
 
     // ==================== Tool Call 支持 ====================
-    
+
     /**
      * XML转义/反转义工具
      */
@@ -282,7 +282,7 @@ open class GeminiProvider(
                     .replace("\"", "&quot;")
                     .replace("'", "&apos;")
         }
-        
+
         fun unescape(text: String): String {
             return text.replace("&lt;", "<")
                     .replace("&gt;", ">")
@@ -358,7 +358,7 @@ open class GeminiProvider(
         }
         return null
     }
-    
+
     /**
      * 解析XML格式的tool调用，转换为Gemini FunctionCall格式
      * @return 文本内容、functionCall对象列表、以及挂在Part级别的thought signature
@@ -375,7 +375,7 @@ open class GeminiProvider(
         val thoughtSignaturePayload = extractGeminiThoughtSignaturePayload(content)
         val sanitizedContent = thoughtSignaturePayload.contentWithoutMeta
         val matches = ChatMarkupRegex.toolCallPattern.findAll(sanitizedContent).toList()
-        
+
         if (matches.isEmpty()) {
             return GeminiFunctionCallPayload(
                 textContent = sanitizedContent,
@@ -407,30 +407,30 @@ open class GeminiProvider(
         matches.forEach { match ->
             textContent = textContent.replace(match.value, "").trim()
         }
-        
+
         return GeminiFunctionCallPayload(
             textContent = textContent,
             functionCalls = functionCalls,
             thoughtSignature = thoughtSignaturePayload.thoughtSignature
         )
     }
-    
+
     /**
      * 解析XML格式的tool_result，转换为Gemini FunctionResponse格式
      * @return Pair<文本内容, functionResponse对象列表>
      */
     private fun parseXmlToolResults(content: String): Pair<String, List<JSONObject>?> {
         if (!enableToolCall) return Pair(content, null)
-        
+
         val matches = ChatMarkupRegex.toolResultWithNameAnyPattern.findAll(content)
-        
+
         if (!matches.any()) {
             return Pair(content, null)
         }
-        
+
         val functionResponses = mutableListOf<JSONObject>()
         var textContent = content
-        
+
         matches.forEach { match ->
             val toolName = match.groupValues[2]
             val fullContent = match.groupValues[3].trim()
@@ -440,7 +440,7 @@ open class GeminiProvider(
             } else {
                 fullContent
             }
-            
+
             // 构建functionResponse对象（Gemini格式）
             val functionResponse = JSONObject().apply {
                 put("name", toolName)
@@ -448,22 +448,22 @@ open class GeminiProvider(
                     put("result", resultContent)
                 })
             }
-            
+
             functionResponses.add(functionResponse)
             AppLogger.d(TAG, "解析Gemini functionResponse: $toolName, content length=${resultContent.length}")
-            
+
             textContent = textContent.replace(match.value, "").trim()
         }
-        
+
         return Pair(textContent, functionResponses)
     }
-    
+
     /**
      * 从ToolPrompt列表构建Gemini格式的Function Declarations
      */
     private fun buildToolDefinitionsForGemini(toolPrompts: List<ToolPrompt>): JSONArray {
         val functionDeclarations = JSONArray()
-        
+
         for (tool in toolPrompts) {
             functionDeclarations.put(JSONObject().apply {
                 put("name", tool.name)
@@ -474,16 +474,16 @@ open class GeminiProvider(
                     tool.description
                 }
                 put("description", fullDescription)
-                
+
                 // 使用结构化参数构建schema
                 val parametersSchema = buildSchemaFromStructured(tool.parametersStructured ?: emptyList())
                 put("parameters", parametersSchema)
             })
         }
-        
+
         return functionDeclarations
     }
-    
+
     /**
      * 从结构化参数构建JSON Schema（Gemini格式）
      */
@@ -491,10 +491,10 @@ open class GeminiProvider(
         val schema = JSONObject().apply {
             put("type", "object")
         }
-        
+
         val properties = JSONObject()
         val required = JSONArray()
-        
+
         for (param in params) {
             properties.put(param.name, JSONObject().apply {
                 put("type", param.type)
@@ -503,20 +503,20 @@ open class GeminiProvider(
                     put("default", param.default)
                 }
             })
-            
+
             if (param.required) {
                 required.put(param.name)
             }
         }
-        
+
         schema.put("properties", properties)
         if (required.length() > 0) {
             schema.put("required", required)
         }
-        
+
         return schema
     }
-    
+
     /**
      * 构建包含文本和图片的parts数组
      */
@@ -571,7 +571,7 @@ open class GeminiProvider(
                 put("text", text)
             })
         }
-        
+
         return partsArray
     }
 
@@ -1128,7 +1128,7 @@ open class GeminiProvider(
         // 重置输出token计数（保留输入历史缓存）
         tokenCacheManager.addOutputTokens(-tokenCacheManager.outputTokenCount)
         isInThinkingMode = false
-        
+
         onTokensUpdated(
                 tokenCacheManager.totalInputTokenCount,
                 tokenCacheManager.cachedInputTokenCount,
@@ -1174,7 +1174,7 @@ open class GeminiProvider(
                 logError("请求被用户取消，停止重试。")
                 throw UserCancellationException(context.getString(R.string.gemini_error_request_cancelled))
             }
-            
+
             try {
                 if (retryCount > 0) {
                     AppLogger.d(
@@ -1285,7 +1285,7 @@ open class GeminiProvider(
         val json = JSONObject()
         // 添加工具定义
         val tools = JSONArray()
-        
+
         // 添加 Function Calling 工具（如果启用且有可用工具）
         if (enableToolCall && availableTools != null && availableTools.isNotEmpty()) {
             val functionDeclarations = buildToolDefinitionsForGemini(availableTools)
@@ -1296,7 +1296,7 @@ open class GeminiProvider(
                 logDebug("已添加 ${functionDeclarations.length()} 个 Function Declarations")
             }
         }
-        
+
         // 添加 Google Search grounding 工具（如果启用）
         if (enableGoogleSearch) {
             tools.put(JSONObject().apply {
@@ -1304,7 +1304,7 @@ open class GeminiProvider(
             })
             logDebug("已启用 Google Search Grounding")
         }
-        
+
         // 将 tools 添加到请求中，并保存用于token计算
         val toolsJson = if (tools.length() > 0) {
             json.put("tools", tools)
@@ -1719,7 +1719,7 @@ open class GeminiProvider(
                 streamCollector.emit("</think>")
                 isInThinkingMode = false
             }
-            
+
             // 确保至少发送一次内容
             if (contentCount == 0) {
                 logDebug("未检测到内容，发送空格")
@@ -1752,31 +1752,31 @@ open class GeminiProvider(
         suspend fun reportUsage(usage: com.ai.assistance.operit.data.stats.ProviderUsageSnapshot?) {
             usage?.let { onUsageReported?.invoke(it, attemptNumber) }
         }
-        
+
         try {
             val responseText = responseBody.string()
             logDebug("收到完整响应，长度: ${responseText.length}")
-            
+
             // 解析JSON响应
             val json = JSONObject(responseText)
-            
+
             // 提取内容
             val extraction = extractContentFromJson(context, json, requestId, onTokensUpdated)
             val content = extraction.content
-            
+
             if (content.isNotEmpty()) {
                 receivedContent.append(content)
-                
+
                 // 直接发送整个内容块，下游会自己处理
                 streamCollector.emit(content)
-                
+
                 logDebug("非流式响应处理完成，总长度: ${content.length}")
             } else {
                 logDebug("未检测到内容，发送空格")
                 streamCollector.emit(" ")
             }
             reportUsage(extraction.usage)
-            
+
             // 确保思考模式正确结束
             if (isInThinkingMode) {
                 logDebug("非流式响应结束时仍在思考模式，添加结束标签")
@@ -1863,7 +1863,7 @@ open class GeminiProvider(
                 }
             val completionConfirmed =
                 finishReason in terminalFinishReasons
-            
+
             // 提取 Google Search grounding metadata（搜索来源信息）
             if (enableGoogleSearch) {
                 val groundingMetadata = candidate.optJSONObject("groundingMetadata")
@@ -1879,17 +1879,17 @@ open class GeminiProvider(
                             searchSourcesBuilder.append(context.getString(R.string.gemini_search_query, query))
                             logDebug("搜索查询 [$i]: $query")
                         }
-                        
+
                         // 提取搜索结果的URL来源
                         val groundingSupports = groundingMetadata.optJSONArray("groundingSupports")
                         if (groundingSupports != null && groundingSupports.length() > 0) {
                             searchSourcesBuilder.append(context.getString(R.string.gemini_reference_sources_title))
-                            
+
                             for (i in 0 until groundingSupports.length()) {
                                 val support = groundingSupports.getJSONObject(i)
                                 val segment = support.optJSONObject("segment")
                                 val groundingChunkIndices = support.optJSONArray("groundingChunkIndices")
-                                
+
                                 // 如果有chunk indices，提取对应的URL
                                 if (groundingChunkIndices != null) {
                                     for (j in 0 until groundingChunkIndices.length()) {
@@ -1904,7 +1904,7 @@ open class GeminiProvider(
                                     }
                                 }
                             }
-                            
+
                             // 提取 grounding chunks（包含URL）
                             val groundingChunks = groundingMetadata.optJSONArray("groundingChunks")
                             if (groundingChunks != null && groundingChunks.length() > 0) {
@@ -1926,7 +1926,7 @@ open class GeminiProvider(
                                 }
                             }
                         }
-                        
+
                         searchSourcesBuilder.append("\n</search>\n\n")
                     }
                 }
@@ -1992,11 +1992,11 @@ open class GeminiProvider(
                             isInThinkingMode = false
                             logDebug("检测到工具调用，提前结束思考模式")
                         }
-                        
+
                         // 输出工具开始标签
                         val toolTagName = ChatMarkupRegex.generateRandomToolTagName()
                         contentBuilder.append("\n<$toolTagName name=\"$toolName\">")
-                        
+
                         // 使用 StreamingJsonXmlConverter 流式转换参数
                         val args = functionCall.optJSONObject("args")
                         if (args != null) {
@@ -2018,7 +2018,7 @@ open class GeminiProvider(
                                 }
                             }
                         }
-                        
+
                         // 输出工具结束标签
                         contentBuilder.append("\n</$toolTagName>\n")
                         logDebug("Gemini FunctionCall流式转XML: $toolName")
@@ -2042,10 +2042,10 @@ open class GeminiProvider(
                         isInThinkingMode = false
                         logDebug("结束思考模式")
                     }
-                    
+
                     // 添加文本内容
                     contentBuilder.append(text)
-                    
+
                     if (isThought) {
                         logDebug("提取思考内容，长度=${text.length}")
                     } else {
@@ -2077,7 +2077,7 @@ open class GeminiProvider(
             } else {
                 contentBuilder.toString()
             }
-            
+
             return GeminiContentExtractionResult(finalContent, usage, completionConfirmed)
         } catch (e: CancellationException) {
             throw e

@@ -184,7 +184,7 @@ class MCPProjectAnalyzer {
             // 获取原始路径
             val rawOutDir = compilerOptions?.optString("outDir")
             val rawRootDir = compilerOptions?.optString("rootDir")
-            
+
             // 标准化路径：移除 ./ 前缀和尾部斜杠
             val outDir = rawOutDir?.removePrefix("./")?.removeSuffix("/")?.ifEmpty { null }
             val rootDir = rawRootDir?.removePrefix("./")?.removeSuffix("/")?.ifEmpty { null }
@@ -357,7 +357,7 @@ class MCPProjectAnalyzer {
                         // 尝试推断.ts源文件位置：dist/stdio.js -> src/stdio.ts
                         val jsFileName = binPath.substringAfterLast('/')
                         val tsFileName = jsFileName.replace(".js", ".ts")
-                        listOf("src/$tsFileName", tsFileName, binPath.replace(".js", ".ts")).forEach { 
+                        listOf("src/$tsFileName", tsFileName, binPath.replace(".js", ".ts")).forEach {
                             if (File(pluginDir, it).exists()) return it
                         }
                     } else if (binPath != null && binPath.endsWith(".ts")) {

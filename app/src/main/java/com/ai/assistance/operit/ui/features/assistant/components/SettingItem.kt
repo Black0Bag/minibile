@@ -65,9 +65,9 @@ fun SettingItem(
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(18.dp)
             )
-            
+
             Spacer(modifier = Modifier.width(8.dp))
-            
+
             // 标题和值在一行
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -79,9 +79,9 @@ fun SettingItem(
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold
                 )
-                
+
                 Spacer(modifier = Modifier.width(8.dp))
-                
+
                 Text(
                     text = value,
                     style = MaterialTheme.typography.bodySmall,
@@ -92,7 +92,7 @@ fun SettingItem(
                 )
             }
         }
-        
+
         // 箭头指示器
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowForward,
@@ -101,7 +101,7 @@ fun SettingItem(
             modifier = Modifier.size(14.dp)
         )
     }
-    
+
     // 如果有详情，则显示在下方
     if (details != null) {
         Row(
@@ -112,4 +112,4 @@ fun SettingItem(
             details()
         }
     }
-} 
+}

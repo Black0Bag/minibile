@@ -105,4 +105,4 @@ interface ActionListener {
             fun denied(reason: String) = PermissionStatus(false, reason)
         }
     }
-} 
+}

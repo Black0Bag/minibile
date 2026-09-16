@@ -348,7 +348,7 @@ object UIHierarchyManager {
                 }
                 eventType = parser.next()
             }
-            
+
             return Pair(null, null)
 
         } catch (e: Exception) {

@@ -110,4 +110,4 @@ data class MemoryProperty(
     @Id var id: Long = 0,
     var key: String = "",
     var value: String = ""
-) 
+)

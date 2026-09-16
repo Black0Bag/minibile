@@ -37,7 +37,7 @@ object SystemToolPrompts {
 - 当前可用仓库：$listed
 """.trimEnd()
     }
-    
+
     // ==================== 基础工具 ====================
     val basicTools = SystemToolPromptCategory(
         categoryName = "Available tools",
@@ -63,7 +63,7 @@ object SystemToolPrompts {
             )
         )
     )
-    
+
     val basicToolsCn = SystemToolPromptCategory(
         categoryName = "可用工具",
         tools = listOf(
@@ -83,7 +83,7 @@ object SystemToolPrompts {
             )
         )
     )
-    
+
     // ==================== 文件系统工具 ====================
     val fileSystemTools = SystemToolPromptCategory(
         categoryName = "File System Tools",
@@ -236,7 +236,7 @@ object SystemToolPrompts {
             )
         )
     )
-    
+
     val fileSystemToolsCn = SystemToolPromptCategory(
         categoryName = "文件系统工具",
         tools = listOf(
@@ -383,7 +383,7 @@ object SystemToolPrompts {
             )
         )
     )
-    
+
     // ==================== HTTP工具 ====================
     val httpTools = SystemToolPromptCategory(
         categoryName = "HTTP Tools",
@@ -403,7 +403,7 @@ object SystemToolPrompts {
             )
         )
     )
-    
+
     val httpToolsCn = SystemToolPromptCategory(
         categoryName = "HTTP工具",
         tools = listOf(
@@ -422,7 +422,7 @@ object SystemToolPrompts {
             )
         )
     )
-    
+
     // ==================== 记忆库工具 ====================
     val memoryTools = SystemToolPromptCategory(
         categoryName = "Memory and Memory Library Tools",
@@ -454,7 +454,7 @@ object SystemToolPrompts {
         ),
         categoryFooter = "\nNote: The memory library and user personality profile may be updated automatically after the current reply is finalized. If you need to manage memories immediately or update user preferences, use the appropriate tools directly."
     )
-    
+
     val memoryToolsCn = SystemToolPromptCategory(
         categoryName = "记忆与记忆库工具",
         tools = listOf(
@@ -488,7 +488,7 @@ object SystemToolPrompts {
 
     private val internalToolCategoriesEn: List<SystemToolPromptCategory> = SystemToolPromptsInternal.internalToolCategoriesEn
     private val internalToolCategoriesCn: List<SystemToolPromptCategory> = SystemToolPromptsInternal.internalToolCategoriesCn
-    
+
     /**
      * 获取所有英文工具分类
      * @param hasBackendImageRecognition 是否配置了后端识图服务（IMAGE_RECOGNITION功能）
@@ -563,7 +563,7 @@ object SystemToolPrompts {
             safBookmarkNames = safBookmarkNames
         ) + internalToolCategoriesEn
     }
-    
+
     /**
      * 获取所有中文工具分类
      * @param hasBackendImageRecognition 是否配置了后端识图服务（IMAGE_RECOGNITION功能）
@@ -822,7 +822,7 @@ object SystemToolPrompts {
         val categoryFooter: String,
         val tools: MutableList<ToolPrompt> = mutableListOf()
     )
-    
+
     /**
      * 生成完整的工具提示词文本（英文）
      */
@@ -913,7 +913,7 @@ object SystemToolPrompts {
         return afterContext.toolPrompt
             ?: renderToolPromptFromAvailableTools(afterContext.availableTools)
     }
-    
+
     /**
      * 生成完整的工具提示词文本（中文）
      */

@@ -231,10 +231,10 @@ fun AndroidExportDialog(
 
                 OutlinedTextField(
                         value = packageName,
-                        onValueChange = { 
+                        onValueChange = {
                             // 只允许小写字母、数字和点号
                             val filtered = it.filter { c -> c.isLowerCase() || c.isDigit() || c == '.' }
-                            
+
                             // 验证包名格式
                             val isValid = when {
                                 filtered.isEmpty() -> true  // 允许空输入
@@ -248,7 +248,7 @@ fun AndroidExportDialog(
                                     }
                                 }
                             }
-                            
+
                             isPackageNameError = !isValid && filtered.isNotEmpty()
                             packageName = filtered
                         },
@@ -257,7 +257,7 @@ fun AndroidExportDialog(
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         isError = isPackageNameError,
-                        supportingText = { 
+                        supportingText = {
                             if (isPackageNameError) {
                                 Text(context.getString(R.string.export_invalid_package_name_format))
                             }
@@ -355,7 +355,7 @@ fun AndroidExportDialog(
 
                 OutlinedTextField(
                         value = versionName,
-                        onValueChange = { 
+                        onValueChange = {
                             val newValue = it.filter { c -> c.isDigit() || c == '.' || c == '-' }
                             // 简单的版本号格式验证，例如 1.0.0 或 1.0.0-beta
                             val regex = "^\\d+(\\.\\d+){0,2}(-[a-zA-Z0-9]+)?$".toRegex()

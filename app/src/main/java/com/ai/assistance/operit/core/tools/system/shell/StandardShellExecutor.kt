@@ -226,7 +226,7 @@ private class StandardShellProcess(command: String) : ShellProcess {
     } else {
         Runtime.getRuntime().exec(command)
     }
-    
+
     override val stdout: Flow<String> = callbackFlow {
         try {
             BufferedReader(InputStreamReader(process.inputStream)).use { reader ->
@@ -267,7 +267,7 @@ private class StandardShellProcess(command: String) : ShellProcess {
     override suspend fun waitFor(): Int = withContext(Dispatchers.IO) {
         process.waitFor()
     }
-    
+
     companion object {
         /**
          * 检测命令是否包含需要shell解释的特殊操作符

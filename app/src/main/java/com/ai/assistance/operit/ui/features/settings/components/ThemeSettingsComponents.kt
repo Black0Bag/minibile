@@ -150,4 +150,4 @@ fun PresetColorItem(color: Color, onSelect: (Color) -> Unit) {
             .border(1.dp, Color.White, CircleShape)
             .clickable { onSelect(color) }
     )
-} 
+}

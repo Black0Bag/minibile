@@ -244,7 +244,7 @@ fun FileManagerToolbar(
                                 tint = MaterialTheme.colorScheme.primary
                             )
                         }
-                        
+
                         Spacer(modifier = Modifier.width(8.dp))
                     }
 
@@ -524,4 +524,4 @@ fun StatusBar(
             }
         }
     }
-} 
+}

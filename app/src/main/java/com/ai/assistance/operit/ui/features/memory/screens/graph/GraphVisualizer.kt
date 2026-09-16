@@ -437,7 +437,7 @@ fun GraphVisualizer(
                         if (incrementalUpdate) 0.86f else 0.78f  // 增量阶段更强平滑，减少抖动
                     val minMoveDeadzone =
                         if (incrementalUpdate) 0.24f else 0.18f  // 增量阶段更早截断微抖动
-                    
+
                     // 空间分区参数：网格大小（只计算网格内和相邻网格的节点）
                     val gridCellSize = idealEdgeLength * 2.5f // 网格大小约为理想边长的2.5倍
                     val maxRepulsionDistance = idealEdgeLength * 3f // 超过此距离的节点不计算排斥力
@@ -462,47 +462,47 @@ fun GraphVisualizer(
                         // 2. 只计算同一网格和相邻网格中的节点对
                         for ((gridKey, nodeIndices) in grid) {
                             val (gridX, gridY) = gridKey
-                            
+
                             // 检查当前网格和8个相邻网格（3x3区域）
                             for (dx in -1..1) {
                                 for (dy in -1..1) {
                                     val neighborKey = (gridX + dx) to (gridY + dy)
                                     val neighborIndices = grid[neighborKey] ?: continue
-                                    
+
                                     // 计算当前网格和相邻网格中节点对的排斥力
                                     for (idx1 in nodeIndices) {
                                         val n1 = nodeArray[idx1]
                                         val p1 = positions[n1.id] ?: continue
-                                        
+
                                         for (idx2 in neighborIndices) {
                                             // 避免重复计算和自比较：只处理 idx1 < idx2 的情况
                                             // 这样可以确保每对节点只计算一次
                                             if (idx1 >= idx2) continue
-                                            
+
                                             val n2 = nodeArray[idx2]
                                             val p2 = positions[n2.id] ?: continue
-                                            
+
                                             // 使用曼哈顿距离快速筛选：如果曼哈顿距离太远，跳过
                                             val deltaX = kotlin.math.abs(p1.x - p2.x)
                                             val deltaY = kotlin.math.abs(p1.y - p2.y)
                                             val manhattanDistance = deltaX + deltaY
-                                            
+
                                             // 快速跳过：如果曼哈顿距离超过阈值，跳过精确计算
                                             if (manhattanDistance > maxRepulsionDistance * 1.5f) continue
-                                            
+
                                             // 对于需要计算的节点，使用欧几里得距离（更精确）
                                             val delta = p1 - p2
                                             val distanceSq = deltaX * deltaX + deltaY * deltaY
                                             val distance = kotlin.math.sqrt(distanceSq).coerceAtLeast(1f)
-                                            
+
                                             // 如果距离太远，跳过（使用距离平方比较，避免开方）
                                             if (distanceSq > maxRepulsionDistance * maxRepulsionDistance) continue
-                                            
+
                                             val force = repulsionStrength / distanceSq
                                             val invDistance = 1f / distance
                                             val forceX = (p1.x - p2.x) * invDistance * force
                                             val forceY = (p1.y - p2.y) * invDistance * force
-                                            
+
                                             // 排斥力是相互的，方向相反
                                             forces[n1.id] = forces[n1.id]!! + Offset(forceX, forceY)
                                             forces[n2.id] = forces[n2.id]!! - Offset(forceX, forceY)
@@ -534,7 +534,7 @@ fun GraphVisualizer(
                                 val deltaY = delta.y
                                 val distanceSq = deltaX * deltaX + deltaY * deltaY
                                 val distance = kotlin.math.sqrt(distanceSq).coerceAtLeast(1f)
-                                
+
                                 // Spring force: k * (x - ideal_length)
                                 // Weight-based attraction: stronger edges pull nodes closer
                                 val weightMultiplier = 1f + edge.weight * 0.35f
@@ -579,7 +579,7 @@ fun GraphVisualizer(
                                 }
                                 val forceX = deltaX * invDistance * springForce
                                 val forceY = deltaY * invDistance * springForce
-                                
+
                                 forces[edge.sourceId] = forces[edge.sourceId]!! + Offset(forceX, forceY)
                                 forces[edge.targetId] = forces[edge.targetId]!! - Offset(forceX, forceY)
                             }
@@ -645,7 +645,7 @@ fun GraphVisualizer(
                                 }
                             }
                         }
-                        
+
                         // Gravity force towards the center
                         // 对所有节点计算重力
                         for (node in graph.nodes) {
@@ -945,7 +945,7 @@ fun GraphVisualizer(
         ) {
             // 计算屏幕可见区域（屏幕坐标）
             val screenVisibleRect = Rect(0f, 0f, size.width, size.height)
-            
+
             // 绘制选框
             selectionRect?.let { rect ->
                 drawRect(
@@ -989,24 +989,24 @@ fun GraphVisualizer(
                             nodePalette = nodePalette
                         )
                     }
-                    
+
                     // 检查是否至少有一个端点在可见区域内（使用节点真实矩形）
                     val sourceVisible = sourceRect?.let { screenVisibleRect.intersects(it) } == true
                     val targetVisible = targetRect?.let { screenVisibleRect.intersects(it) } == true
-                    
+
                     // 如果两个端点都不在可见区域内，跳过渲染
                     if (!sourceVisible && !targetVisible) return@forEach
-                    
+
                     // 连线直接连接节点中心，避免看起来仍然是“圆形边缘裁切”。
                     val start = sourceCenter
                     val end = targetCenter
-                    
+
                     val strokeWidth = if (edge.isCrossFolderLink) {
                         (edge.weight * 2.6f * scale).coerceAtMost(8f)
                     } else {
                         (edge.weight * 5.8f * scale).coerceAtMost(18f)
                     }
-                    
+
                     // 如果是跨文件夹连接，使用虚线绘制
                     if (edge.isCrossFolderLink) {
                         drawLine(
@@ -1024,7 +1024,7 @@ fun GraphVisualizer(
                             strokeWidth = strokeWidth
                         )
                     }
-                    
+
                     edge.label?.let { label ->
                         val center = (start + end) / 2f
                         // 只渲染标签中心在可见区域内的标签
@@ -1043,7 +1043,7 @@ fun GraphVisualizer(
                                     )
                                 )
                             }
-                            
+
                             // Simple collision avoidance for label, could be improved
                             val labelOffset = if (angle > -Math.PI / 2 && angle < Math.PI / 2) -textLayoutResult.size.height.toFloat() else 0f
 
@@ -1072,7 +1072,7 @@ fun GraphVisualizer(
                 val position = nodePositions[node.id]
                 if (position != null) {
                     val screenPosition = position * scale + offset
-                    
+
                     // 检查节点是否在可见区域内（使用节点真实矩形）
                     val nodeRect = resolveNodeScreenRect(
                         node = node,
@@ -1082,10 +1082,10 @@ fun GraphVisualizer(
                         nodeLayoutCache = nodeLayoutCache,
                         nodePalette = nodePalette
                     )
-                    
+
                     // 如果节点不在可见区域内，跳过渲染
                     if (!screenVisibleRect.intersects(nodeRect)) return@forEach
-                    
+
                     val isSelected = node.id == selectedNodeId
                     val isLinkingCandidate = node.id in linkingNodeIds
                     val isBoxSelected = node.id in boxSelectedNodeIds // 新增：检查是否被框选
@@ -1225,12 +1225,12 @@ private fun DrawScope.drawNode(
                 style = Stroke(width = 2.8f)
             )
         }
-        
+
         val textPosition = Offset(
             x = boxTopLeft.x + paddingX,
             y = boxTopLeft.y + paddingY
         )
-        
+
         drawText(textLayoutResult, topLeft = textPosition)
     }
-} 
+}

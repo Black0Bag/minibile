@@ -333,7 +333,7 @@ val actualViewModel: ChatViewModel = viewModel ?: viewModel { ChatViewModel(cont
 
     // 添加模型建议对话框状态
     var showModelSuggestionDialog by remember { mutableStateOf(false) }
-    
+
     // 添加记忆文件夹选择对话框状态
     var showMemoryFolderDialog by remember { mutableStateOf(false) }
 
@@ -520,7 +520,7 @@ val actualViewModel: ChatViewModel = viewModel ?: viewModel { ChatViewModel(cont
                     !it.memoryProfileId.isNullOrBlank()
             }
             ?.memoryProfileId
-    
+
 
 
     val defaultUserMessageColor = MaterialTheme.colorScheme.primaryContainer
@@ -1466,7 +1466,7 @@ val actualViewModel: ChatViewModel = viewModel ?: viewModel { ChatViewModel(cont
                     .show()
         }
     }
-    
+
     // 记忆文件夹选择对话框
     MemoryFolderSelectionDialog(
         visible = showMemoryFolderDialog,

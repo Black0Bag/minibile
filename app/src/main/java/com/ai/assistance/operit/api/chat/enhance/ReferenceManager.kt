@@ -8,7 +8,7 @@ import com.ai.assistance.operit.data.model.AiReference
 object ReferenceManager {
     /**
      * Extract references from content
-     * 
+     *
      * @param content The content to extract references from
      * @return A list of references
      */
@@ -16,10 +16,10 @@ object ReferenceManager {
         // Use a Markdown link format: [title](url)
         val regex = "\\[([^\\]]+)\\]\\((https?://[^\\)]+)\\)".toRegex()
         val matches = regex.findAll(content)
-        
+
         return matches.map { match ->
             val (title, url) = match.destructured
             AiReference(title, url)
         }.toList()
     }
-} 
+}

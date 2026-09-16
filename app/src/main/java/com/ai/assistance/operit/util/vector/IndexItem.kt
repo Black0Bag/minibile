@@ -31,4 +31,4 @@ data class IndexItem<Id : Any, T>(
     override fun hashCode(): Int {
         return id.hashCode()
     }
-} 
+}

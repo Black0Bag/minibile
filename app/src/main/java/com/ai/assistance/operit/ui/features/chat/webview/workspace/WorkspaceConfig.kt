@@ -75,7 +75,7 @@ data class WatchConfig(
 
 object WorkspaceConfigReader {
     private const val TAG = "WorkspaceConfigReader"
-    private val json = Json { 
+    private val json = Json {
         ignoreUnknownKeys = true
         isLenient = true
     }
@@ -87,7 +87,7 @@ object WorkspaceConfigReader {
      */
     fun readConfig(workspacePath: String): WorkspaceConfig {
         val configFile = File(workspacePath, ".operit/config.json")
-        
+
         if (!configFile.exists()) {
             AppLogger.d(TAG, "Config file not found at ${configFile.absolutePath}, using default")
             return getDefaultWebConfig()

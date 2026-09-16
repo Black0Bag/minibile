@@ -65,7 +65,7 @@ class UIDebuggerService : Service(), ViewModelStoreOwner {
         super.onCreate()
         lifecycleOwner = ServiceLifecycleOwner()
         lifecycleOwner.handleLifecycleEvent(androidx.lifecycle.Lifecycle.Event.ON_CREATE)
-        
+
         // Initialize ViewModel - use singleton instance to share state with main app
         viewModel = UIDebuggerViewModel.getInstance()
 
@@ -136,4 +136,4 @@ class UIDebuggerService : Service(), ViewModelStoreOwner {
     companion object {
         val isServiceRunning = MutableStateFlow(false)
     }
-} 
+}

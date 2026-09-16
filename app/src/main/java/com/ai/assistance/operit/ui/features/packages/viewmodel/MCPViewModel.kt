@@ -35,7 +35,7 @@ class MCPViewModel(
 
     // 插件已安装路径缓存
     private val installedPathsCache = mutableMapOf<String, String?>()
-    
+
     // 存储选中的ZIP文件URI
     private var selectedZipUri: Uri? = null
 
@@ -62,7 +62,7 @@ class MCPViewModel(
             installedPathsCache.remove(server.id)
         }
     }
-    
+
     /** 安装服务器插件 - 使用服务器对象（用于导入Git URL） */
     fun installServerWithObject(server: MCPLocalServer.PluginMetadata) {
         viewModelScope.launch {
@@ -81,14 +81,14 @@ class MCPViewModel(
             installedPathsCache.remove(server.id)
         }
     }
-    
+
     /** 从ZIP文件安装服务器插件 */
     fun installServerFromZip(server: MCPLocalServer.PluginMetadata, zipFilePath: String) {
         viewModelScope.launch {
             _currentServer.value = server
             _installProgress.value = InstallProgress.Preparing
             _installResult.value = null
-            
+
             if (selectedZipUri == null) {
                 _installResult.value = InstallResult.Error(context.getString(R.string.mcp_error_no_zip_selected))
                 _installProgress.value = InstallProgress.Finished
@@ -106,15 +106,15 @@ class MCPViewModel(
             }
 
             _installResult.value = result
-            
+
             // 安装完成后清除URI
             selectedZipUri = null
-            
+
             // 清除缓存
             installedPathsCache.remove(server.id)
         }
     }
-    
+
     /** 设置选中的ZIP文件URI */
     fun setSelectedZipUri(uri: Uri) {
         selectedZipUri = uri

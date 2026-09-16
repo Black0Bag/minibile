@@ -42,4 +42,4 @@ fun LoadingOverlay(isLoading: Boolean) {
             }
         }
     }
-} 
+}

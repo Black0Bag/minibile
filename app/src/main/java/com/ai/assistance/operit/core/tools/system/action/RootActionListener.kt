@@ -28,8 +28,8 @@ class RootActionListener(private val context: Context) : ActionListener {
     private var actionCallback: ((ActionListener.ActionEvent) -> Unit)? = null
     private var monitoringJob: Job? = null
     private var process: ShellProcess? = null
-    private val shellExecutor by lazy { 
-        ShellExecutorFactory.getExecutor(context, AndroidPermissionLevel.ROOT) 
+    private val shellExecutor by lazy {
+        ShellExecutorFactory.getExecutor(context, AndroidPermissionLevel.ROOT)
     }
 
     override fun getPermissionLevel(): AndroidPermissionLevel = AndroidPermissionLevel.ROOT
@@ -42,7 +42,7 @@ class RootActionListener(private val context: Context) : ActionListener {
             // 检查Root权限
             val hasRoot = shellExecutor.isAvailable()
             rootAvailable = hasRoot
-            
+
             AppLogger.d(TAG, "Root权限检查: $hasRoot")
             return hasRoot
         } catch (e: Exception) {
@@ -127,7 +127,7 @@ class RootActionListener(private val context: Context) : ActionListener {
             // 停止监控任务
             monitoringJob?.cancel()
             monitoringJob = null
-            
+
             stopRootLevelMonitoring()
 
             AppLogger.d(TAG, "Root UI操作监听已停止")
@@ -144,19 +144,19 @@ class RootActionListener(private val context: Context) : ActionListener {
      */
     private fun startRootLevelMonitoring() {
         AppLogger.d(TAG, "开始Root级别系统监控 - 直接监听内核输入设备和系统事件")
-        
+
         monitoringJob = CoroutineScope(Dispatchers.IO).launch {
             try {
                 process = shellExecutor.startProcess("getevent -l")
-                
+
                 process?.stdout?.onEach { line ->
                     parseTouchEvent(line)
                 }?.launchIn(this)
-                
+
                 process?.stderr?.onEach { line ->
                     AppLogger.w(TAG, "getevent stderr: $line")
                 }?.launchIn(this)
-                
+
                 val exitCode = process?.waitFor()
                 AppLogger.d(TAG, "getevent process exited with code $exitCode")
 
@@ -214,13 +214,13 @@ class RootActionListener(private val context: Context) : ActionListener {
             if (result.success) {
                 parseInputDeviceInfo(result.stdout)
             }
-            
+
             // 监听实时触摸事件 - 这里只是示例，实际需要解析二进制事件数据
             // val touchResult = shellExecutor.executeCommand("timeout 0.1 getevent")
             // if (touchResult.success) {
             //     parseTouchEvents(touchResult.stdout)
             // }
-            
+
         } catch (e: Exception) {
             AppLogger.e(TAG, "监听原始输入事件失败", e)
         }
@@ -285,7 +285,7 @@ class RootActionListener(private val context: Context) : ActionListener {
         // 解析内核日志中的相关事件
         if (kernelLog.contains("input") || kernelLog.contains("touch")) {
             AppLogger.v(TAG, "检测到输入相关内核事件")
-            
+
             actionCallback?.let { callback ->
                 val event = ActionListener.ActionEvent(
                     timestamp = System.currentTimeMillis(),
@@ -331,4 +331,4 @@ class RootActionListener(private val context: Context) : ActionListener {
             actionCallback?.invoke(event)
         }
     }
-} 
+}

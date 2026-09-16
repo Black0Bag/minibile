@@ -180,7 +180,7 @@ fun AppContent(
 
     // Get toolbar transparency setting
     val toolbarTransparent = themeSnapshot.toolbarTransparent
-    
+
     // Get AppBar custom color settings
     val useCustomAppBarColor = themeSnapshot.useCustomAppBarColor
     val customAppBarColor = themeSnapshot.customAppBarColor

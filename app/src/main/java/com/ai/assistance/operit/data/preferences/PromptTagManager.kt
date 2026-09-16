@@ -94,7 +94,7 @@ class PromptTagManager private constructor(private val context: Context) {
             }
         }
     }
-    
+
     // 标签列表流
     val tagListFlow: Flow<List<String>> = dataStore.data.map { preferences ->
         preferences[PROMPT_TAG_LIST]?.toList() ?: emptyList()

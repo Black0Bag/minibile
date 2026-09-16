@@ -57,4 +57,4 @@ object ObjectBoxManager {
             stores.clear()
         }
     }
-} 
+}

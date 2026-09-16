@@ -38,29 +38,29 @@ fun SpeechToTextScreen(navController: NavController) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
-    
+
     // 权限状态
-    var hasAudioPermission by remember { 
+    var hasAudioPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(
-                context, 
+                context,
                 Manifest.permission.RECORD_AUDIO
             ) == PackageManager.PERMISSION_GRANTED
-        ) 
+        )
     }
-    
+
     // 权限请求启动器
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         hasAudioPermission = isGranted
     }
-    
+
     // 请求麦克风权限
     fun requestMicrophonePermission() {
         permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
     }
-    
+
     // 权限未获取时，显示请求界面
     if (!hasAudioPermission) {
         Column(
@@ -76,25 +76,25 @@ fun SpeechToTextScreen(navController: NavController) {
                 modifier = Modifier.size(72.dp),
                 tint = MaterialTheme.colorScheme.primary
             )
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             Text(
                 text = stringResource(R.string.microphone_permission_required),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold
             )
-            
+
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             Text(
                 text = stringResource(R.string.microphone_permission_description),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
             )
-            
+
             Spacer(modifier = Modifier.height(24.dp))
-            
+
             Button(
                 onClick = { requestMicrophonePermission() },
                 modifier = Modifier.fillMaxWidth(0.8f),
@@ -119,7 +119,7 @@ fun SpeechToTextScreen(navController: NavController) {
     var selectedLanguage by remember { mutableStateOf("zh-CN") }
     var error by remember { mutableStateOf<String?>(null) }
     var availableLanguages by remember { mutableStateOf<List<String>>(emptyList()) }
-    
+
     // recognitionMode 是驱动服务实例创建的唯一状态源
     var recognitionMode by remember { mutableStateOf(SpeechServiceFactory.SpeechServiceType.SHERPA_NCNN) }
 
@@ -158,9 +158,9 @@ fun SpeechToTextScreen(navController: NavController) {
             availableLanguages = speechService.getSupportedLanguages()
         } else {
             error = context.getString(R.string.engine_init_failed, recognitionMode.name)
-        } 
+        }
     }
-    
+
     // 当服务实例改变时，重新开始收集结果和错误
     LaunchedEffect(speechService) {
         launch {
@@ -202,7 +202,7 @@ fun SpeechToTextScreen(navController: NavController) {
             }
         }
     }
-    
+
     // 切换识别引擎现在只改变状态，Compose框架会处理后续的重新创建和初始化
     fun switchRecognitionMode() {
         recognitionMode = when (recognitionMode) {
@@ -223,14 +223,14 @@ fun SpeechToTextScreen(navController: NavController) {
             SpeechServiceFactory.SpeechServiceType.DEEPGRAM_STT -> context.getString(R.string.speech_services_stt_type_deepgram)
         }
     }
-    
+
     // 复制文本到剪贴板
     fun copyToClipboard(text: String) {
         if (text.isBlank()) {
             Toast.makeText(context, context.getString(R.string.no_text_to_copy), Toast.LENGTH_SHORT).show()
             return
         }
-        
+
         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("recognized_text", text)
         clipboard.setPrimaryClip(clip)
@@ -273,7 +273,7 @@ fun SpeechToTextScreen(navController: NavController) {
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
-                    
+
                     // 复制按钮
                     IconButton(
                         onClick = { copyToClipboard(recognizedText) },
@@ -282,9 +282,9 @@ fun SpeechToTextScreen(navController: NavController) {
                         Icon(
                             imageVector = Icons.Default.ContentCopy,
                             contentDescription = stringResource(R.string.copy_text),
-                            tint = if (recognizedText.isNotBlank()) 
-                                MaterialTheme.colorScheme.primary 
-                            else 
+                            tint = if (recognizedText.isNotBlank())
+                                MaterialTheme.colorScheme.primary
+                            else
                                 MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
                         )
                     }
@@ -347,16 +347,16 @@ fun SpeechToTextScreen(navController: NavController) {
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface
                     )
-                    
+
                     Text(
                         text = getEngineName(recognitionMode),
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
-                    
+
                 Spacer(modifier = Modifier.height(8.dp))
-                    
+
                 // 切换引擎按钮单独一行
                     Button(
                         onClick = { switchRecognitionMode() },
@@ -381,10 +381,10 @@ fun SpeechToTextScreen(navController: NavController) {
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
-                
+
                 // 语言选择下拉菜单
                 var expanded by remember { mutableStateOf(false) }
-                
+
                 ExposedDropdownMenuBox(
                     expanded = expanded,
                     onExpandedChange = { expanded = !expanded }
@@ -399,7 +399,7 @@ fun SpeechToTextScreen(navController: NavController) {
                         modifier = Modifier.menuAnchor().fillMaxWidth(),
                         colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
                     )
-                    
+
                     ExposedDropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
@@ -486,9 +486,9 @@ fun SpeechToTextScreen(navController: NavController) {
                         tint = if (isInitialized) Color(0xFF4CAF50) else MaterialTheme.colorScheme.error
                     )
                     Text(
-                        text = if (isInitialized) 
-                            stringResource(R.string.speech_engine_initialized) 
-                        else 
+                        text = if (isInitialized)
+                            stringResource(R.string.speech_engine_initialized)
+                        else
                             stringResource(R.string.speech_engine_not_initialized),
                         style = MaterialTheme.typography.bodyMedium
                     )
@@ -506,9 +506,9 @@ fun SpeechToTextScreen(navController: NavController) {
                         tint = if (isListening) Color(0xFF2196F3) else MaterialTheme.colorScheme.onSecondaryContainer
                     )
                     Text(
-                        text = if (isListening) 
-                            stringResource(R.string.recognizing) 
-                        else 
+                        text = if (isListening)
+                            stringResource(R.string.recognizing)
+                        else
                             stringResource(R.string.not_recognizing),
                         style = MaterialTheme.typography.bodyMedium
                     )

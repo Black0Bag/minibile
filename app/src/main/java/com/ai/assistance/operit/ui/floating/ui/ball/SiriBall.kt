@@ -54,12 +54,12 @@ fun SiriBall(
     val accentColor1 = Color(0xFFBF5AF2)   // 紫色
     val accentColor2 = Color(0xFFFF375F)   // 粉红色
     val accentColor3 = Color(0xFF00D4FF)   // 青色
-    
+
     // 交互状态
     var ballState by remember { mutableIntStateOf(StateIdle) }
     var pressStartTime by remember { mutableStateOf(0L) }
     val particleSystem = rememberParticleSystem()
-    
+
     // 语音交互管理器
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -99,7 +99,7 @@ fun SiriBall(
             speechManager.handleRecognitionResult(result.text, result.isFinal)
         }
     }
-    
+
     // 监听 AI 处理状态，完成后触发结果展示
     val aiState by floatContext.inputProcessingState
     LaunchedEffect(aiState, ballState) {
@@ -109,7 +109,7 @@ fun SiriBall(
             ballState = StateIdle
         }
     }
-    
+
     // 按压缩放动画
     val isPressed = ballState == StatePressing
     val pressScale by animateFloatAsState(
@@ -117,7 +117,7 @@ fun SiriBall(
         animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing),
         label = "pressScale"
     )
-    
+
     // Loading 旋转动画
     val loadingRotation = remember { Animatable(0f) }
     LaunchedEffect(ballState == StateLoading) {
@@ -132,14 +132,14 @@ fun SiriBall(
             loadingRotation.snapTo(0f)
         }
     }
-    
+
     // 更新粒子系统 (只在 Pressing 状态显示)
     particleSystem.UpdateEffect(isPressed)
-    
+
     // 淡出动画状态
     val isFadingOut = floatContext.windowState?.ballExploding?.value ?: false
     val fadeOutProgress = remember { Animatable(0f) }
-    
+
     // 监听淡出触发
     LaunchedEffect(isFadingOut) {
         if (isFadingOut) {
@@ -152,10 +152,10 @@ fun SiriBall(
             fadeOutProgress.snapTo(0f)
         }
     }
-    
+
     // 动画
     val infiniteTransition = rememberInfiniteTransition(label = "siri")
-    
+
     // 慢速旋转 - 更优雅
     val rotation by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -166,7 +166,7 @@ fun SiriBall(
         ),
         label = "rotation"
     )
-    
+
     // 柔和呼吸
     val breathe by infiniteTransition.animateFloat(
         initialValue = 0.95f,
@@ -177,7 +177,7 @@ fun SiriBall(
         ),
         label = "breathe"
     )
-    
+
     // 外圈音波 - 第一层
     val ripple1Scale by infiniteTransition.animateFloat(
         initialValue = 1.0f,
@@ -188,7 +188,7 @@ fun SiriBall(
         ),
         label = "ripple1Scale"
     )
-    
+
     val ripple1Alpha by infiniteTransition.animateFloat(
         initialValue = 0.5f,
         targetValue = 0f,
@@ -198,7 +198,7 @@ fun SiriBall(
         ),
         label = "ripple1Alpha"
     )
-    
+
     // 外圈音波 - 第二层
     val ripple2Scale by infiniteTransition.animateFloat(
         initialValue = 1.0f,
@@ -210,7 +210,7 @@ fun SiriBall(
         ),
         label = "ripple2Scale"
     )
-    
+
     val ripple2Alpha by infiniteTransition.animateFloat(
         initialValue = 0.5f,
         targetValue = 0f,
@@ -221,7 +221,7 @@ fun SiriBall(
         ),
         label = "ripple2Alpha"
     )
-    
+
     // 外圈音波 - 第三层
     val ripple3Scale by infiniteTransition.animateFloat(
         initialValue = 1.0f,
@@ -233,7 +233,7 @@ fun SiriBall(
         ),
         label = "ripple3Scale"
     )
-    
+
     val ripple3Alpha by infiniteTransition.animateFloat(
         initialValue = 0.5f,
         targetValue = 0f,
@@ -244,14 +244,14 @@ fun SiriBall(
         ),
         label = "ripple3Alpha"
     )
-    
+
     Box(
         modifier = Modifier
             .size(floatContext.ballSize * 1.6f)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = { ballState = StatePressing },
-                    onDragEnd = { 
+                    onDragEnd = {
                         floatContext.saveWindowState?.invoke()
                         ballState = StateIdle
                     },
@@ -277,7 +277,7 @@ fun SiriBall(
                     //     ballState = StatePressing
                     //     // 开始录音
                     //     speechManager.startListening()
-                    //     
+                    //
                     //     val released = tryAwaitRelease()
                     //     // 松手逻辑
                     //     if (released) {
@@ -306,20 +306,20 @@ fun SiriBall(
             val center = Offset(size.width / 2f, size.height / 2f)
             // 应用按压缩放
             val baseRadius = (size.minDimension / 2.0f) * pressScale
-            
+
             // 淡出效果：只改变透明度，不改变缩放
             val fadeAlpha = if (isFadingOut) 1f - fadeOutProgress.value else 1f
-            
+
             if (fadeAlpha <= 0.01f) {
                 // 淡出完成，不绘制任何内容
                 return@Canvas
             }
-            
+
             // 0. 绘制后方粒子（3D效果 - 后景）
             with(particleSystem) {
                 drawBackParticles(center, baseRadius * 0.5f)
             }
-            
+
             // 1. 外圈音波扩散（3层，简洁的圆环）
             drawCircle(
                 brush = Brush.radialGradient(
@@ -334,7 +334,7 @@ fun SiriBall(
                 center = center,
                 radius = baseRadius * ripple3Scale
             )
-            
+
             drawCircle(
                 brush = Brush.radialGradient(
                     colors = listOf(
@@ -348,7 +348,7 @@ fun SiriBall(
                 center = center,
                 radius = baseRadius * ripple2Scale
             )
-            
+
             drawCircle(
                 brush = Brush.radialGradient(
                     colors = listOf(
@@ -362,7 +362,7 @@ fun SiriBall(
                 center = center,
                 radius = baseRadius * ripple1Scale
             )
-            
+
             // 2. 底部光晕（柔和的蓝紫光）
             drawCircle(
                 brush = Brush.radialGradient(
@@ -378,7 +378,7 @@ fun SiriBall(
                 radius = baseRadius * breathe * 0.7f,
                 blendMode = BlendMode.Screen
             )
-            
+
             // 3. 流动的彩色光斑（4个色块，慢速旋转）
             // 主蓝色光斑
             drawColorBlob(
@@ -389,7 +389,7 @@ fun SiriBall(
                 color = mainColor.copy(alpha = fadeAlpha),
                 size = 0.7f
             )
-            
+
             // 紫色光斑（相位差90度）
             drawColorBlob(
                 center = center,
@@ -399,7 +399,7 @@ fun SiriBall(
                 color = accentColor1.copy(alpha = fadeAlpha),
                 size = 0.65f
             )
-            
+
             // 粉红色光斑（相位差180度）
             drawColorBlob(
                 center = center,
@@ -409,7 +409,7 @@ fun SiriBall(
                 color = accentColor2.copy(alpha = fadeAlpha),
                 size = 0.6f
             )
-            
+
             // 青色光斑（相位差270度）
             drawColorBlob(
                 center = center,
@@ -419,7 +419,7 @@ fun SiriBall(
                 color = accentColor3.copy(alpha = fadeAlpha),
                 size = 0.68f
             )
-            
+
             // 4. 中心明亮核心
             drawCircle(
                 brush = Brush.radialGradient(
@@ -436,7 +436,7 @@ fun SiriBall(
                 radius = baseRadius * 0.65f * breathe,
                 blendMode = BlendMode.Screen
             )
-            
+
             // 5. 玻璃球体高光（模拟3D质感）
             val highlightCenter = Offset(
                 center.x - baseRadius * 0.25f,
@@ -456,7 +456,7 @@ fun SiriBall(
                 radius = baseRadius * 0.35f,
                 blendMode = BlendMode.Screen
             )
-            
+
             // 6. 整体柔和外边界（让球体边缘更自然）
             drawCircle(
                 brush = Brush.radialGradient(
@@ -472,12 +472,12 @@ fun SiriBall(
                 center = center,
                 radius = baseRadius * breathe
             )
-            
+
             // 7. 绘制前方粒子（3D效果 - 前景）
             with(particleSystem) {
                 drawFrontParticles(center, baseRadius * 0.5f)
             }
-            
+
             // 8. 绘制 Loading (只在 Loading 状态)
             if (ballState == StateLoading) {
                  drawArc(
@@ -510,7 +510,7 @@ private fun DrawScope.drawColorBlob(
         center.x + distance * cos(rad).toFloat(),
         center.y + distance * sin(rad).toFloat()
     )
-    
+
     drawCircle(
         brush = Brush.radialGradient(
             colors = listOf(
