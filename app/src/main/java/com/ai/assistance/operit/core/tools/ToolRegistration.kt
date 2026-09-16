@@ -11,6 +11,7 @@ import com.ai.assistance.operit.data.model.ToolParameter
 import com.ai.assistance.operit.data.model.ToolResult
 import com.ai.assistance.operit.data.preferences.CharacterCardToolAccessResolver
 import com.ai.assistance.operit.data.preferences.ResolvedCharacterCardToolAccess
+import com.ai.assistance.operit.integrations.tasker.triggerAIAgentAction
 import com.ai.assistance.operit.services.FloatingChatService
 import com.ai.assistance.operit.ui.common.displays.VirtualDisplayOverlay
 import com.ai.assistance.operit.util.LocaleUtils
@@ -1508,10 +1509,124 @@ fun registerAllTools(handler: AIToolHandler, context: Context) {
     )
 
     
-    // 工作流工具
+    // 对话管理工具
+    val chatManagerTool = ToolGetter.getChatManagerTool(context)
 
-    // 获取所有工作流
+    // 启动聊天服务
     handler.registerTool(
+            name = "start_chat_service",
+            descriptionGenerator = { _ -> s(R.string.toolreg_start_chat_service_desc) },
+            executor = { tool -> runBlocking(Dispatchers.IO) { chatManagerTool.startChatService(tool) } }
+    )
+
+    // 停止聊天服务
+    handler.registerTool(
+            name = "stop_chat_service",
+            descriptionGenerator = { _ -> s(R.string.toolreg_stop_chat_service_desc) },
+            executor = { tool -> runBlocking(Dispatchers.IO) { chatManagerTool.stopChatService(tool) } }
+    )
+
+    // 新建对话
+    handler.registerTool(
+            name = "create_new_chat",
+            descriptionGenerator = { tool ->
+                val group = tool.parameters.find { it.name == "group" }?.value
+                if (group.isNullOrBlank()) {
+                    s(R.string.toolreg_create_new_chat_desc)
+                } else {
+                    s(R.string.toolreg_create_new_chat_in_group_desc, group)
+                }
+            },
+            executor = { tool -> runBlocking(Dispatchers.IO) { chatManagerTool.createNewChat(tool) } }
+    )
+
+    // 列出所有对话
+    handler.registerTool(
+            name = "list_chats",
+            descriptionGenerator = { _ -> s(R.string.toolreg_list_chats_desc) },
+            executor = { tool -> runBlocking(Dispatchers.IO) { chatManagerTool.listChats(tool) } }
+    )
+
+    // 查找对话
+    handler.registerTool(
+            name = "find_chat",
+            descriptionGenerator = { tool ->
+                val query = tool.parameters.find { it.name == "query" }?.value ?: ""
+                s(R.string.toolreg_find_chat_desc, query)
+            },
+            executor = { tool -> runBlocking(Dispatchers.IO) { chatManagerTool.findChat(tool) } }
+    )
+
+    // 查询对话输入状态
+    handler.registerTool(
+            name = "agent_status",
+            descriptionGenerator = { tool ->
+                val chatId = tool.parameters.find { it.name == "chat_id" }?.value ?: ""
+                s(R.string.toolreg_agent_status_desc, chatId)
+            },
+            executor = { tool -> runBlocking(Dispatchers.IO) { chatManagerTool.agentStatus(tool) } }
+    )
+
+    // 切换对话
+    handler.registerTool(
+            name = "switch_chat",
+            descriptionGenerator = { tool ->
+                val chatId = tool.parameters.find { it.name == "chat_id" }?.value ?: ""
+                s(R.string.toolreg_switch_chat_desc, chatId)
+            },
+            executor = { tool -> runBlocking(Dispatchers.IO) { chatManagerTool.switchChat(tool) } }
+    )
+
+    // 更新对话标题
+    handler.registerTool(
+            name = "update_chat_title",
+            descriptionGenerator = { tool ->
+                val chatId = tool.parameters.find { it.name == "chat_id" }?.value ?: ""
+                s(R.string.toolreg_update_chat_title_desc, chatId)
+            },
+            executor = { tool -> runBlocking(Dispatchers.IO) { chatManagerTool.updateChatTitle(tool) } }
+    )
+
+    // 删除对话
+    handler.registerTool(
+            name = "delete_chat",
+            descriptionGenerator = { tool ->
+                val chatId = tool.parameters.find { it.name == "chat_id" }?.value ?: ""
+                s(R.string.toolreg_delete_chat_desc, chatId)
+            },
+            executor = { tool -> runBlocking(Dispatchers.IO) { chatManagerTool.deleteChat(tool) } }
+    )
+
+    // 发送消息给AI
+    handler.registerTool(
+            name = "send_message_to_ai",
+            descriptionGenerator = { tool ->
+                val message = tool.parameters.find { it.name == "message" }?.value ?: ""
+                val preview = if (message.length > 30) "${message.take(30)}..." else message
+                s(R.string.toolreg_send_message_to_ai_desc, preview)
+            },
+            executor = { tool -> runBlocking(Dispatchers.IO) { chatManagerTool.sendMessageToAI(tool) } }
+    )
+
+    handler.registerTool(
+            name = "send_message_to_ai_streaming",
+            descriptionGenerator = { tool ->
+                val message = tool.parameters.find { it.name == "message" }?.value ?: ""
+                val preview = if (message.length > 30) "${message.take(30)}..." else message
+                s(R.string.toolreg_send_message_to_ai_desc, preview)
+            },
+            executor =
+                    object : ToolExecutor {
+                        override fun invoke(tool: AITool): ToolResult {
+                            return runBlocking(Dispatchers.IO) { chatManagerTool.sendMessageToAI(tool) }
+                        }
+
+                        override fun invokeAndStream(
+                                tool: AITool
+                        ): kotlinx.coroutines.flow.Flow<ToolResult> {
+                            return chatManagerTool.sendMessageToAIStream(tool)
+                        }
+                    }
     )
 
     // 列出所有角色卡
