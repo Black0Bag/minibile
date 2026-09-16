@@ -150,14 +150,6 @@ object ScreenRouteRegistry {
                 order = 20
             ),
             hostEntryDefinition(
-                entryId = "main.workflow",
-                screen = Screen.Workflow,
-                surface = NavigationSurface.MAIN_SIDEBAR_TOOLS,
-                launchNavItem = NavItem.Workflow,
-                icon = NavItem.Workflow.icon,
-                order = 30
-            ),
-            hostEntryDefinition(
                 entryId = "main.settings",
                 screen = Screen.Settings,
                 surface = NavigationSurface.MAIN_SIDEBAR_SYSTEM,
