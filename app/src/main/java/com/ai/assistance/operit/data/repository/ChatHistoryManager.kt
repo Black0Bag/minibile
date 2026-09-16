@@ -1909,7 +1909,7 @@ class ChatHistoryManager private constructor(private val context: Context) {
                                     safeTitle = safeTitle.substring(0, 50)
                                 }
                                 safeTitle = safeTitle.trim()
-                                
+
                                 // 确保文件名唯一
                                 var baseName = "$safeTitle.md"
                                 var counter = 1
@@ -2232,33 +2232,33 @@ class ChatHistoryManager private constructor(private val context: Context) {
                 ChatFormat.OPERIT -> {
                     parseLegacyOperitChatHistories(content)
                 }
-                
+
                 ChatFormat.CHATGPT -> {
                     AppLogger.d(TAG, "使用 ChatGPT 转换器")
                     ChatGPTConverter().convert(content)
                 }
-                
+
                 ChatFormat.CHATBOX -> {
                     AppLogger.d(TAG, "使用 ChatBox 转换器")
                     ChatBoxConverter(context).convert(content)
                 }
-                
+
                 ChatFormat.MARKDOWN -> {
                     AppLogger.d(TAG, "使用 Markdown 转换器")
                     MarkdownConverter(context).convert(content)
                 }
-                
+
                 ChatFormat.GENERIC_JSON -> {
                     AppLogger.d(TAG, "使用通用 JSON 转换器")
                     GenericJsonConverter().convert(content)
                 }
-                
+
                 ChatFormat.CLAUDE -> {
                     // Claude 格式暂不支持，回退到通用 JSON
                     AppLogger.d(TAG, "Claude 格式回退到通用 JSON 转换器")
                     GenericJsonConverter().convert(content)
                 }
-                
+
                 else -> {
                     throw ConversionException(context.getString(R.string.chat_history_unsupported_format, format))
                 }

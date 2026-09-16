@@ -208,4 +208,4 @@ class DragonBonesAvatarController(
 fun rememberDragonBonesAvatarController(): DragonBonesAvatarController {
     val libController = com.dragonbones.rememberDragonBonesController()
     return remember { DragonBonesAvatarController(libController) }
-} 
+}

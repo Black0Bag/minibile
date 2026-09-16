@@ -829,7 +829,7 @@ sealed class Screen(
             )
         }
     }
-    
+
     data object ExternalHttpChatSettings :
         Screen(navItem = NavItem.Settings, titleRes = R.string.screen_title_external_http_chat_settings) {
         @Composable
@@ -845,7 +845,7 @@ sealed class Screen(
             ExternalHttpChatSettingsScreen(onBackPressed = onGoBack)
         }
     }
-    
+
     // MNN模型下载屏幕
     data object MnnModelDownload :
         Screen(navItem = NavItem.Settings, titleRes = R.string.screen_title_mnn_model_download) {
@@ -862,7 +862,7 @@ sealed class Screen(
             MnnModelDownloadScreen(onBackPressed = onGoBack)
         }
     }
-    
+
     // 新增：人设卡生成页面
     data object PersonaCardGeneration :
         Screen(navItem = NavItem.Settings, titleRes = R.string.screen_title_persona_card_generation) {
@@ -903,7 +903,7 @@ sealed class Screen(
             )
         }
     }
-    
+
     // 自定义表情管理页面
     data object CustomEmojiManagement :
         Screen(navItem = NavItem.Settings, titleRes = R.string.manage_custom_emoji) {
@@ -922,7 +922,7 @@ sealed class Screen(
             )
         }
     }
-    
+
     data object TagMarket :
         Screen(navItem = NavItem.Settings, titleRes = R.string.screen_title_tag_market) {
         @Composable
@@ -1472,7 +1472,7 @@ sealed class Screen(
             )
         }
     }
-    
+
     data object AutoGlmTool : Screen(navItem = NavItem.Toolbox, titleRes = R.string.screen_title_autoglm_tool) {
         @Composable
         override fun Content(

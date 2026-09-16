@@ -43,7 +43,7 @@ class MCPCommandGenerator {
                     if (projectStructure.hasRequirementsTxt) {
                     commands.add("pip install -r requirements.txt")
                     }
-                    
+
                     // 再安装包本身（对于使用 python -m module_name 启动的服务）
                     if (projectStructure.hasPyprojectToml || projectStructure.hasSetupPy) {
                         commands.add("pip install -e .")

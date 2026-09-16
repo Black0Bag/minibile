@@ -815,7 +815,7 @@ fun registerAllTools(handler: AIToolHandler, context: Context) {
                 problemLibraryTool.invoke(tool)
             }
     )
-    
+
     // 注册根据标题获取单个记忆工具
     handler.registerTool(
             name = "get_memory_by_title",
@@ -1457,8 +1457,8 @@ fun registerAllTools(handler: AIToolHandler, context: Context) {
                 deviceInfoTool.invoke(tool)
             }
     )
-    
-    
+
+
     // 对话管理工具
     val chatManagerTool = ToolGetter.getChatManagerTool(context)
 

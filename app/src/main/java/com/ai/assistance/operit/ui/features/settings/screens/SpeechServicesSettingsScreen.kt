@@ -496,7 +496,7 @@ fun SpeechServicesSettingsScreen(
                                 onValueChange = {},
                                 readOnly = true,
                                 label = { Text(stringResource(R.string.speech_services_tts_engine)) },
-                                trailingIcon = { 
+                                trailingIcon = {
                                     Icon(Icons.Default.ArrowDropDown, stringResource(R.string.speech_services_dropdown_expand))
                                 },
                                 modifier = Modifier.menuAnchor().fillMaxWidth()
@@ -507,7 +507,7 @@ fun SpeechServicesSettingsScreen(
                             ) {
                                 VoiceServiceFactory.VoiceServiceType.values().forEach { type ->
                                     DropdownMenuItem(
-                                        text = { 
+                                        text = {
                                             Text(
                                                 text = when(type) {
                                                     VoiceServiceFactory.VoiceServiceType.SIMPLE_TTS -> stringResource(R.string.speech_services_tts_type_simple)
@@ -521,7 +521,7 @@ fun SpeechServicesSettingsScreen(
                                                     VoiceServiceFactory.VoiceServiceType.VITS_TTS -> stringResource(R.string.speech_services_tts_type_vits)
                                                 },
                                                 fontWeight = if (ttsServiceTypeInput == type) FontWeight.Medium else FontWeight.Normal
-                                            ) 
+                                            )
                                         },
                                         onClick = {
                                             ttsServiceTypeInput = type
@@ -2133,7 +2133,7 @@ fun SpeechServicesSettingsScreen(
                                 onValueChange = {},
                                 readOnly = true,
                                 label = { Text(stringResource(R.string.speech_services_stt_engine)) },
-                                trailingIcon = { 
+                                trailingIcon = {
                                     Icon(Icons.Default.ArrowDropDown, stringResource(R.string.speech_services_dropdown_expand))
                                 },
                                 modifier = Modifier.menuAnchor().fillMaxWidth()
@@ -2144,7 +2144,7 @@ fun SpeechServicesSettingsScreen(
                             ) {
                                 SpeechServiceFactory.SpeechServiceType.values().forEach { type ->
                                     DropdownMenuItem(
-                                        text = { 
+                                        text = {
                                             Text(
                                                 text = when(type) {
                                                     SpeechServiceFactory.SpeechServiceType.SHERPA_NCNN -> stringResource(R.string.speech_services_stt_type_sherpa)
@@ -2152,7 +2152,7 @@ fun SpeechServicesSettingsScreen(
                                                     SpeechServiceFactory.SpeechServiceType.DEEPGRAM_STT -> stringResource(R.string.speech_services_stt_type_deepgram)
                                                 },
                                                 fontWeight = if (sttServiceTypeInput == type) FontWeight.Medium else FontWeight.Normal
-                                            ) 
+                                            )
                                         },
                                         onClick = {
                                             sttServiceTypeInput = type
@@ -2263,7 +2263,7 @@ fun SpeechServicesSettingsScreen(
                                 )
                             }
                         }
-                        
+
                     }
                 }
                 }

@@ -73,7 +73,7 @@ fun UIDebuggerScreen(
                 modifier = Modifier.size(64.dp),
                 tint = MaterialTheme.colorScheme.primary
             )
-            
+
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
@@ -81,9 +81,9 @@ fun UIDebuggerScreen(
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold
             )
-            
+
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             Text(
                 text = stringResource(R.string.ui_debugger_description),
                 style = MaterialTheme.typography.bodyMedium,
@@ -100,4 +100,3 @@ fun UIDebuggerScreen(
 
 
 
- 

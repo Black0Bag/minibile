@@ -20,10 +20,10 @@ object AvatarEmotionManager {
         val angryKeywords = listOf("生气", "愤怒", "气死", "讨厌", "糟糕", "😡", "怒")
         val cryKeywords = listOf("难过", "伤心", "沮丧", "忧伤", "哭", "😭", "😢")
         val shyKeywords = listOf("害羞", "羞", "脸红", "不好意思", "///")
-        
-        fun containsAny(keys: List<String>): Boolean = 
+
+        fun containsAny(keys: List<String>): Boolean =
             keys.any { t.contains(it) || text.contains(it) }
-        
+
         return when {
             containsAny(happyKeywords) -> AvatarEmotion.HAPPY
             containsAny(angryKeywords) -> AvatarEmotion.SAD
@@ -32,7 +32,7 @@ object AvatarEmotionManager {
             else -> AvatarEmotion.IDLE
         }
     }
-    
+
     /**
      * 从文本中提取mood标签
      * AI可能会在回复中包含<mood>标签来明确指定情感
@@ -46,21 +46,21 @@ object AvatarEmotionManager {
                 .takeIf { it.isNotBlank() }
         } catch (_: Exception) { null }
     }
-    
+
     /**
      * 将Mood转换为AvatarEmotion
      */
     private fun moodToEmotion(mood: String): AvatarEmotion? {
         return AvatarMoodTypes.builtInFallbackEmotion(mood)
     }
-    
+
     /**
      * 综合分析文本，返回最合适的表情
      * 优先使用mood标签，如果没有则使用关键词推理
      */
     fun analyzeEmotion(text: String): AvatarEmotion {
         AppLogger.d("AvatarEmotionManager", "分析情感 - 原始文本: $text")
-        
+
         // 首先尝试从mood标签获取
         val parsedMood = extractMoodTagValue(text)
         if (!parsedMood.isNullOrBlank()) {
@@ -70,13 +70,13 @@ object AvatarEmotionManager {
                 return emotion
             }
         }
-        
+
         // 如果没有mood标签，则使用关键词推理
         val emotion = inferEmotionFromText(text)
         AppLogger.d("AvatarEmotionManager", "使用关键词推理: $emotion")
         return emotion
     }
-    
+
     /**
      * 清除文本中的XML标签
      * 用于显示给用户时移除mood等标记标签
@@ -105,4 +105,4 @@ object AvatarEmotionManager {
         )
         return s.trim()
     }
-} 
+}

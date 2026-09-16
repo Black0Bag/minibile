@@ -18,7 +18,7 @@ object HtmlParserUtil {
                 ]);
                 const MAX_DEPTH = 20;
                 const MAX_ELEMENTS = 500; // Increased limit
-                
+
                 let interactionIdCounter = 1;
                 let processedElements = 0;
                 const interactionMap = {};
@@ -83,7 +83,7 @@ object HtmlParserUtil {
                     }
                     return path.join(' > ');
                 }
-                
+
                 function isVisible(elem) {
                      if (!(elem instanceof Element)) return false;
                      const style = window.getComputedStyle(elem);
@@ -117,7 +117,7 @@ object HtmlParserUtil {
                         .map(n => n.textContent.trim())
                         .join(' ')
                         .trim();
-                    
+
                     if (directText) return directText;
 
                     // Fallback to textContent, which includes children, but keep it short.
@@ -142,7 +142,7 @@ object HtmlParserUtil {
                     if (depth > MAX_DEPTH || processedElements >= MAX_ELEMENTS || !element.tagName || IGNORE_TAGS.has(element.tagName.toUpperCase()) || !isVisible(element)) {
                         return null;
                     }
-                    
+
                     let children = [];
                     // ALWAYS process children, regardless of whether the parent is interactive.
                     // This fixes the issue where an interactive container would hide its interactive children.
@@ -156,14 +156,14 @@ object HtmlParserUtil {
                             }
                         });
                     }
-                    
+
                     processedElements++;
 
                     const isItselfInteractive = isInteractive(element);
                     const flatChildren = children.flat();
                     const hasInteractiveDescendant = flatChildren.some(c => c.interactionId != null);
                     const ownDescription = getNodeDescription(element).trim();
-                    
+
                     // Pruning: If a node isn't interactive, has no text, and has no interactive children, it's just a layout div. Discard it.
                     if (!isItselfInteractive && !ownDescription && !hasInteractiveDescendant) {
                         return flatChildren;
@@ -194,10 +194,10 @@ object HtmlParserUtil {
                         description: ownDescription || (isItselfInteractive ? type : ''), // Fallback description
                         children: flatChildren
                     };
-                    
+
                     return [finalNode];
                 }
-                
+
                 const rootElement = findTopmostModal() || document.body;
                 const simplifiedTree = simplifyNode(rootElement, 0);
 
@@ -219,14 +219,14 @@ object HtmlParserUtil {
         return try {
             val json = Json { ignoreUnknownKeys = true }
             val result = json.decodeFromString<ExtractionResult>(jsonString)
-            
+
             val interactionMapIntKeys = result.map.mapKeys { it.key.toIntOrNull() ?: -1 }.filterKeys { it != -1 }
             updateInteractionMap(interactionMapIntKeys)
-            
+
             // The result from the new script is a list (or a single root object in a list)
             // We can wrap it in a root node for consistency with the old structure if needed
             val rootChildren = result.tree ?: emptyList()
-            
+
             return ComputerPageInfoNode(
                 interactionId = null,
                 type = "container",
@@ -239,4 +239,4 @@ object HtmlParserUtil {
             null
         }
     }
-} 
+}

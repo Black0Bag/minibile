@@ -643,7 +643,7 @@ class ChatHistoryDelegate(
     /**
      * 智能重新加载聊天消息，通过 timestamp 匹配已存在的消息，保持原实例不变
      * 这样可以防止UI重组，提高性能
-     * 
+     *
      * @param chatId 聊天ID
      */
     suspend fun reloadChatMessagesSmart(chatId: String) {
@@ -673,12 +673,12 @@ class ChatHistoryDelegate(
             }
 
             val hasUserMessage = chatHistoryManager.hasUserMessage(chatId)
-            
+
             AppLogger.d(
                 TAG,
                 "从数据库检查消息 - 内存消息数: ${_chatHistory.value.size}, 是否有用户消息: $hasUserMessage",
             )
-            
+
             if (hasUserMessage) {
                 AppLogger.d(TAG, "聊天 $chatId 已存在用户消息，跳过开场白同步")
                 return@withLock
@@ -758,7 +758,7 @@ class ChatHistoryDelegate(
                 AppLogger.d(TAG, "无现有AI消息且开场白为空，无需操作")
             }
         }
-        
+
         AppLogger.d(TAG, "开场白同步完成，聊天ID: $chatId")
     }
 
@@ -787,7 +787,7 @@ class ChatHistoryDelegate(
             // 获取当前对话ID，以便继承分组
             val currentChatId = _currentChatId.value
             val inheritGroupFromChatId = if (inheritGroupFromCurrent) currentChatId else null
-            
+
             // 获取当前活跃的角色卡
             val activePrompt = activePromptManager.getActivePrompt()
             val activeCard = when (activePrompt) {
@@ -838,14 +838,14 @@ class ChatHistoryDelegate(
                 chatHistoryManager.addMessage(newChat.id, openingMessage)
             }
             // --- 结束 ---
-            
+
             // 等待数据库Flow更新，确保新对话在列表中（最多等待500ms）
             withTimeoutOrNull(500) {
                 _chatHistories.first { histories ->
                     histories.any { it.id == newChat.id }
                 }
             }
-            
+
             if (setAsCurrentChat) {
                 if (selectionMode == ChatSelectionMode.FOLLOW_GLOBAL) {
                     // FOLLOW_GLOBAL 由 currentChatId 的 collector 负责驱动切换与加载。
@@ -913,7 +913,7 @@ class ChatHistoryDelegate(
                 val branchChat = chatHistoryManager.createBranch(currentChatId, upToMessageTimestamp)
                 _currentChatId.value = branchChat.id
                 loadChatMessages(branchChat.id)
-                
+
                 // 加载分支的 token 统计（继承自父对话）
                 onTokenStatisticsLoaded(
                     branchChat.id,
@@ -921,7 +921,7 @@ class ChatHistoryDelegate(
                     branchChat.outputTokens,
                     branchChat.currentWindowSize
                 )
-                
+
                 delay(200)
                 onScrollToBottom()
             }
@@ -1650,7 +1650,7 @@ class ChatHistoryDelegate(
     /*
     suspend fun summarizeMemory(messages: List<ChatMessage>) { ... }
     */
-    
+
     /**
      * 找到合适的总结插入位置。
      * 新的逻辑是，总结应该插入在上一个已完成对话轮次的末尾，

@@ -281,7 +281,7 @@ class OperitApplication : Application(), ImageLoaderFactory, WorkConfiguration.P
             TextSegmenter.initialize(applicationContext)
             AppLogger.d(TAG, "【启动计时】TextSegmenter预热完成（异步） - ${System.currentTimeMillis() - segmenterStartTime}ms")
         }
-        
+
         // Initialize WaifuMessageProcessor
         WaifuMessageProcessor.initialize(applicationContext)
         AppLogger.d(TAG, "【启动计时】WaifuMessageProcessor初始化完成 - ${System.currentTimeMillis() - startTime}ms")
@@ -302,7 +302,7 @@ class OperitApplication : Application(), ImageLoaderFactory, WorkConfiguration.P
                 .writeTimeout(30, TimeUnit.SECONDS)   // 写入超时：30秒（默认10秒）
                 .retryOnConnectionFailure(true)       // 连接失败时自动重试
                 .build()
-        
+
         globalImageLoader =
                 ImageLoader.Builder(this)
                         .okHttpClient(imageOkHttpClient) // 使用自定义 OkHttp 客户端
@@ -329,7 +329,7 @@ class OperitApplication : Application(), ImageLoaderFactory, WorkConfiguration.P
                         }
                         .build()
         AppLogger.d(TAG, "【启动计时】全局图片加载器初始化完成（超时配置：连接30s/读取60s） - ${System.currentTimeMillis() - startTime}ms")
-        
+
         // 初始化图片池管理器，支持本地持久化缓存
         ImagePoolManager.initialize(filesDir, preloadNow = false)
         AppLogger.d(TAG, "【启动计时】图片池管理器初始化完成 - ${System.currentTimeMillis() - startTime}ms")
@@ -358,9 +358,9 @@ class OperitApplication : Application(), ImageLoaderFactory, WorkConfiguration.P
             toolHandler.registerDefaultTools()
             AppLogger.d(TAG, "【启动计时】AIToolHandler初始化并注册工具完成（异步/串行） - ${System.currentTimeMillis() - toolStartTime}ms")
         }
-        
+
         // Workflow scheduler initialization removed
-        
+
         applicationScope.launch {
             try {
                 val prefs = RoomDatabaseBackupPreferences.getInstance(applicationContext)
@@ -385,7 +385,7 @@ class OperitApplication : Application(), ImageLoaderFactory, WorkConfiguration.P
                 AppLogger.e(TAG, "无障碍服务预绑定失败", e)
             }
         }
-        
+
         val totalTime = System.currentTimeMillis() - startTime
         AppLogger.d(TAG, "【启动计时】应用启动全部完成 - 总耗时: ${totalTime}ms")
     }
@@ -600,7 +600,7 @@ class OperitApplication : Application(), ImageLoaderFactory, WorkConfiguration.P
             event = AppLifecycleEvent.APPLICATION_TERMINATE,
             params = AppLifecycleHookParams(applicationContext)
         )
-        
+
         try {
             if (AIForegroundService.isRunning.get()) {
                 val intent = Intent(applicationContext, AIForegroundService::class.java)
@@ -620,7 +620,7 @@ class OperitApplication : Application(), ImageLoaderFactory, WorkConfiguration.P
         } catch (e: Exception) {
             AppLogger.e(TAG, "清理终端管理器失败: ${e.message}", e)
         }
-        
+
         // 在应用终止时关闭LocalWebServer服务器
         try {
             val webServer = LocalWebServer.getInstance(applicationContext, LocalWebServer.ServerType.WORKSPACE)

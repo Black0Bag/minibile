@@ -126,7 +126,7 @@ class UserPreferencesManager private constructor(private val context: Context) {
             booleanPreferencesKey("use_custom_navigation_drawer_accent_color")
         private val CUSTOM_NAVIGATION_DRAWER_ACCENT_COLOR =
             intPreferencesKey("custom_navigation_drawer_accent_color")
-        
+
         // AppBar 自定义颜色设置
         private val USE_CUSTOM_APP_BAR_COLOR = booleanPreferencesKey("use_custom_app_bar_color")
         private val CUSTOM_APP_BAR_COLOR = intPreferencesKey("custom_app_bar_color")
@@ -263,7 +263,7 @@ class UserPreferencesManager private constructor(private val context: Context) {
         // 背景媒体类型常量
         const val MEDIA_TYPE_IMAGE = "image"
         const val MEDIA_TYPE_VIDEO = "video"
-        
+
         // 默认语言
         const val DEFAULT_LANGUAGE = LanguageCodes.AUTO
 
@@ -329,7 +329,7 @@ class UserPreferencesManager private constructor(private val context: Context) {
         // 字体类型常量
         const val FONT_TYPE_SYSTEM = "system"
         const val FONT_TYPE_FILE = "file"
-        
+
         // 系统字体名称常量
         const val SYSTEM_FONT_DEFAULT = "default"
         const val SYSTEM_FONT_SERIF = "serif"
@@ -341,18 +341,18 @@ class UserPreferencesManager private constructor(private val context: Context) {
     }
 
     // 获取应用语言设置
-    val appLanguage: Flow<String> = 
+    val appLanguage: Flow<String> =
             context.userPreferencesDataStore.data.map { preferences ->
                 preferences[APP_LANGUAGE] ?: DEFAULT_LANGUAGE
             }
-    
+
     // 保存应用语言设置
     suspend fun saveAppLanguage(languageCode: String) {
         context.userPreferencesDataStore.edit { preferences ->
             preferences[APP_LANGUAGE] = languageCode
         }
     }
-    
+
     // 同步获取当前语言设置
     fun getCurrentLanguage(): String {
         return runBlocking {
@@ -734,7 +734,7 @@ class UserPreferencesManager private constructor(private val context: Context) {
             preferences[key]
         }
     }
-    
+
     suspend fun saveAiAvatarForCharacterCard(characterCardId: String, avatarUri: String?) {
         context.userPreferencesDataStore.edit { preferences ->
             val prefix = getCharacterCardThemePrefix(characterCardId)

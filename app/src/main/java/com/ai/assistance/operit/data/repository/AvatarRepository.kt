@@ -542,10 +542,10 @@ class AvatarRepository(
 
     private val _settings = MutableStateFlow(AvatarSettings())
     val settings: StateFlow<AvatarSettings> = _settings.asStateFlow()
-    
+
     private val _instanceSettings = MutableStateFlow<Map<String, AvatarInstanceSettings>>(emptyMap())
     val instanceSettings: StateFlow<Map<String, AvatarInstanceSettings>> = _instanceSettings.asStateFlow()
-    
+
     private val userAvatarDir: File by lazy {
         File(context.getExternalFilesDir(null), USER_AVATAR_DIR)
     }
@@ -638,7 +638,7 @@ class AvatarRepository(
             }
         }
     }
-    
+
     private fun isPathFromAssets(path: String): Boolean {
         // A simple heuristic to determine if a model was copied from assets.
         // This could be improved by storing metadata.
@@ -648,7 +648,7 @@ class AvatarRepository(
     suspend fun refreshAvatars() = withContext(Dispatchers.IO) {
         loadAvatars()
     }
-    
+
     fun switchAvatar(avatarId: String) {
         val currentSettings = loadSettingsFromPrefs()
         if (currentSettings.currentAvatarId != avatarId) {
@@ -674,7 +674,7 @@ class AvatarRepository(
             _currentAvatar.value = null
             return
         }
-        
+
         _currentAvatar.value = modelFactory.createModel(
             id = config.id,
             name = config.name,
@@ -752,7 +752,7 @@ class AvatarRepository(
 
         true
     }
-    
+
     fun updateAvatarSettings(avatarId: String, newSettings: AvatarInstanceSettings) {
         val updatedSettings = _instanceSettings.value.toMutableMap()
         updatedSettings[avatarId] = newSettings
@@ -991,7 +991,7 @@ class AvatarRepository(
             false
         }
     }
-    
+
     suspend fun importAvatarFromZip(uri: Uri): Boolean = withContext(Dispatchers.IO) {
         val tempDir = File(context.cacheDir, "avatar_import_${System.currentTimeMillis()}")
         try {

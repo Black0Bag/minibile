@@ -242,11 +242,11 @@ fun PermissionLevelCard(
                                     )
                     ) {
                         Text(
-                            text = stringResource(R.string.set_as_current_level), 
+                            text = stringResource(R.string.set_as_current_level),
                             fontSize = 12.sp,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth()
-                        ) 
+                        )
                      }
                 } else {
                     Row(

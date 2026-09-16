@@ -98,7 +98,7 @@ fun OperitTerminalWizardCard(
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-            
+
             // 环境状态信息
             val statusText = when {
                 isEnvironmentReady -> stringResource(R.string.nodejs_pip_environment_ready)
@@ -106,7 +106,7 @@ fun OperitTerminalWizardCard(
                 !isPnpmInstalled && isPipInstalled -> stringResource(R.string.pip_installed_need_pnpm)
                 else -> stringResource(R.string.need_configure_nodejs_pip)
             }
-            
+
             val statusColor = when {
                 isEnvironmentReady -> MaterialTheme.colorScheme.tertiary
                 isPnpmInstalled || isPipInstalled -> MaterialTheme.colorScheme.primary
@@ -127,11 +127,11 @@ fun OperitTerminalWizardCard(
                     color = statusColor
                 )
             }
-            
+
             // 详细环境状态显示
             if (!isEnvironmentReady) {
                 Spacer(modifier = Modifier.height(8.dp))
-                
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -154,7 +154,7 @@ fun OperitTerminalWizardCard(
                             color = if (isPnpmInstalled) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-                    
+
                     // pip状态
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -187,9 +187,9 @@ fun OperitTerminalWizardCard(
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        
+
                         Spacer(modifier = Modifier.height(16.dp))
-                        
+
                         Button(
                             onClick = onOpenTerminalScreen,
                             modifier = Modifier.fillMaxWidth(),
@@ -206,9 +206,9 @@ fun OperitTerminalWizardCard(
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        
+
                         Spacer(modifier = Modifier.height(16.dp))
-                        
+
                         OutlinedButton(
                             onClick = onOpenTerminalScreen,
                             modifier = Modifier.fillMaxWidth(),
@@ -224,4 +224,4 @@ fun OperitTerminalWizardCard(
             }
         }
     }
-} 
+}

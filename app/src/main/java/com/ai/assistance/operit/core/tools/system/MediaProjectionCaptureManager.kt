@@ -31,13 +31,13 @@ class MediaProjectionCaptureManager(private val context: Context, private val me
 
     private val callbackHandler = Handler(Looper.getMainLooper())
     private var projectionCallback: MediaProjection.Callback? = null
-    
+
     /**
      * Set up the virtual display using the MediaProjection token.
      */
     fun setupDisplay() {
         if (virtualDisplay != null) return
-        
+
         try {
             ensureProjectionCallbackRegistered()
 
@@ -66,7 +66,7 @@ class MediaProjectionCaptureManager(private val context: Context, private val me
                     null,
                     null
             )
-            
+
             AppLogger.d(TAG, "Created MediaProjection virtual display: ${width}x${height}")
         } catch (e: Exception) {
             try {
@@ -120,7 +120,7 @@ class MediaProjectionCaptureManager(private val context: Context, private val me
             if (width <= 0 || height <= 0) {
                 return null
             }
-            
+
             val plane = image.planes[0]
             val buffer = plane.buffer
             val pixelStride = plane.pixelStride

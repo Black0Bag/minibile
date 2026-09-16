@@ -42,8 +42,8 @@ data class MessageEntity(
     /** 转换为ChatMessage对象（供UI层使用） */
     fun toChatMessage(): ChatMessage {
         return ChatMessage(
-            sender = sender, 
-            content = content, 
+            sender = sender,
+            content = content,
             timestamp = timestamp,
             roleName = roleName,
             selectedVariantIndex = selectedVariantIndex,

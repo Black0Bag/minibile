@@ -18,4 +18,4 @@ val McpJson = Json {
 }
 
 // Use a simpler approach without contextual serializers
-// This will avoid the need for complex serialization setup 
+// This will avoid the need for complex serialization setup

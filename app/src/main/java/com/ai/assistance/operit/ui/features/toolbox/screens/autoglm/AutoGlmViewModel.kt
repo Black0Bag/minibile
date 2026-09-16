@@ -210,7 +210,7 @@ class AutoGlmViewModel(private val context: Context) : ViewModel() {
             }
         return FunctionalPrompts.buildUiAutomationAgentPrompt(formattedDate, useEnglish)
     }
-    
+
     private fun extractTagContent(text: String, tag: String): String? {
         val pattern = Regex("""<$tag>(.*?)</$tag>""", RegexOption.DOT_MATCHES_ALL)
         return pattern.find(text)?.groupValues?.getOrNull(1)?.trim()

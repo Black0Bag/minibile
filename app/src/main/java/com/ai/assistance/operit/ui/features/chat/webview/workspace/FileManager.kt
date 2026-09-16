@@ -481,14 +481,14 @@ fun FileBrowser(
                 // 头部省略的路径显示（使用水平滚动，自动滚动到末尾）
                 val scrollState = rememberScrollState()
                 var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
-                
+
                 LaunchedEffect(currentPath, textLayoutResult) {
                     textLayoutResult?.let {
                         // 滚动到末尾，显示路径的最后部分
                         scrollState.scrollTo(scrollState.maxValue)
                     }
                 }
-                
+
                 Text(
                         text = currentPath,
                         style = MaterialTheme.typography.bodySmall,
@@ -513,7 +513,7 @@ fun FileBrowser(
                             tint = if (showHiddenFiles) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                
+
                 // 排序按钮
                 Box {
                     IconButton(
@@ -570,7 +570,7 @@ fun FileBrowser(
                     }
                 }
             }
-            
+
             // 快速路径栏
             LazyRow(
                 modifier = Modifier
@@ -689,7 +689,7 @@ fun FileBrowser(
                     } else {
                         fileList.filter { !it.name.startsWith(".") }
                     }
-                    
+
                     items(getSortedFileList(filteredList, sortMode)) { item ->
                         Box { // 使用Box来定位上下文菜单
                             FileListItem(

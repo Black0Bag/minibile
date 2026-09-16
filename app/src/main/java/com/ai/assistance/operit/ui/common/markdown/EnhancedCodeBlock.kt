@@ -354,9 +354,9 @@ fun MermaidRenderer(code: String, modifier: Modifier = Modifier) {
             <title>Mermaid Diagram</title>
             <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
             <style>
-                body { 
-                    background-color: #1E1E1E; 
-                    margin: 0; 
+                body {
+                    background-color: #1E1E1E;
+                    margin: 0;
                     padding: 16px;
                     touch-action: pan-x pan-y;
                     overflow: auto;
@@ -367,15 +367,15 @@ fun MermaidRenderer(code: String, modifier: Modifier = Modifier) {
                     display: block;
                     margin: 0 auto;
                 }
-                #diagram { 
+                #diagram {
                     display: inline-block;
                     touch-action: manipulation;
                 }
-                .mermaid { 
+                .mermaid {
                     font-family: 'Courier New', Courier, monospace;
                     font-size: 14px;
                 }
-                
+
                 /* 添加自定义缩放控件 */
                 .zoom-controls {
                     position: fixed;
@@ -427,7 +427,7 @@ fun MermaidRenderer(code: String, modifier: Modifier = Modifier) {
                     securityLevel: 'loose',
                     flowchart: { htmlLabels: true }
                 });
-                
+
                 // 自定义缩放功能
                 let scale = 1.0;
                 const wrapper = document.getElementById('diagram-wrapper');
@@ -435,22 +435,22 @@ fun MermaidRenderer(code: String, modifier: Modifier = Modifier) {
                 const scroller = document.scrollingElement || document.documentElement;
                 let baseWidth = 0;
                 let baseHeight = 0;
-                
+
                 function zoomIn() {
                     scale = Math.min(scale + 0.2, 3.0);
                     applyZoom();
                 }
-                
+
                 function zoomOut() {
                     scale = Math.max(scale - 0.2, 0.5);
                     applyZoom();
                 }
-                
+
                 function resetZoom() {
                     scale = 1.0;
                     applyZoom();
                 }
-                
+
                 function applyZoom() {
                     if (!baseWidth || !baseHeight) {
                         baseWidth = diagram.scrollWidth || diagram.getBoundingClientRect().width;
@@ -495,37 +495,37 @@ fun MermaidRenderer(code: String, modifier: Modifier = Modifier) {
                 window.addEventListener('load', function() {
                     setTimeout(captureBaseSize, 0);
                 });
-                
+
                 // 添加触摸拖动支持
                 let isDragging = false;
                 let startX, startY, scrollLeft, scrollTop;
-                
+
                 document.addEventListener('mousedown', function(e) {
                     if (e.target.closest('.zoom-controls')) return;
-                    
+
                     isDragging = true;
                     startX = e.clientX;
                     startY = e.clientY;
                     scrollLeft = scroller.scrollLeft;
                     scrollTop = scroller.scrollTop;
                 });
-                
+
                 document.addEventListener('mousemove', function(e) {
                     if (!isDragging) return;
                     e.preventDefault();
-                    
+
                     const x = e.clientX;
                     const y = e.clientY;
                     const moveX = (x - startX);
                     const moveY = (y - startY);
-                    
+
                     scroller.scrollTo(scrollLeft - moveX, scrollTop - moveY);
                 });
-                
+
                 document.addEventListener('mouseup', function() {
                     isDragging = false;
                 });
-                
+
                 // 触摸支持
                 document.addEventListener('touchstart', function(e) {
                     if (e.target.closest('.zoom-controls')) return;
@@ -537,28 +537,28 @@ fun MermaidRenderer(code: String, modifier: Modifier = Modifier) {
                         scrollTop = scroller.scrollTop;
                     }
                 }, {passive: false});
-                
+
                 document.addEventListener('touchmove', function(e) {
                     if (!isDragging) return;
-                    
+
                     if (e.touches.length === 1) {
                         const x = e.touches[0].clientX;
                         const y = e.touches[0].clientY;
                         const moveX = (x - startX);
                         const moveY = (y - startY);
-                        
+
                         scroller.scrollTo(scrollLeft - moveX, scrollTop - moveY);
                     }
                 }, {passive: false});
-                
+
                 document.addEventListener('touchend', function() {
                     isDragging = false;
                 });
-                
+
                 // 双指捏合缩放支持
                 let initialDistance = 0;
                 let initialScale = 1.0;
-                
+
                 document.addEventListener('touchstart', function(e) {
                     if (e.touches.length === 2) {
                         initialDistance = Math.hypot(
@@ -568,16 +568,16 @@ fun MermaidRenderer(code: String, modifier: Modifier = Modifier) {
                         initialScale = scale;
                     }
                 }, {passive: false});
-                
+
                 document.addEventListener('touchmove', function(e) {
                     if (e.touches.length === 2) {
                         e.preventDefault(); // 防止默认缩放
-                        
+
                         const distance = Math.hypot(
                             e.touches[0].pageX - e.touches[1].pageX,
                             e.touches[0].pageY - e.touches[1].pageY
                         );
-                        
+
                         const delta = distance / initialDistance;
                         scale = Math.min(Math.max(initialScale * delta, 0.5), 3.0);
                         applyZoom();

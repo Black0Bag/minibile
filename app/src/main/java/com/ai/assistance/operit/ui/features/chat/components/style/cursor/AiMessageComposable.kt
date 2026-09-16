@@ -59,7 +59,7 @@ fun AiMessageComposable(
     val showThinkingProcess = themeSnapshot.showThinkingProcess
     val showStatusTags = themeSnapshot.showStatusTags
     val effectiveShowThinkingProcess = if (forceShowThinkingProcess) true else showThinkingProcess
-    
+
     val showModelProvider = themeSnapshot.showModelProvider
     val showModelName = themeSnapshot.showModelName
     val showRoleName = themeSnapshot.showRoleName
@@ -68,7 +68,7 @@ fun AiMessageComposable(
     // 链接预览弹窗状态
     var showLinkDialog by remember { mutableStateOf(false) }
     var linkToPreview by remember { mutableStateOf("") }
-    
+
     // 创建并保存StreamMarkdownRenderer的状态，使用message.timestamp作为key确保同一条消息共享状态
     val rendererState = remember(message.timestamp) { StreamMarkdownRendererState() }
 
@@ -139,18 +139,18 @@ fun AiMessageComposable(
                 style = MaterialTheme.typography.labelSmall,
                 color = textColor.copy(alpha = 0.7f)
             )
-            
+
             // 右侧：详细信息（角色名、模型信息）
             val detailText = buildString {
                 // 根据用户设置显示角色名称
                 if (showRoleName && message.roleName.isNotEmpty()) {
                     append(message.roleName)
                 }
-                
+
                 // 根据用户设置显示模型信息
                 val showModel = showModelName && message.modelName.isNotEmpty()
                 val showProvider = showModelProvider && message.provider.isNotEmpty()
-                
+
                 if (showModel && showProvider) {
                     if (isNotEmpty()) append(" | ")
                     append("${message.modelName} by ${message.provider}")
@@ -162,7 +162,7 @@ fun AiMessageComposable(
                     append(message.provider)
                 }
             }
-            
+
             if (detailText.isNotEmpty()) {
                 Text(
                     text = detailText,

@@ -28,4 +28,4 @@ class EmbeddingConverter : PropertyConverter<Embedding?, ByteArray?> {
         floatBuffer.put(vector)
         return buffer.array()
     }
-} 
+}

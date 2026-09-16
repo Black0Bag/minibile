@@ -298,19 +298,19 @@ class MultiServiceManager(private val context: Context) {
     private suspend fun createServiceFromConfig(config: ModelConfigData, modelIndex: Int): AIService {
         // 使用公共函数计算有效索引
         val actualIndex = getValidModelIndex(config.modelName, modelIndex)
-        
+
         // 记录越界警告
         if (actualIndex != modelIndex && modelIndex != 0) {
             val modelList = config.modelName.split(",").map { it.trim() }.filter { it.isNotEmpty() }
             AppLogger.w(TAG, "模型索引 $modelIndex 超出范围(0-${modelList.size - 1})，自动使用第一个模型")
         }
-        
+
         // 根据实际索引选择具体模型
         val selectedModelName = getModelByIndex(config.modelName, actualIndex)
-        
+
         // 创建一个临时配置，使用选中的模型名称
         val configWithSelectedModel = config.copy(modelName = selectedModelName)
-        
+
         AppLogger.d(TAG, "创建服务: 原始模型='${config.modelName}', 选中模型='$selectedModelName' (请求索引=$modelIndex, 实际索引=$actualIndex)")
 
         val rawService = AIServiceFactory.createService(
@@ -399,7 +399,7 @@ class MultiServiceManager(private val context: Context) {
         ensureInitialized()
         val configMapping = functionalConfigManager.getConfigMappingForFunction(FunctionType.IMAGE_RECOGNITION)
         val config = modelConfigManager.getModelConfigFlow(configMapping.configId).first()
-        
+
         // 检查模型配置是否启用了直接图片处理
         return config.enableDirectImageProcessing
     }

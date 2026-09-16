@@ -62,12 +62,12 @@ fun loadCustomFontFamily(context: Context, fontPath: String): FontFamily? {
         } else {
             File(fontPath)
         }
-        
+
         if (!file.exists()) {
             AppLogger.e("TypeKt", "Font file does not exist: $fontPath")
             return null
         }
-        
+
         FontFamily(
             Font(file)
         )

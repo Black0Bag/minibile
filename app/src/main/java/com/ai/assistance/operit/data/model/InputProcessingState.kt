@@ -37,4 +37,4 @@ sealed class InputProcessingState {
 
     /** 发生错误 */
     data class Error(val message: String) : InputProcessingState()
-} 
+}

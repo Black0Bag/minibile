@@ -133,7 +133,7 @@ object LocaleUtils {
      * @param languageCode 语言代码，如zh、en、pt-BR
      */
     fun setAppLanguage(context: Context, languageCode: String) {
-        
+
         try {
             val manager = UserPreferencesManager.getInstance(context)
             runBlocking(Dispatchers.IO) {
@@ -145,10 +145,10 @@ object LocaleUtils {
 
         // 根据 languageCode 获取相应的 Locale
         val localeToSet = getLocaleForLanguageCode(languageCode, context)
-        
+
         // 设置默认语言
         Locale.setDefault(localeToSet)
-        
+
         // 根据Android版本应用语言设置
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             // Android 13+ 使用AppCompatDelegate API
@@ -158,7 +158,7 @@ object LocaleUtils {
             // 较旧版本Android使用资源配置
             try {
                 val config = Configuration(context.resources.configuration)
-                
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     val localeList = LocaleList(localeToSet)
                     LocaleList.setDefault(localeList)
@@ -166,11 +166,11 @@ object LocaleUtils {
                 } else {
                     config.locale = localeToSet
                 }
-                
+
                 // 更新上下文资源配置
                 @Suppress("DEPRECATION")
                 context.resources.updateConfiguration(config, context.resources.displayMetrics)
-                
+
                 // 尝试更新Activity
                 try {
                     val ctx = context.applicationContext
@@ -179,7 +179,7 @@ object LocaleUtils {
                         if (baseContext != null) {
                             @Suppress("DEPRECATION")
                             baseContext.resources.updateConfiguration(
-                                config, 
+                                config,
                                 baseContext.resources.displayMetrics
                             )
                         }

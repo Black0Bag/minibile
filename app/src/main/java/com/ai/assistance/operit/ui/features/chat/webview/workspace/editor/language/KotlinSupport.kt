@@ -16,35 +16,35 @@ class KotlinSupport : BaseLanguageSupport() {
             "noinline", "open", "operator", "out", "override", "private", "protected", "public",
             "reified", "sealed", "suspend", "tailrec", "vararg"
         )
-        
+
         private val BUILT_IN_TYPES = setOf(
             "Any", "Unit", "String", "Int", "Boolean", "Char", "Byte", "Short",
             "Long", "Double", "Float", "Array", "List", "Map", "Set", "Pair",
             "Triple", "Nothing", "Collection", "MutableList", "MutableMap", "MutableSet"
         )
-        
+
         private val BUILT_IN_FUNCTIONS = setOf(
             "apply", "let", "run", "with", "also", "takeIf", "takeUnless", "repeat",
             "lazy", "lazyOf", "arrayOf", "listOf", "mutableListOf", "setOf", "mutableSetOf",
             "mapOf", "mutableMapOf", "println", "print", "require", "check", "error",
             "TODO", "run", "runCatching", "use"
         )
-        
+
         private val FILE_EXTENSIONS = listOf("kt", "kts")
-        
+
         init {
             // 注册语言支持
             LanguageSupportRegistry.register(KotlinSupport())
         }
     }
-    
+
     override fun getName(): String = "kotlin"
-    
+
     override fun getKeywords(): Set<String> = KEYWORDS
-    
+
     override fun getBuiltInTypes(): Set<String> = BUILT_IN_TYPES
-    
+
     override fun getBuiltInFunctions(): Set<String> = BUILT_IN_FUNCTIONS
-    
+
     override fun getFileExtensions(): List<String> = FILE_EXTENSIONS
-} 
+}

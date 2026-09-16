@@ -145,7 +145,7 @@ class LinuxFileSystemTools(context: Context) : StandardFileSystemTools(context) 
             }
 
             val fileExt = path.substringAfterLast('.', "").lowercase()
-            
+
             // 特殊文件类型处理（图片、PDF等）暂时不支持在Linux环境
             // 因为这些需要Android本地文件访问
             if (fileExt in listOf("doc", "docx", "pdf", "jpg", "jpeg", "png", "gif", "bmp")) {
@@ -1191,7 +1191,7 @@ class LinuxFileSystemTools(context: Context) : StandardFileSystemTools(context) 
         val intent = tool.parameters.find { it.name == "intent" }?.value ?: ""
         val filePattern = tool.parameters.find { it.name == "file_pattern" }?.value ?: "*"
         val maxResults = tool.parameters.find { it.name == "max_results" }?.value?.toIntOrNull() ?: 10
-        
+
         PathValidator.validateLinuxPath(path, tool.name)?.let { return it }
 
         if (path.isBlank()) {

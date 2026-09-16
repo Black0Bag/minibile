@@ -246,7 +246,7 @@ open class StandardSystemOperationTools(private val context: Context) {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
                 context.startActivity(intent)
-                
+
                 return ToolResult(
                     toolName = tool.name,
                     success = false,
@@ -494,10 +494,10 @@ open class StandardSystemOperationTools(private val context: Context) {
 
             val sortedAppDetails = appDetails.sorted()
             val resultData = AppListData(
-                includesSystemApps = includeSystemApps, 
+                includesSystemApps = includeSystemApps,
                 packages = sortedAppDetails
             )
-            
+
             ToolResult(toolName = tool.name, success = true, result = resultData)
         } catch (e: Exception) {
             AppLogger.e(TAG, "获取已安装应用列表时出错", e)

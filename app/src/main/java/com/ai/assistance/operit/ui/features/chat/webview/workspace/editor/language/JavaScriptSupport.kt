@@ -12,7 +12,7 @@ class JavaScriptSupport : BaseLanguageSupport() {
             "extends", "import", "export", "default", "async", "await", "yield", "static",
             "get", "set", "in", "of", "with", "debugger"
         )
-        
+
         private val BUILT_IN_TYPES = setOf(
             "Array", "Boolean", "Date", "Error", "Function", "JSON", "Math", "Number",
             "Object", "Promise", "RegExp", "String", "Symbol", "Map", "Set", "WeakMap",
@@ -24,31 +24,31 @@ class JavaScriptSupport : BaseLanguageSupport() {
             "console", "window", "document", "navigator", "location", "history", "screen",
             "localStorage", "sessionStorage", "performance"
         )
-        
+
         private val BUILT_IN_FUNCTIONS = setOf(
             "setTimeout", "clearTimeout", "setInterval", "clearInterval",
             "encodeURI", "decodeURI", "encodeURIComponent", "decodeURIComponent",
             "parseInt", "parseFloat", "isNaN", "isFinite", "eval", "alert", "confirm", "prompt",
             "btoa", "atob", "fetch"
         )
-        
+
         private val FILE_EXTENSIONS = listOf("js", "mjs", "cjs")
-        
+
         init {
             // 注册语言支持
             LanguageSupportRegistry.register(JavaScriptSupport())
         }
     }
-    
+
     override fun getName(): String = "javascript"
-    
+
     override fun getKeywords(): Set<String> = KEYWORDS
-    
+
     override fun getBuiltInTypes(): Set<String> = BUILT_IN_TYPES
-    
+
     override fun getBuiltInFunctions(): Set<String> = BUILT_IN_FUNCTIONS
 
     override fun getBuiltInVariables(): Set<String> = BUILT_IN_VARIABLES
-    
+
     override fun getFileExtensions(): List<String> = FILE_EXTENSIONS
-} 
+}

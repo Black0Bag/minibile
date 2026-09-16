@@ -29,40 +29,40 @@ data class ToolPrompt(
     override fun toString(): String {
         val builder = StringBuilder()
         builder.append("- $name: $description")
-        
+
         // 优先使用结构化参数，转换为字符串格式
         val paramsString = if (parametersStructured != null && parametersStructured.isNotEmpty()) {
             parametersStructured.joinToString(", ") { param ->
                 // 构建完整的参数描述
                 val parts = mutableListOf<String>()
-                
+
                 // 添加主描述
                 parts.add(param.description)
-                
+
                 // 如果有默认值且描述中没有提到，添加默认值信息
                 if (param.default != null && !param.description.contains("default")) {
                     parts.add("default ${param.default}")
                 }
-                
+
                 val fullDesc = parts.joinToString(", ")
                 "${param.name} ($fullDesc)"
             }
         } else {
             parameters
         }
-        
+
         if (paramsString.isNotEmpty()) {
             builder.append(" Parameters: $paramsString")
         }
-        
+
         if (details.isNotEmpty()) {
             builder.append("\n$details")
         }
-        
+
         if (notes.isNotEmpty()) {
             builder.append("\n$notes")
         }
-        
+
         return builder.toString()
     }
 }
@@ -82,17 +82,17 @@ data class SystemToolPromptCategory(
      */
     override fun toString(): String {
         val builder = StringBuilder()
-        
+
         if (categoryName.isNotEmpty()) {
             builder.append(categoryName)
             builder.append(":")
         }
-        
+
         if (categoryHeader.isNotEmpty()) {
             builder.append("\n")
             builder.append(categoryHeader)
         }
-        
+
         if (tools.isNotEmpty()) {
             builder.append("\n")
             tools.forEachIndexed { index, tool ->
@@ -102,12 +102,12 @@ data class SystemToolPromptCategory(
                 }
             }
         }
-        
+
         if (categoryFooter.isNotEmpty()) {
             builder.append("\n")
             builder.append(categoryFooter)
         }
-        
+
         return builder.toString()
     }
 }
@@ -126,11 +126,11 @@ data class PackageToolPromptCategory(
      */
     override fun toString(): String {
         val builder = StringBuilder()
-        
+
         builder.append("Package: $packageName")
         builder.append("\n")
         builder.append("Description: $packageDescription")
-        
+
         if (tools.isNotEmpty()) {
             builder.append("\n")
             builder.append("Tools:")
@@ -142,7 +142,7 @@ data class PackageToolPromptCategory(
                 }
             }
         }
-        
+
         return builder.toString()
     }
 }

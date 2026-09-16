@@ -218,7 +218,7 @@ internal fun CodeContentWithLineNumbers(
 internal fun FormattedXmlText(text: String, textColor: Color, modifier: Modifier = Modifier) {
     // 使用状态保存格式化后的文本
     var formattedText by remember(text) { mutableStateOf<AnnotatedString?>(null) }
-    
+
     // 异步计算语法高亮
     LaunchedEffect(text) {
         val result = withContext(Dispatchers.Default) {

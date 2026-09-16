@@ -48,7 +48,7 @@ import kotlinx.coroutines.launch
 
 /**
  * Header component for the MCP server details diaAppLogger.
- * 
+ *
  * @param server The MCP server to display details for
  * @param onDismiss Callback to be invoked when the close button is clicked
  */
@@ -181,8 +181,8 @@ fun MCPServerDetailsHeader(
                 Spacer(modifier = Modifier.height(2.dp)) // 减少空间
 
                 // 徽章行 - 合理的间距，移除版本信息
-                
+
             }
         }
     }
-} 
+}

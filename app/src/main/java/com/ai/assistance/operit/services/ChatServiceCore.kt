@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 /**
  * 聊天服务核心类
- * 
+ *
  * 整合所有聊天业务逻辑，可被 FloatingChatService 或 ChatViewModel 使用
  * 生命周期独立于 ViewModel，绑定到传入的 CoroutineScope
  */
@@ -58,7 +58,7 @@ class ChatServiceCore(
 
     // 回调：当 EnhancedAIService 初始化或更新时
     private var onEnhancedAiServiceReady: ((EnhancedAIService) -> Unit)? = null
-    
+
     // 额外的 onTurnComplete 回调（用于悬浮窗通知应用等场景）
     private var additionalOnTurnComplete: ((String?, Long, Long, Long) -> Unit)? = null
     private var uiBridge: ChatServiceUiBridge = EmptyChatServiceUiBridge
@@ -69,11 +69,11 @@ class ChatServiceCore(
         AppLogger.d(TAG, "ChatServiceCore 初始化")
         initializeDelegates()
     }
-    
+
     private fun initializeDelegates() {
         // 初始化 UI 状态委托
         uiStateDelegate = UiStateDelegate()
-        
+
         // 初始化 API 配置委托
         apiConfigDelegate = ApiConfigDelegate(
             context = context,
@@ -506,14 +506,14 @@ class ChatServiceCore(
 
     /** 检查是否已初始化 */
     fun isInitialized(): Boolean = initialized
-    
+
     /** 设置 EnhancedAIService 就绪回调 */
     fun setOnEnhancedAiServiceReady(callback: (EnhancedAIService) -> Unit) {
         onEnhancedAiServiceReady = callback
         // 如果已经初始化，立即调用回调
         enhancedAiService?.let { callback(it) }
     }
-    
+
     /** 设置额外的 onTurnComplete 回调（用于悬浮窗通知应用等场景） */
     fun setAdditionalOnTurnComplete(callback: ((chatId: String?, inputTokens: Long, outputTokens: Long, windowSize: Long) -> Unit)?) {
         additionalOnTurnComplete = callback
@@ -531,7 +531,7 @@ class ChatServiceCore(
             messageProcessingDelegate.setSpeakMessageHandler(handler)
         }
     }
-    
+
     /** 重新加载聊天消息（智能合并） */
     suspend fun reloadChatMessagesSmart(chatId: String) {
         chatHistoryDelegate.reloadChatMessagesSmart(chatId)

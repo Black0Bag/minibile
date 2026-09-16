@@ -87,7 +87,7 @@ class StandardActionListener(private val context: Context) : ActionListener {
         // 在标准权限下，监听能力有限
         // 可以监听应用内的View触摸事件、Activity生命周期变化等
         AppLogger.d(TAG, "开始基本事件监控 - 监听应用内触摸和按键事件")
-        
+
         // 注意：标准权限无法监听系统级事件或其他应用的操作
         // 只能监听当前应用内的用户交互
     }

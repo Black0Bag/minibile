@@ -138,7 +138,7 @@ class MCPConfigGenerator {
                         if (mainTsFile != null) {
                             // 标准化 rootDir（为空或null都视为根目录）
                             val normalizedRootDir = if (rootDir.isNullOrEmpty()) "" else rootDir
-                            
+
                             // 尝试确定编译输出位置
                             val compiledPath = when {
                                 // 如果rootDir为空或为根目录，文件会直接编译到outDir下
@@ -168,7 +168,7 @@ class MCPConfigGenerator {
                                     "$outDir/$jsFile"
                                 }
                             }
-                            
+
                             argsArray.add(compiledPath)
                             AppLogger.d(TAG, "TypeScript编译路径推断: $mainTsFile (rootDir=$normalizedRootDir) -> $compiledPath")
                         } else {

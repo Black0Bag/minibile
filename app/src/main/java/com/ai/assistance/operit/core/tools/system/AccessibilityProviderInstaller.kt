@@ -121,7 +121,7 @@ class AccessibilityProviderInstaller {
                     updateCacheTimestamp()
                     return true
                 }
-                
+
                 cachedUpdateNeeded = false
                 updateCacheTimestamp()
                 return false
@@ -157,4 +157,4 @@ class AccessibilityProviderInstaller {
             AppLogger.d(TAG, "无障碍服务版本缓存已清除")
         }
     }
-} 
+}

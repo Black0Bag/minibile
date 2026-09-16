@@ -582,45 +582,45 @@ fun FloatingScreenOcrScreen(floatContext: FloatContext) {
                     moveTo(points.first().x, points.first().y)
                     for (i in 1 until points.size) lineTo(points[i].x, points[i].y)
                  }
-                 
+
                  // 1. 外发光 (Glow)
                  drawPath(
-                     path = path, 
-                     color = Color(0xFF00E5FF).copy(alpha = 0.4f), 
+                     path = path,
+                     color = Color(0xFF00E5FF).copy(alpha = 0.4f),
                      style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round),
                      blendMode = BlendMode.Screen
                  )
                  // 2. 内高亮 (Highlight)
                  drawPath(
-                     path = path, 
-                     color = Color(0xFF00E5FF).copy(alpha = 0.8f), 
+                     path = path,
+                     color = Color(0xFF00E5FF).copy(alpha = 0.8f),
                      style = Stroke(width = 6.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round),
                      blendMode = BlendMode.Screen
                  )
                  // 3. 核心白光 (Core)
                  drawPath(
-                     path = path, 
-                     color = Color.White, 
+                     path = path,
+                     color = Color.White,
                      style = Stroke(width = 3.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
                  )
             }
-            
+
             // Grid Ripple
             if (showRipple) {
                     val maxRadius = hypot(size.width.toDouble(), size.height.toDouble()).toFloat()
                     val center = Offset(size.width / 2f, size.height / 2f)
                     val p = rippleProgress.value
-                    
+
                     // Grid Configuration
                     val gridSize = 40.dp.toPx()
                     val gridColor = Color.hsv(hueShift, 0.6f, 1f)
-                    
+
                     val currentRadius = (maxRadius * p).coerceAtLeast(1f)
                     val waveWidth = 180f
                     val maxDisplacement = 60f * (1f - p * 0.5f)
                     val visualPeakRadius = currentRadius + maxDisplacement
                     val startFraction = ((visualPeakRadius - waveWidth) / visualPeakRadius).coerceIn(0f, 1f)
-                    
+
                     val rippleBrush = Brush.radialGradient(
                         colorStops = arrayOf(
                             0f to Color.Transparent,
@@ -650,8 +650,8 @@ fun FloatingScreenOcrScreen(floatContext: FloatContext) {
 
                     // Draw Grid
                     val rows = (size.height / gridSize).toInt()
-                    val path = Path() 
-                    val stepSize = 15f 
+                    val path = Path()
+                    val stepSize = 15f
                     for (i in 0..rows) {
                         val y = i * gridSize + (size.height % gridSize) / 2f
                         path.reset()
@@ -695,7 +695,7 @@ fun FloatingScreenOcrScreen(floatContext: FloatContext) {
             val btnSizePx = with(density) { btnSize.toPx() }
             val spacing = 16.dp
             val spacingPx = with(density) { spacing.toPx() }
-            
+
             // 默认显示在 Rect 底部下方
             var btnY = rect.bottom + spacingPx
             // 如果超出屏幕底部，则显示在 Rect 内部底部
@@ -704,7 +704,7 @@ fun FloatingScreenOcrScreen(floatContext: FloatContext) {
             }
             // 居中 X
             val centerX = rect.left + rect.width / 2f
-            
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -716,9 +716,9 @@ fun FloatingScreenOcrScreen(floatContext: FloatContext) {
                  // A modifier.offset with calculation relative to screen 0,0 is easiest if usage is Absolute.
                  // But Row is inside Box(fillMaxSize). So offset is relative to screen.
             }
-            
+
             // 使用 Box + offset 而不是 Row + alignment，因为要精确定位到 Rect 附近
-            
+
             Box(
                 modifier = Modifier
                     .offset { IntOffset(centerX.toInt() - (btnSizePx.toInt() * 2 + spacingPx.toInt()) / 2, btnY.toInt()) }
@@ -760,7 +760,7 @@ fun FloatingScreenOcrScreen(floatContext: FloatContext) {
                                         "; rect_norm=${fmt4(bounds.left / imgW)},${fmt4(bounds.top / imgH)},${fmt4(cropRight / imgW)},${fmt4(cropBottom / imgH)}"
                                     )
                                 }
-                            
+
                             isBusy = true
                             floatContext.coroutineScope.launch {
                                 try {
@@ -775,7 +775,7 @@ fun FloatingScreenOcrScreen(floatContext: FloatContext) {
                                             quality = OCRUtils.Quality.HIGH
                                         ).trim()
                                     }
-                                    
+
                                     if (ocrText.isBlank()) {
                                         showToast(context.getString(R.string.screen_ocr_no_text_recognized))
                                     }
@@ -805,12 +805,12 @@ fun FloatingScreenOcrScreen(floatContext: FloatContext) {
                                         ?.getChatCore()
                                         ?.getAttachmentDelegate()
                                         ?.addAttachments(listOf(textAttachment))
-                                    
+
                                     showToast(context.getString(R.string.screen_ocr_selection_content_captured))
-                                    
+
                                     // Set pending flag for Auto-Check in Fullscreen
                                     floatContext.pendingScreenSelection = true
-                                    
+
                                     floatContext.onModeChange(floatContext.previousMode)
                                 } catch (e: Exception) {
                                     showToast(context.getString(R.string.screen_ocr_error_prefix, e.message ?: ""))
@@ -831,7 +831,7 @@ fun FloatingScreenOcrScreen(floatContext: FloatContext) {
                 }
             }
         }
-        
+
         // 关闭按钮 (Top Left) - 精致化，更小，且带立体感 (Card 风格)
         val cardShape = RoundedCornerShape(8.dp)
         Surface(

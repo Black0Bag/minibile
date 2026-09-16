@@ -287,7 +287,7 @@ class DefaultXmlRenderer : XmlContentRenderer {
         renderInstanceKey: Any?
     ) {
         val xmlBlockDesc = stringResource(R.string.xml_block)
-        
+
         Surface(
                 modifier = modifier
                     .fillMaxWidth()
@@ -359,14 +359,14 @@ class StreamMarkdownRendererState {
     // 渲染器ID
     var rendererId: String = ""
         private set
-    
+
     /**
      * 更新渲染器ID
      */
     fun updateRendererId(id: String) {
         rendererId = id
     }
-    
+
     /**
      * 重置所有状态（用于切换内容源时）
      */
@@ -398,7 +398,7 @@ fun StreamMarkdownRenderer(
 ) {
     // 使用传入的state或创建新的state
     val rendererState = state ?: remember { StreamMarkdownRendererState() }
-    
+
     // 原始数据收集列表
     val nodes = rendererState.nodes
     // 用于UI渲染的列表
@@ -899,9 +899,9 @@ fun StreamMarkdownRenderer(
 ) {
     // 使用传入的state或创建新的state
     val rendererState = state ?: remember(content) { StreamMarkdownRendererState() }
-    
+
     // 使用流式版本相同的渲染器ID生成逻辑
-    val rendererId = remember(content) { 
+    val rendererId = remember(content) {
         val id = "static-renderer-${content.hashCode()}"
         rendererState.updateRendererId(id)
         id
@@ -936,7 +936,7 @@ fun StreamMarkdownRenderer(
         }
 
         xmlNodeStreams.clear()
-        
+
         // 移除时间计算相关变量
         val cachedNodes = MarkdownNodeCache.get(content)
 
@@ -1021,7 +1021,7 @@ fun StreamMarkdownRenderer(
 /**
  * 统一的Markdown Canvas渲染器
  * 真正在一个大Canvas中批量绘制所有节点
- * 
+ *
  * 优势：
  * - 使用单个Canvas绘制所有内容，大幅减少Composable数量
  * - 批量绘制，避免为每个节点创建独立的组件
@@ -1030,7 +1030,7 @@ fun StreamMarkdownRenderer(
  */
 /**
  * 独立的动画节点组件 - 隔离 alpha 动画状态，避免触发父组件重组
- * 
+ *
  * 关键优化：
  * - alpha 动画状态被隔离在这个组件内部
  * - 动画状态变化不会触发外部 Column 重组

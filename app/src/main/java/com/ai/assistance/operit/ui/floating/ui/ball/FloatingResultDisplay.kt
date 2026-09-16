@@ -34,9 +34,9 @@ fun FloatingResultDisplay(floatContext: FloatContext) {
     Box(
         modifier = Modifier
             .background(Color.Transparent) // 背景透明
-            .clickable { 
+            .clickable {
                 // 点击切回球模式
-                floatContext.onModeChange(FloatingMode.BALL) 
+                floatContext.onModeChange(FloatingMode.BALL)
             },
         contentAlignment = Alignment.Center
     ) {

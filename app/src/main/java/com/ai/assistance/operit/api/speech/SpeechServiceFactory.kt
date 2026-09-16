@@ -186,7 +186,7 @@ object SpeechServiceFactory {
         val selectedProfileId = profile.id
 
         val needNewInstance = instance == null || selectedProfileId != currentProfileId
-        
+
         if (needNewInstance) {
             try {
                 instance?.shutdown()

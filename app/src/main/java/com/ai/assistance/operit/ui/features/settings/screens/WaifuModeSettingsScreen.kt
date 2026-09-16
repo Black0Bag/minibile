@@ -39,7 +39,7 @@ fun WaifuModeSettingsScreen(
     val characterGroupCardManager = remember { CharacterGroupCardManager.getInstance(context) }
     val activePromptManager = remember { ActivePromptManager.getInstance(context) }
     val scope = rememberCoroutineScope()
-    
+
     val activePrompt by activePromptManager.activePromptFlow.collectAsState(
         initial = ActivePrompt.CharacterCard(CharacterCardManager.DEFAULT_CHARACTER_CARD_ID)
     )
@@ -71,7 +71,7 @@ fun WaifuModeSettingsScreen(
         ).value
     val waifuCustomPrompt = waifuPreferences.waifuCustomPromptFlow.collectAsState(initial = "").value
     val selfiePrompt = waifuPreferences.waifuSelfiePromptFlow.collectAsState(initial = "").value
-    
+
     // 辅助保存函数，同时保存到角色卡
     val saveSettings: (suspend () -> Unit) -> Unit = { saveAction ->
         scope.launch {
@@ -87,7 +87,7 @@ fun WaifuModeSettingsScreen(
             showSaveSuccess = true
         }
     }
-    
+
     // 显示保存成功的提示
     LaunchedEffect(showSaveSuccess) {
         if (showSaveSuccess) {
@@ -206,7 +206,7 @@ fun WaifuModeSettingsScreen(
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
                         }
-                        
+
                         Switch(
                             checked = isWaifuModeEnabled,
                             onCheckedChange = { enabled ->
@@ -309,7 +309,7 @@ fun WaifuModeSettingsScreen(
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        
+
                         // 显示当前速度
                         val charsPerSecond = if (charDelay > 0) 1000f / charDelay else 0f
                         Text(
@@ -318,9 +318,9 @@ fun WaifuModeSettingsScreen(
                             color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
-                        
+
                         Spacer(modifier = Modifier.height(16.dp))
-                        
+
                         // 延迟时间滑块
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -348,7 +348,7 @@ fun WaifuModeSettingsScreen(
                                 modifier = Modifier.width(30.dp)
                             )
                         }
-                        
+
                         Text(
                             text = stringResource(R.string.current_delay_format, charDelay),
                             style = MaterialTheme.typography.bodySmall,
@@ -385,7 +385,7 @@ fun WaifuModeSettingsScreen(
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                                 )
                             }
-                            
+
                             Switch(
                                 checked = removePunctuation,
                                 onCheckedChange = { enabled ->
@@ -487,7 +487,7 @@ fun WaifuModeSettingsScreen(
                                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
                                 )
                             }
-                            
+
                             Switch(
                                 checked = enableEmoticons,
                                 onCheckedChange = { enabled ->
@@ -499,7 +499,7 @@ fun WaifuModeSettingsScreen(
                         }
                     }
                 }
-                
+
                 // 管理自定义表情入口
                 Card(
                     onClick = onNavigateToCustomEmoji,
@@ -530,7 +530,7 @@ fun WaifuModeSettingsScreen(
                                 color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
                             )
                         }
-                        
+
                         Icon(
                             Icons.Default.ArrowForward,
                             contentDescription = stringResource(R.string.manage_custom_emoji),
@@ -566,7 +566,7 @@ fun WaifuModeSettingsScreen(
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                                 )
                             }
-                            
+
                             Switch(
                                 checked = enableSelfie,
                                 onCheckedChange = { enabled ->
@@ -576,7 +576,7 @@ fun WaifuModeSettingsScreen(
                                 }
                             )
                         }
-                        
+
                         // 如果启用了自拍功能，显示外貌提示词输入框
                         if (enableSelfie) {
                             Spacer(modifier = Modifier.height(16.dp))
@@ -592,9 +592,9 @@ fun WaifuModeSettingsScreen(
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
                             Spacer(modifier = Modifier.height(8.dp))
-                            
+
                             var promptText by remember { mutableStateOf(selfiePrompt) }
-                            
+
                             OutlinedTextField(
                                 value = promptText,
                                 onValueChange = { newText ->
@@ -613,7 +613,7 @@ fun WaifuModeSettingsScreen(
                                     unfocusedBorderColor = MaterialTheme.colorScheme.outline
                                 )
                             )
-                            
+
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = stringResource(R.string.appearance_prompt_tip),
@@ -690,4 +690,4 @@ fun WaifuModeSettingsScreen(
             }
         }
     }
-} 
+}

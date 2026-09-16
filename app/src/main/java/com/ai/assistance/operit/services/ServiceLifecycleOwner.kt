@@ -22,7 +22,7 @@ class ServiceLifecycleOwner : LifecycleOwner, ViewModelStoreOwner, SavedStateReg
     private val viewModelStoreField = ViewModelStore()
     private val savedStateRegistryController = SavedStateRegistryController.create(this)
     private val mainHandler = Handler(Looper.getMainLooper())
-    
+
     init {
         // 确保在主线程上初始化
         if (Looper.myLooper() == Looper.getMainLooper()) {
@@ -34,16 +34,16 @@ class ServiceLifecycleOwner : LifecycleOwner, ViewModelStoreOwner, SavedStateReg
             mainHandler.post { savedStateRegistryController.performRestore(null) }
         }
     }
-    
+
     override val lifecycle: Lifecycle
         get() = lifecycleRegistry
-        
+
     override val viewModelStore: ViewModelStore
         get() = viewModelStoreField
-        
+
     override val savedStateRegistry: SavedStateRegistry
         get() = savedStateRegistryController.savedStateRegistry
-        
+
     fun handleLifecycleEvent(event: Lifecycle.Event) {
         // 确保生命周期事件在主线程上处理
         if (Looper.myLooper() == Looper.getMainLooper()) {
@@ -53,4 +53,4 @@ class ServiceLifecycleOwner : LifecycleOwner, ViewModelStoreOwner, SavedStateReg
             mainHandler.post { lifecycleRegistry.handleLifecycleEvent(event) }
         }
     }
-} 
+}

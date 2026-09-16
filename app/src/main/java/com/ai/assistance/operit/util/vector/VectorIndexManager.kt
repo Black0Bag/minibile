@@ -88,4 +88,4 @@ class VectorIndexManager<T : Item<Id, FloatArray>, Id : Any>(
     fun close() {
         index = null
     }
-} 
+}

@@ -302,9 +302,9 @@ fun WorkspaceSetup(chatId: String, onBindWorkspace: (String, String?) -> Unit) {
                                     color = MaterialTheme.colorScheme.primary
                                 )
                             }
-                            
+
                             Spacer(modifier = Modifier.height(8.dp))
-                            
+
                             ProjectTypeCard(
                                 icon = Icons.Default.CreateNewFolder,
                                 title = context.getString(R.string.workspace_project_type_blank_title),
@@ -313,7 +313,7 @@ fun WorkspaceSetup(chatId: String, onBindWorkspace: (String, String?) -> Unit) {
                                     bindBuiltInWorkspace("blank")
                                 }
                             )
-                            
+
                             // Office 项目卡片
                             ProjectTypeCard(
                                 icon = Icons.Default.Description,
@@ -323,7 +323,7 @@ fun WorkspaceSetup(chatId: String, onBindWorkspace: (String, String?) -> Unit) {
                                     bindBuiltInWorkspace("office")
                                 }
                             )
-                            
+
                             // Web 项目卡片
                             ProjectTypeCard(
                                 icon = Icons.Default.Language,
@@ -353,7 +353,7 @@ fun WorkspaceSetup(chatId: String, onBindWorkspace: (String, String?) -> Unit) {
                                     bindBuiltInWorkspace("flutter")
                                 }
                             )
-                             
+
                             // Node.js 项目卡片
                             ProjectTypeCard(
                                 icon = Icons.Default.Terminal,
@@ -363,7 +363,7 @@ fun WorkspaceSetup(chatId: String, onBindWorkspace: (String, String?) -> Unit) {
                                     bindBuiltInWorkspace("node")
                                 }
                             )
-                            
+
                             // TypeScript 项目卡片
                             ProjectTypeCard(
                                 icon = Icons.Default.Code,
@@ -373,7 +373,7 @@ fun WorkspaceSetup(chatId: String, onBindWorkspace: (String, String?) -> Unit) {
                                     bindBuiltInWorkspace("typescript")
                                 }
                             )
-                            
+
                             // Python 项目卡片
                             ProjectTypeCard(
                                 icon = Icons.Default.Code,
@@ -383,7 +383,7 @@ fun WorkspaceSetup(chatId: String, onBindWorkspace: (String, String?) -> Unit) {
                                     bindBuiltInWorkspace("python")
                                 }
                             )
-                            
+
                             // Java 项目卡片
                             ProjectTypeCard(
                                 icon = Icons.Default.Settings,
@@ -393,7 +393,7 @@ fun WorkspaceSetup(chatId: String, onBindWorkspace: (String, String?) -> Unit) {
                                     bindBuiltInWorkspace("java")
                                 }
                             )
-                            
+
                             // Go 项目卡片
                             ProjectTypeCard(
                                 icon = Icons.Default.Build,
@@ -454,17 +454,17 @@ fun WorkspaceSetup(chatId: String, onBindWorkspace: (String, String?) -> Unit) {
                 modifier = Modifier.size(64.dp),
                 tint = MaterialTheme.colorScheme.primary
             )
-            
+
             Spacer(modifier = Modifier.height(24.dp))
-            
+
             Text(
                 text = context.getString(R.string.setup_workspace),
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            
+
             Spacer(modifier = Modifier.height(12.dp))
-            
+
             Text(
                 text = context.getString(R.string.workspace_description),
                 style = MaterialTheme.typography.bodyLarge,
@@ -472,9 +472,9 @@ fun WorkspaceSetup(chatId: String, onBindWorkspace: (String, String?) -> Unit) {
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
-            
+
             Spacer(modifier = Modifier.height(40.dp))
-            
+
             // VSCode风格的选项卡
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -490,7 +490,7 @@ fun WorkspaceSetup(chatId: String, onBindWorkspace: (String, String?) -> Unit) {
                         showProjectTypeDialog = true
                     }
                 )
-                
+
                 WorkspaceOption(
                     icon = Icons.Default.FolderOpen,
                     title = context.getString(R.string.select_existing_workspace),
@@ -547,7 +547,7 @@ fun ProjectTypeCard(
                     )
                 }
             }
-            
+
             // 文字内容
             Column(
                 modifier = Modifier.weight(1f),
@@ -564,7 +564,7 @@ fun ProjectTypeCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            
+
             // 箭头指示
             Icon(
                 imageVector = Icons.Default.ChevronRight,
@@ -614,17 +614,17 @@ fun WorkspaceOption(
                 modifier = Modifier.size(48.dp),
                 tint = MaterialTheme.colorScheme.primary
             )
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            
+
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             Text(
                 text = description,
                 style = MaterialTheme.typography.bodySmall,
@@ -633,4 +633,4 @@ fun WorkspaceOption(
             )
         }
     }
-} 
+}

@@ -191,4 +191,4 @@ data class TavernBookEntry(
     val extensions: Map<String, Any> = emptyMap(),
     val probability: Int = 100,
     val selectiveLogic: Int = 0
-) 
+)

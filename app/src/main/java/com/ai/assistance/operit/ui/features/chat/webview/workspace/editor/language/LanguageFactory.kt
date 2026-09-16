@@ -14,29 +14,29 @@ object LanguageFactory {
         HtmlSupport
         DartSupport
         // 未来添加更多语言支持时，在这里添加
-        
+
         // 初始化语言注册表
         LanguageSupportRegistry.init()
     }
-    
+
     /**
      * 根据文件名获取语言支持
      */
     fun getLanguageSupportForFile(fileName: String): LanguageSupport? {
         return LanguageSupportRegistry.getLanguageSupportForFile(fileName)
     }
-    
+
     /**
      * 根据语言名称获取语言支持
      */
     fun getLanguageSupport(language: String): LanguageSupport? {
         return LanguageSupportRegistry.getLanguageSupport(language)
     }
-    
+
     /**
      * 获取所有支持的语言
      */
     fun getSupportedLanguages(): Set<String> {
         return LanguageSupportRegistry.getSupportedLanguages()
     }
-} 
+}

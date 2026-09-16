@@ -10,4 +10,4 @@ data class MCPTool(
     val name: String,
     val description: String,
     val parameters: List<MCPToolParameter> = emptyList()
-) 
+)

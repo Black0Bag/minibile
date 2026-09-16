@@ -294,14 +294,14 @@ open class DebuggerSystemOperationTools(context: Context) :
                 // 先获取应用的主 Activity，然后使用 -n 参数启动
                 val resolveCmd = "cmd package resolve-activity --brief $packageName 2>/dev/null | tail -n 1"
                 val resolveResult = AndroidShellExecutor.executeShellCommand(resolveCmd)
-                
+
                 if (resolveResult.success && resolveResult.stdout.isNotBlank()) {
                     val output = resolveResult.stdout.trim()
                     // resolve-activity 返回格式可能是：package/activity 或只有 activity
                     // 也可能返回多行，最后一行是组件名
                     val lines = output.lines().filter { it.isNotBlank() && !it.startsWith("name=") }
                     val mainActivity = lines.lastOrNull()?.trim() ?: output.trim()
-                    
+
                     // 如果返回的是完整组件名（package/activity），直接使用
                     command = if (mainActivity.contains('/')) {
                         "am start -n $mainActivity"
@@ -444,7 +444,7 @@ open class DebuggerSystemOperationTools(context: Context) :
                                 )
                                 currentText = ""
                             }
-                            
+
                             val pkgMatch = Regex("pkg=(\\S+)").find(line)
                             currentPackage = pkgMatch?.groupValues?.getOrNull(1) ?: ""
                         }
@@ -454,7 +454,7 @@ open class DebuggerSystemOperationTools(context: Context) :
                         }
                     }
                 }
-                
+
                 if (currentPackage.isNotEmpty() && currentText.isNotEmpty()) {
                     notifications.add(
                         NotificationData.Notification(

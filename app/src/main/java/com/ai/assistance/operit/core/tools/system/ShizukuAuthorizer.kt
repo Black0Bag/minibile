@@ -25,7 +25,7 @@ class ShizukuAuthorizer {
         // 服务状态
         private var isServiceAvailable = false
         private var cachedConnection: ShizukuConnectionInfo? = null
-        
+
         // 错误消息缓存
         private var lastServiceErrorMessage = ""
         private var lastPermissionErrorMessage = ""
@@ -118,7 +118,7 @@ class ShizukuAuthorizer {
         fun getServiceErrorMessage(): String {
             return lastServiceErrorMessage
         }
-        
+
         /**
          * 获取最后一次权限检查的错误信息
          * @return 错误信息

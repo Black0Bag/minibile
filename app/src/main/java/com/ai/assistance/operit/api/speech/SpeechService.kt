@@ -54,7 +54,7 @@ interface SpeechService {
 
     /** 识别错误Flow */
     val recognitionErrorFlow: StateFlow<RecognitionError>
-    
+
     /** 音量级别Flow，范围为0.0-1.0，代表当前麦克风输入的音量级别 */
     val volumeLevelFlow: StateFlow<Float>
 
@@ -104,7 +104,7 @@ interface SpeechService {
     /**
      * 识别预先录制的音频数据
      * 这个方法主要由本地语音识别引擎实现，如WhisperSpeechProvider
-     * 
+     *
      * @param audioData 音频数据，格式为浮点数组表示的PCM数据
      */
     suspend fun recognize(audioData: FloatArray)

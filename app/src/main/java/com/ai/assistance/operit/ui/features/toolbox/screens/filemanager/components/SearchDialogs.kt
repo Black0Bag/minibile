@@ -50,7 +50,7 @@ fun SearchDialog(
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
-                    
+
                     // 搜索选项
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -62,7 +62,7 @@ fun SearchDialog(
                         )
                         Text(stringResource(R.string.case_sensitive))
                     }
-                    
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
@@ -102,7 +102,7 @@ fun SearchResultsDialog(
     if (showDialog) {
         AlertDialog(
             onDismissRequest = onDismiss,
-            title = { 
+            title = {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -133,7 +133,7 @@ fun SearchResultsDialog(
                         items(searchResults) { file ->
                             Surface(
                                 modifier = Modifier.fillMaxWidth()
-                                    .clickable { 
+                                    .clickable {
                                         file.fullPath?.let { path -> onNavigateToFileDirectory(path) }
                                     },
                                 color = MaterialTheme.colorScheme.surfaceVariant,
@@ -146,9 +146,9 @@ fun SearchResultsDialog(
                                     Icon(
                                         imageVector = if (file.isDirectory) Icons.Default.Folder else getFileIcon(file),
                                         contentDescription = null,
-                                        tint = if (file.isDirectory) 
-                                            MaterialTheme.colorScheme.primary 
-                                        else 
+                                        tint = if (file.isDirectory)
+                                            MaterialTheme.colorScheme.primary
+                                        else
                                             MaterialTheme.colorScheme.onSurfaceVariant,
                                         modifier = Modifier.size(24.dp)
                                     )
@@ -177,4 +177,4 @@ fun SearchResultsDialog(
             }
         )
     }
-} 
+}

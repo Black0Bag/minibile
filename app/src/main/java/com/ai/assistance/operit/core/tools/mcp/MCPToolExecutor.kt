@@ -70,12 +70,12 @@ class MCPToolExecutor(private val context: Context, private val mcpManager: MCPM
 
     /**
      * 从 MCP 结果中提取内容
-     * 
+     *
      * 解析标准 content 数组和 structuredContent，智能识别并提取不同类型的内容：
      * - text: 直接提取文本，如果是 JSON 字符串则尝试格式化
      * - image: 显示图像信息
      * - resource: 提取资源内容或显示资源信息
-     * 
+     *
      * @param resultData MCP 返回的 result 对象
      * @return 提取后的文本内容
      */
@@ -206,20 +206,20 @@ class MCPToolExecutor(private val context: Context, private val mcpManager: MCPM
 
     /**
      * 判断字符串是否为 JSON 格式
-     * 
+     *
      * @param text 待判断的字符串
      * @return 如果是 JSON 返回 true
      */
     private fun isJsonString(text: String): Boolean {
         val trimmed = text.trim()
         if (trimmed.isEmpty()) return false
-        
+
         // 检查是否以 JSON 对象或数组的标志开头和结尾
         val isJsonObject = trimmed.startsWith("{") && trimmed.endsWith("}")
         val isJsonArray = trimmed.startsWith("[") && trimmed.endsWith("]")
-        
+
         if (!isJsonObject && !isJsonArray) return false
-        
+
         // 尝试解析以确认
         return try {
             if (isJsonObject) {
@@ -235,13 +235,13 @@ class MCPToolExecutor(private val context: Context, private val mcpManager: MCPM
 
     /**
      * 格式化 JSON 字符串为单行紧凑格式
-     * 
+     *
      * @param jsonString JSON 字符串
      * @return 紧凑格式的 JSON 字符串
      */
     private fun formatJson(jsonString: String): String {
         val trimmed = jsonString.trim()
-        
+
         return try {
             if (trimmed.startsWith("{")) {
                 // JSON 对象

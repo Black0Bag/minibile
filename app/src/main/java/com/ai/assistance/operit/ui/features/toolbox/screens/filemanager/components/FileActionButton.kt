@@ -14,7 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 
 /**
  * 文件操作按钮组件，显示一个带有图标和文本的按钮
- * 
+ *
  * @param icon 按钮图标
  * @param text 按钮文本
  * @param onClick 点击回调函数
@@ -59,4 +59,4 @@ fun FileActionButton(icon: ImageVector, text: String, onClick: () -> Unit) {
             )
         }
     }
-} 
+}

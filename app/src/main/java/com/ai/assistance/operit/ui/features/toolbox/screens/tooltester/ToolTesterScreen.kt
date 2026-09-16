@@ -95,7 +95,7 @@ fun ToolTesterScreen(navController: NavController) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(context.getString(R.string.ai_tools_availability_test), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
                 Text(context.getString(R.string.ai_tools_grouped_desc), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                
+
                 OutlinedTextField(
                     value = testInputText,
                     onValueChange = { testInputText = it },
@@ -252,7 +252,7 @@ fun ToolDetailsSheet(
         }
         HorizontalDivider()
         Text(toolTest.description, style = MaterialTheme.typography.bodyMedium)
-        
+
         if (toolTest.parameters.isNotEmpty()) {
             Text(context.getString(R.string.parameters_label), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Medium)
             Column(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)).padding(8.dp)) {

@@ -843,7 +843,7 @@ private constructor(
             }
         }
     }
-    
+
     /**
      * 确保工作区目录存在
      */
@@ -855,7 +855,7 @@ private constructor(
             AppLogger.d(TAG, "创建工作区目录: $path")
         }
     }
-    
+
     /**
      * 根据文件路径获取MIME类型
      */

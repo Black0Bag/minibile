@@ -10,17 +10,17 @@ interface LanguageSupport {
      * 获取语言名称
      */
     fun getName(): String
-    
+
     /**
      * 获取语言的关键字集合
      */
     fun getKeywords(): Set<String>
-    
+
     /**
      * 获取语言的内置函数集合
      */
     fun getBuiltInFunctions(): Set<String> = emptySet()
-    
+
     /**
      * 获取语言的内置类型集合
      */
@@ -36,23 +36,23 @@ interface LanguageSupport {
      * 如 // 或
      */
     fun getCommentStart(): List<String>
-    
+
     /**
      * 获取语言的多行注释结束标记
      * 如
      */
     fun getMultiLineCommentEnd(): String?
-    
+
     /**
      * 检查是否是字符串开始
      */
     fun isStringDelimiter(char: Char): Boolean
-    
+
     /**
      * 获取语言的字符串转义字符
      */
     fun getStringEscapeChar(): Char
-    
+
     /**
      * 获取语言的文件扩展名
      */
@@ -73,4 +73,4 @@ interface LanguageSupport {
         val OPERATOR_COLOR = Color.parseColor("#D4D4D4")     // Light grey for operators
         val DEFAULT_COLOR = Color.parseColor("#D4D4D4")      // Light grey for default text
     }
-} 
+}

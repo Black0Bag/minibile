@@ -95,10 +95,10 @@ private fun BottomInputBar(
     val focusRequester = remember { FocusRequester() }
     val hasContent = floatContext.userMessage.isNotBlank()
     var isInputFocused by remember { mutableStateOf(false) }
-    
+
     // 检测 AI 是否正在处理消息 - 使用 chatService 的 isLoading 状态
     val isProcessing = floatContext.chatService?.getChatCore()?.isLoading?.collectAsState()?.value ?: false
-    
+
     // 监听焦点状态变化，通知服务更新窗口焦点
     LaunchedEffect(isInputFocused) {
         floatContext.onInputFocusRequest?.invoke(isInputFocused)
@@ -127,7 +127,7 @@ private fun BottomInputBar(
                 }
             }
         }
-        
+
         // 输入栏（参考 ChatInputSection 的布局）
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -179,9 +179,9 @@ private fun BottomInputBar(
                 ),
                 shape = RoundedCornerShape(12.dp)
             )
-            
+
             Spacer(modifier = Modifier.width(8.dp))
-            
+
             // 附件按钮 (+)
             Box(
                 modifier = Modifier
@@ -211,9 +211,9 @@ private fun BottomInputBar(
                     modifier = Modifier.size(18.dp)
                 )
             }
-            
+
             Spacer(modifier = Modifier.width(8.dp))
-            
+
             // 发送/取消按钮
             Box(
                 modifier = Modifier

@@ -91,7 +91,7 @@ class CustomXmlRenderer(
         if (shouldHideHiddenMeta(trimmedContent, tagName)) {
             return
         }
-        
+
         // 无障碍朗读描述：只朗读块类型
         val accessibilityDesc = when (tagName) {
             "tool" -> stringResource(R.string.tool_call_block)
@@ -105,7 +105,7 @@ class CustomXmlRenderer(
             "details", "detail" -> stringResource(R.string.xml_block)
             else -> stringResource(R.string.tool_call_block)
         }
-        
+
         // 用 Box 包裹所有内容，添加无障碍描述
         if (tagName == "think" || tagName == "thinking") {
             Box(modifier = modifier) {
@@ -117,7 +117,7 @@ class CustomXmlRenderer(
             }
         }
     }
-    
+
     @Composable
     private fun RenderXmlContentInternal(
         trimmedContent: String,
@@ -1031,27 +1031,27 @@ class CustomXmlRenderer(
     private fun renderHtmlContent(content: String, modifier: Modifier, textColor: Color) {
         // 提取html内部的HTML内容
         val htmlContent = extractContentFromXml(content, "html")
-        
+
         // 提取class属性
         val classRegex = "class=\"([^\"]+)\"".toRegex()
         val classMatch = classRegex.find(content)
         val className = classMatch?.groupValues?.get(1)
-        
+
         // 提取color属性 - 用于自定义卡片主题色
         val colorRegex = "color=\"([^\"]+)\"".toRegex()
         val colorMatch = colorRegex.find(content)
         val customColor = colorMatch?.groupValues?.get(1)
-        
+
         // 如果内容不为空，则作为HTML渲染
         if (htmlContent.isNotBlank()) {
             val context = LocalContext.current
             val nestedScrollInterop = rememberNestedScrollInteropConnection()
-            
+
             // 应用内置样式
             val styledHtml = remember(htmlContent, className, customColor, textColor) {
                 applyBuiltInStyles(htmlContent, className, customColor, textColor)
             }
-            
+
             // 构建完整的HTML文档
             val fullHtml = remember(styledHtml, textColor) {
                 buildFullHtmlDocument(styledHtml, textColor)
@@ -1096,7 +1096,7 @@ class CustomXmlRenderer(
             LaunchedEffect(webView, fullHtml) {
                 webView.loadDataWithBaseURL(null, fullHtml, "text/html", "UTF-8", null)
             }
-            
+
             AndroidView(
                 modifier = modifier
                     .fillMaxWidth()
@@ -1106,13 +1106,13 @@ class CustomXmlRenderer(
             )
         }
     }
-    
+
     /**
      * 构建完整的HTML文档，包含CSS样式
      */
     private fun buildFullHtmlDocument(bodyContent: String, textColor: Color): String {
         val textColorHex = String.format("#%06X", 0xFFFFFF and textColor.toArgb())
-        
+
         return """
             <!DOCTYPE html>
             <html>
@@ -1182,7 +1182,7 @@ class CustomXmlRenderer(
             </html>
         """.trimIndent()
     }
-    
+
     /**
      * 应用内置样式到HTML内容
      * 支持的class类型：
@@ -1193,16 +1193,16 @@ class CustomXmlRenderer(
      * - metric-grid: 指标网格布局
      * - badge: 徽章样式
      * - progress-bar: 进度条
-     * 
+     *
      * @param customColor 自定义颜色（十六进制，如 #FF2D55），会覆盖默认的卡片主题色
      */
     private fun applyBuiltInStyles(htmlContent: String, className: String?, customColor: String?, textColor: Color): String {
         // 如果没有指定class，直接返回原内容
         if (className == null) return htmlContent
-        
+
         // 先处理内容中的内置组件（递归处理）
         var processedContent = processInlineComponents(htmlContent)
-        
+
         // 根据不同的class应用不同的样式
         return when (className) {
             "status-card" -> applyStatusCardStyle(processedContent, customColor)
@@ -1213,7 +1213,7 @@ class CustomXmlRenderer(
             else -> processedContent
         }
     }
-    
+
     /**
      * 处理内联组件标签，将自定义标签转换为带样式的HTML
      * 支持的组件：
@@ -1223,19 +1223,19 @@ class CustomXmlRenderer(
      */
     private fun processInlineComponents(content: String): String {
         var result = content
-        
+
         // 处理 <metric> 标签
         result = processMetricTags(result)
-        
+
         // 处理 <badge> 标签
         result = processBadgeTags(result)
-        
+
         // 处理 <progress> 标签
         result = processProgressTags(result)
-        
+
         return result
     }
-    
+
     /** 处理 <metric label="标签" value="值" icon="icon_name" color="#xxx" /> */
     private fun processMetricTags(content: String): String {
         val metricRegex = """<metric\s+label="([^"]+)"\s+value="([^"]+)"(?:\s+icon="([^"]+)")?(?:\s+color="([^"]+)")?\s*/>""".toRegex()
@@ -1244,12 +1244,12 @@ class CustomXmlRenderer(
             val value = matchResult.groupValues[2]
             val iconName = matchResult.groupValues.getOrNull(3) ?: "analytics"
             val color = matchResult.groupValues.getOrNull(4) ?: "#007AFF"
-            
+
             // 将十六进制颜色转换为 RGB 值，用于生成半透明背景
             val rgb = hexToRgb(color)
             val bgGradient = "linear-gradient(135deg, rgba($rgb, 0.08) 0%, rgba($rgb, 0.04) 100%)"
             val borderColor = "rgba($rgb, 0.15)"
-            
+
             """
             <div style="
                 display: inline-flex;
@@ -1271,7 +1271,7 @@ class CustomXmlRenderer(
             """.trimIndent()
         }
     }
-    
+
     /** 将十六进制颜色 (#RRGGBB) 转换为 RGB 字符串 "r, g, b" */
     private fun hexToRgb(hex: String): String {
         val cleanHex = hex.removePrefix("#")
@@ -1285,7 +1285,7 @@ class CustomXmlRenderer(
             "0, 122, 255"
         }
     }
-    
+
     /** 处理 <badge type="success|info|warning|error" icon="icon_name">文本</badge> */
     private fun processBadgeTags(content: String): String {
         val badgeRegex = """<badge(?:\s+type="([^"]+)")?(?:\s+icon="([^"]+)")?>([^<]+)</badge>""".toRegex()
@@ -1293,18 +1293,18 @@ class CustomXmlRenderer(
             val type = matchResult.groupValues.getOrNull(1) ?: "info"
             val iconName = matchResult.groupValues.getOrNull(2)
             val text = matchResult.groupValues[3]
-            
+
             val (bgColor, textColor, borderColor) = when (type) {
                 "success" -> Triple("rgba(52, 199, 89, 0.15)", "#34C759", "rgba(52, 199, 89, 0.3)")
                 "warning" -> Triple("rgba(255, 159, 10, 0.15)", "#FF9F0A", "rgba(255, 159, 10, 0.3)")
                 "error" -> Triple("rgba(255, 69, 58, 0.15)", "#FF453A", "rgba(255, 69, 58, 0.3)")
                 else -> Triple("rgba(120, 120, 128, 0.12)", "rgba(120, 120, 128, 0.9)", "rgba(120, 120, 128, 0.25)")
             }
-            
+
             val iconHtml = if (iconName != null) {
                 """<span class="material-symbols-rounded" style="font-size: 11px; margin-right: 2px;">$iconName</span>"""
             } else ""
-            
+
             """<span style="
                 display: inline-flex;
                 align-items: center;
@@ -1321,7 +1321,7 @@ class CustomXmlRenderer(
                 ">$iconHtml$text</span>"""
         }
     }
-    
+
     /** 处理 <progress value="80" label="能量" /> */
     private fun processProgressTags(content: String): String {
         val progressRegex = """<progress\s+value="([^"]+)"(?:\s+label="([^"]+)")?\s*/>""".toRegex()
@@ -1330,18 +1330,18 @@ class CustomXmlRenderer(
             val label = matchResult.groupValues.getOrNull(2) ?: ""
             val value = valueStr.toIntOrNull() ?: 0
             val clampedValue = value.coerceIn(0, 100)
-            
+
             val barColor = when {
                 clampedValue >= 80 -> "#34C759"
                 clampedValue >= 50 -> "#007AFF"
                 clampedValue >= 30 -> "#FF9F0A"
                 else -> "#FF453A"
             }
-            
+
             val labelHtml = if (label.isNotEmpty()) {
                 """<div style="font-size: 8px; color: rgba(120, 120, 128, 0.65); margin-bottom: 2px; font-weight: 500;">$label</div>"""
             } else ""
-            
+
             """
             <div style="margin: 3px 0;">
                 $labelHtml
@@ -1363,30 +1363,30 @@ class CustomXmlRenderer(
             """.trimIndent()
         }
     }
-    
+
     /** 状态卡片样式 - 现代渐变设计 */
     private fun applyStatusCardStyle(content: String, customColor: String? = null): String {
         // 如果提供了自定义颜色，使用自定义颜色；否则使用默认蓝紫渐变
         val rgb = if (customColor != null) hexToRgb(customColor) else null
-        
+
         val bgGradient = if (rgb != null) {
             "linear-gradient(135deg, rgba($rgb, 0.1) 0%, rgba($rgb, 0.08) 100%)"
         } else {
             "linear-gradient(135deg, rgba(0, 122, 255, 0.1) 0%, rgba(88, 86, 214, 0.08) 100%)"
         }
-        
+
         val borderColor = if (rgb != null) {
             "rgba($rgb, 0.2)"
         } else {
             "rgba(0, 122, 255, 0.2)"
         }
-        
+
         val shadowColor = if (rgb != null) {
             "0 2px 8px rgba($rgb, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04)"
         } else {
             "0 2px 8px rgba(0, 122, 255, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04)"
         }
-        
+
         return """
             <div style="
                 background: $bgGradient;
@@ -1400,11 +1400,11 @@ class CustomXmlRenderer(
             </div>
         """.trimIndent()
     }
-    
+
     /** 信息卡片样式 - 中性色调玻璃态 */
     private fun applyInfoCardStyle(content: String, customColor: String? = null): String {
         val rgb = if (customColor != null) hexToRgb(customColor) else "120, 120, 128"
-        
+
         return """
             <div style="
                 background: linear-gradient(135deg, rgba($rgb, 0.1) 0%, rgba($rgb, 0.06) 100%);
@@ -1418,11 +1418,11 @@ class CustomXmlRenderer(
             </div>
         """.trimIndent()
     }
-    
+
     /** 警告卡片样式 - 橙色渐变 */
     private fun applyWarningCardStyle(content: String, customColor: String? = null): String {
         val rgb = if (customColor != null) hexToRgb(customColor) else "255, 159, 10"
-        
+
         return """
             <div style="
                 background: linear-gradient(135deg, rgba($rgb, 0.12) 0%, rgba($rgb, 0.08) 100%);
@@ -1436,11 +1436,11 @@ class CustomXmlRenderer(
             </div>
         """.trimIndent()
     }
-    
+
     /** 成功卡片样式 - 绿色渐变 */
     private fun applySuccessCardStyle(content: String, customColor: String? = null): String {
         val rgb = if (customColor != null) hexToRgb(customColor) else "52, 199, 89"
-        
+
         return """
             <div style="
                 background: linear-gradient(135deg, rgba($rgb, 0.12) 0%, rgba($rgb, 0.08) 100%);
@@ -1454,7 +1454,7 @@ class CustomXmlRenderer(
             </div>
         """.trimIndent()
     }
-    
+
     /** 指标网格样式 - 用于展示多个指标 */
     private fun applyMetricGridStyle(content: String): String {
         return """
@@ -1468,12 +1468,12 @@ class CustomXmlRenderer(
         """.trimIndent()
     }
 
-    /** 
+    /**
      * 渲染 <mood> 标签 - 这是一个虚拟形象动画触发器，不应在聊天界面显示
-     * 
+     *
      * mood标签的格式: <mood>happy</mood>、<mood>angry</mood>、
      * 或用户在助手配置里自定义的任意 trigger key（例如 <mood>sleepy</mood>）。
-     * 
+     *
      * 注意：此标签不会在UI中渲染任何内容。虚拟形象的情感控制
      * 是在虚拟形象控制器中通过 trigger / emotion 映射实现的。
      */

@@ -146,8 +146,8 @@ class FunctionalConfigManager(private val context: Context) {
 
     // 保存功能配置映射（保持向后兼容）
     suspend fun saveFunctionConfigMapping(mapping: Map<FunctionType, String>) {
-        val mappingWithIndex = mapping.entries.associate { 
-            it.key to FunctionConfigMapping(it.value, 0) 
+        val mappingWithIndex = mapping.entries.associate {
+            it.key to FunctionConfigMapping(it.value, 0)
         }
         saveFunctionConfigMappingWithIndex(mappingWithIndex)
     }

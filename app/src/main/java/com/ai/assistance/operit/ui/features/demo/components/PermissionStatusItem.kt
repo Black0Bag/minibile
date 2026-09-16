@@ -15,8 +15,8 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun PermissionStatusItem(
-        title: String, 
-        isGranted: Boolean, 
+        title: String,
+        isGranted: Boolean,
         onClick: () -> Unit,
         isHighlighted: Boolean = false
 ) {
@@ -39,7 +39,7 @@ fun PermissionStatusItem(
         Text(
                 text = title,
                 modifier = Modifier.weight(1f),
-                style = if (isHighlighted) 
+                style = if (isHighlighted)
                     MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
                 else
                     MaterialTheme.typography.bodyMedium

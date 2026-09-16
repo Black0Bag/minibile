@@ -14,7 +14,7 @@ import java.util.UUID
  * 支持多种 Markdown 对话格式
  */
 class MarkdownConverter(private val context: Context) : ChatFormatConverter {
-    
+
     private val dateFormatters = listOf(
         DateTimeFormatter.ISO_LOCAL_DATE_TIME,
         DateTimeFormatter.ISO_DATE_TIME,
@@ -22,7 +22,7 @@ class MarkdownConverter(private val context: Context) : ChatFormatConverter {
         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"),
         DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
     )
-    
+
     override fun convert(content: String): List<ChatHistory> {
         return try {
             // 尝试分割多个对话（如果有分隔符）
@@ -32,9 +32,9 @@ class MarkdownConverter(private val context: Context) : ChatFormatConverter {
             throw ConversionException(context.getString(R.string.markdown_parse_failed, e.message ?: ""), e)
         }
     }
-    
+
     override fun getSupportedFormat(): ChatFormat = ChatFormat.MARKDOWN
-    
+
     /**
      * 分割多个对话（如果存在）
      */
@@ -42,14 +42,14 @@ class MarkdownConverter(private val context: Context) : ChatFormatConverter {
         // 不再支持通过 "---" 分割对话，整个文件视为一个对话
         return listOf(content)
     }
-    
+
     /**
      * 解析单个对话
      */
     private fun parseConversation(content: String): ChatHistory? {
         val lines = content.lines()
         val messages = mutableListOf<ChatMessage>()
-        
+
         var title = "Imported from Markdown"
         var createdAt = LocalDateTime.now()
         var currentRole: String? = null
@@ -57,16 +57,16 @@ class MarkdownConverter(private val context: Context) : ChatFormatConverter {
         var currentModel: String = "markdown"
         var currentTimestamp: Long = System.currentTimeMillis()
         var messageIndex = 0
-        
+
         // 标记是否刚刚开始一条新消息（用于跳过紧随其后的装饰性标题）
         var justStartedMessage = false
-        
+
         var i = 0
-        
+
         // 1. 尝试查找 chat-info 注释
         // 格式: <!-- chat-info: title=xxx, created=xxx -->
         // 或者: <!-- chat-info: {"title":"xxx"} --> (兼容旧版/严谨模式，但我们主要支持简化版)
-        
+
         // 2. 解析 YAML front matter 或 chat-info（如果存在）
         if (lines.firstOrNull()?.trim() == "---") {
             // 处理旧版 Front Matter
@@ -84,15 +84,15 @@ class MarkdownConverter(private val context: Context) : ChatFormatConverter {
             metadata["title"]?.let { title = it }
             metadata["created"]?.let { createdAt = parseDate(it) ?: createdAt }
         }
-        
+
         // 基准时间戳
         val baseTimestamp = System.currentTimeMillis()
-        
+
         // 主解析循环
         while (i < lines.size) {
             val line = lines[i]
             val trimmed = line.trim()
-            
+
             // 检查 chat-info
             if (trimmed.startsWith("<!-- chat-info:")) {
                 val props = parseSimpleProperties(trimmed, "chat-info")
@@ -101,23 +101,23 @@ class MarkdownConverter(private val context: Context) : ChatFormatConverter {
                 i++
                 continue
             }
-            
+
             // 检查 msg 注释
             // 格式: <!-- msg: user --> 或 <!-- msg: role=user, model=gpt-4 -->
             if (trimmed.startsWith("<!-- msg:")) {
                 // 保存上一条消息
                 if (currentRole != null && currentContent.isNotEmpty()) {
                     messages.add(createMessage(
-                        currentRole!!, 
+                        currentRole!!,
                         currentContent.toString(),
                         currentTimestamp,
                         currentModel
                     ))
                     currentContent.clear()
                 }
-                
+
                 val props = parseSimpleProperties(trimmed, "msg")
-                
+
                 // 提取角色
                 var role = props["role"]
                 // 支持简写: 如果没有 key，但 value 是 user/ai 等，则认为是角色
@@ -128,7 +128,7 @@ class MarkdownConverter(private val context: Context) : ChatFormatConverter {
                         // 或者我们可以改进 parseSimpleProperties
                         // 这里假设 props 包含了 key="" value="user" 这种情况？
                         // 为了简单，我们在 parseSimpleProperties 里处理好
-                        
+
                         // 检查简写角色
                         val potentialRole = parseRole(key)
                         if (potentialRole != null) {
@@ -137,19 +137,19 @@ class MarkdownConverter(private val context: Context) : ChatFormatConverter {
                         }
                     }
                 }
-                
+
                 currentRole = role ?: "user" // 默认为 user
                 currentModel = props["model"] ?: "markdown"
-                
+
                 val tsStr = props["timestamp"]
                 currentTimestamp = tsStr?.toLongOrNull() ?: (baseTimestamp + messageIndex * 100L)
-                
+
                 messageIndex++
                 justStartedMessage = true
                 i++
                 continue
             }
-            
+
             // 忽略紧随 msg 注释后的装饰性 ## Role 标题
             if (justStartedMessage && trimmed.startsWith("## ")) {
                 // 检查是否是装饰性标题
@@ -163,37 +163,37 @@ class MarkdownConverter(private val context: Context) : ChatFormatConverter {
                     continue
                 }
             }
-            
+
             if (justStartedMessage && trimmed.isEmpty()) {
                 // 跳过注释后的空行
                 i++
                 continue
             }
-            
+
             justStartedMessage = false
-            
+
             // 收集消息内容
             if (currentRole != null) {
                 currentContent.append(line).append("\n")
             }
-            
+
             i++
         }
-        
+
         // 保存最后一条消息
         if (currentRole != null && currentContent.isNotEmpty()) {
             messages.add(createMessage(
-                currentRole!!, 
+                currentRole!!,
                 currentContent.toString(),
                 currentTimestamp,
                 currentModel
             ))
         }
-        
+
         if (messages.isEmpty()) {
             return null
         }
-        
+
         return ChatHistory(
             id = UUID.randomUUID().toString(),
             title = title,
@@ -203,7 +203,7 @@ class MarkdownConverter(private val context: Context) : ChatFormatConverter {
             group = context.getString(R.string.markdown_import_from)
         )
     }
-    
+
     /**
      * 解析简单的属性字符串
      * 格式: key=value, key2=value2, simpleFlag
@@ -213,17 +213,17 @@ class MarkdownConverter(private val context: Context) : ChatFormatConverter {
             .removePrefix("<!-- $prefix:")
             .removeSuffix("-->")
             .trim()
-            
+
         if (content.isEmpty()) return emptyMap()
-        
+
         val result = mutableMapOf<String, String>()
         // 按逗号或分号分割
         val parts = content.split(Regex("[,;]"))
-        
+
         for (part in parts) {
             val trimmed = part.trim()
             if (trimmed.isEmpty()) continue
-            
+
             if (trimmed.contains("=")) {
                 val (key, value) = trimmed.split("=", limit = 2)
                 result[key.trim()] = value.trim()
@@ -235,7 +235,7 @@ class MarkdownConverter(private val context: Context) : ChatFormatConverter {
         }
         return result
     }
-    
+
     /**
      * 解析角色标记
      * 只支持明确的角色名称，避免误判
@@ -260,7 +260,7 @@ class MarkdownConverter(private val context: Context) : ChatFormatConverter {
             else -> null // 无法识别时不默认为 user，而是返回 null
         }
     }
-    
+
     /**
      * 创建消息对象
      */
@@ -273,7 +273,7 @@ class MarkdownConverter(private val context: Context) : ChatFormatConverter {
             modelName = model
         )
     }
-    
+
     /**
      * 尝试解析日期字符串
      */

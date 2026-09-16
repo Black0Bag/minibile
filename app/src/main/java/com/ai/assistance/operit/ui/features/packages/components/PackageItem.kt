@@ -38,7 +38,7 @@ fun PackageItem(
                 modifier = Modifier.size(20.dp),
                                                 tint = MaterialTheme.colorScheme.primary
                                         )
-            
+
             Spacer(modifier = Modifier.width(8.dp))
 
             // 文本内容 - 添加右侧边距防止撞到开关

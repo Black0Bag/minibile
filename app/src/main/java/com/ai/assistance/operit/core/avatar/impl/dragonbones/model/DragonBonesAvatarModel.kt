@@ -41,4 +41,4 @@ data class DragonBonesAvatarModel(
  */
 fun DragonBonesDataModel.toAvatarModel(): DragonBonesAvatarModel {
     return DragonBonesAvatarModel(this)
-} 
+}

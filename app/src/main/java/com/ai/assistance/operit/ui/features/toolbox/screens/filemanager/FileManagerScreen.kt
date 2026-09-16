@@ -307,7 +307,7 @@ fun FileManagerScreen(navController: NavController) {
                     currentPath = viewModel.currentPath,
                     onNavigateToPath = { path -> viewModel.navigateToPath(path) }
             )
-            
+
             // 快速访问栏
             LazyRow(
                 modifier = Modifier

@@ -34,10 +34,10 @@ import com.ai.assistance.operit.ui.floating.FloatingMode
 
 /**
  * Voice Assistant Widget using Glance (Jetpack Compose for Widgets)
- * 
+ *
  * This widget provides a quick launcher for the voice assistant fullscreen mode.
  * Users can add it to their home screen and tap to instantly launch the voice assistant.
- * 
+ *
  * The widget directly starts the FloatingChatService without going through MainActivity,
  * which simplifies the launch process and improves performance.
  */
@@ -71,7 +71,7 @@ fun VoiceAssistantWidgetContent(context: Context) {
                         putExtra("INITIAL_MODE", FloatingMode.FULLSCREEN.name)
                         putExtra(FloatingChatService.EXTRA_AUTO_ENTER_VOICE_CHAT, true)
                     }
-                    
+
                     // 启动前台服务
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         context.startForegroundService(intent)
@@ -86,7 +86,7 @@ fun VoiceAssistantWidgetContent(context: Context) {
                 modifier = GlanceModifier.fillMaxSize()
             ) {
                 Spacer(modifier = GlanceModifier.height(8.dp))
-                
+
                 // 麦克风图标
                 Image(
                     provider = ImageProvider(R.drawable.ic_microphone),

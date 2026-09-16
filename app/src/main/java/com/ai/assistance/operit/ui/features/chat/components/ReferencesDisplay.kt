@@ -26,7 +26,7 @@ fun ReferencesDisplay(
     modifier: Modifier = Modifier
 ) {
     val uriHandler = LocalUriHandler.current
-    
+
     SimpleAnimatedVisibility(
         visible = references.isNotEmpty(),
         modifier = modifier
@@ -42,7 +42,7 @@ fun ReferencesDisplay(
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-            
+
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(end = 16.dp)
@@ -86,4 +86,4 @@ private fun ReferenceChip(
             iconContentColor = MaterialTheme.colorScheme.onSecondaryContainer
         )
     )
-} 
+}

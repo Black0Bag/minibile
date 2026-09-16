@@ -15,7 +15,7 @@ object SharedFileHandler {
     val sharedFileText: StateFlow<String?> = _sharedFileText
     private val _sharedText = MutableStateFlow<String?>(null)
     val sharedText: StateFlow<String?> = _sharedText
-    
+
     /**
      * Set the shared files to be processed
      */

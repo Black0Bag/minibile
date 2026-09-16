@@ -106,7 +106,7 @@ object HtmlExporter {
     fun writeMultipleFooter(context: Context, writer: Writer) {
         appendHtmlFooter(context, writer)
     }
-    
+
     /**
      * 添加 HTML 头部
      */
@@ -124,7 +124,7 @@ object HtmlExporter {
         writer.appendLine("<body>")
         writer.appendLine("<div class=\"container\">")
     }
-    
+
     /**
      * 添加对话内容
      */
@@ -155,7 +155,7 @@ object HtmlExporter {
         writer.appendLine("  </div>")
         writer.appendLine("</div>")
     }
-    
+
     /**
      * 添加单条消息
      */
@@ -187,7 +187,7 @@ object HtmlExporter {
         writer.appendLine("      </div>")
         writer.appendLine("    </div>")
     }
-    
+
     /**
      * 添加 HTML 尾部
      */
@@ -199,7 +199,7 @@ object HtmlExporter {
         writer.appendLine("</body>")
         writer.appendLine("</html>")
     }
-    
+
     /**
      * 获取 CSS 样式
      */
@@ -327,7 +327,7 @@ object HtmlExporter {
         }
         """.trimIndent()
     }
-    
+
     /**
      * 转义 HTML 特殊字符
      */
@@ -339,7 +339,7 @@ object HtmlExporter {
             .replace("\"", "&quot;")
             .replace("'", "&#39;")
     }
-    
+
     /**
      * 逐段格式化内容（保留换行，转义HTML）。
      */

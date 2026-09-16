@@ -142,10 +142,10 @@ class MessageProcessingDelegate(
 
     // 角色卡管理器
     private val characterCardManager = CharacterCardManager.getInstance(context)
-    
+
     // 模型配置管理器
     private val modelConfigManager = ModelConfigManager(context)
-    
+
     // 功能配置管理器，用于获取正确的模型配置ID
     private val functionalConfigManager = FunctionalConfigManager(context)
 
@@ -724,7 +724,7 @@ class MessageProcessingDelegate(
 
         val originalMessageText = rawMessageText.trim()
         var messageText = originalMessageText
-        
+
         if (messageTextOverride == null) {
             clearUserMessageDraft(chatId)
         }
@@ -1113,7 +1113,7 @@ class MessageProcessingDelegate(
                 chatRuntime.responseStream = sharedCharStream
 
                 aiMessage = ChatMessage(
-                    sender = "ai", 
+                    sender = "ai",
                     contentStream = sharedCharStream,
                     timestamp = ChatMessageTimestampAllocator.next(),
                     roleName = currentRoleName,
@@ -1204,7 +1204,7 @@ class MessageProcessingDelegate(
                         }
                     }
                 }
-                
+
                 // 启动一个独立的协程来收集流内容并持续更新数据库
                 val streamCollectionResult = CompletableDeferred<Throwable?>()
                 chatRuntime.streamCollectionJob =

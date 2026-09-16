@@ -18,4 +18,4 @@ interface AvatarRendererFactory {
      */
     @Composable
     fun createRenderer(model: AvatarModel): @Composable ((modifier: Modifier, controller: AvatarController) -> Unit)?
-} 
+}

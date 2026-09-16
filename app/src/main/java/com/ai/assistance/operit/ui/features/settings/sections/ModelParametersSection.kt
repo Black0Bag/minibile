@@ -434,7 +434,7 @@ fun ModelParametersSection(
 
     // UI部分
     var parametersExpanded by rememberSaveable { mutableStateOf(false) }
-    
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -634,7 +634,7 @@ fun ModelParametersSection(
                         ) {
                             Text(resetParametersText)
                         }
-                        
+
                         Button(
                             onClick = { showAddParameterDialog = true },
                             modifier = Modifier.weight(1f)
@@ -827,7 +827,7 @@ private fun AddCustomParameterDialog(
                 // 参数名称 - 总是显示
                 OutlinedTextField(
                     value = name,
-                    onValueChange = { 
+                    onValueChange = {
                         name = it
                         // 如果是创建模式，自动设置 apiName
                         if (!isEditing) {
@@ -1180,7 +1180,7 @@ private fun ParameterItem(
     val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
     var showDeleteConfirm by remember { mutableStateOf(false) }
-    
+
     val valueText = stringResource(R.string.parameter_value)
     val rangeFormatText = stringResource(R.string.parameter_range_format)
     val mustBeIntegerText = stringResource(R.string.must_be_integer)

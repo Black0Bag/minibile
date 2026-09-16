@@ -178,20 +178,20 @@ object LatexCache {
                     builderClass.getDeclaredField(fieldName).apply {
                         isAccessible = true
                         when (fieldName) {
-                            "textSize" -> textSize = 
-                                try { getFloat(builder) } 
+                            "textSize" -> textSize =
+                                try { getFloat(builder) }
                                 catch (e: Exception) { get(builder)?.hashCode()?.toFloat() ?: 0f }
-                            "color" -> textColor = 
-                                try { getInt(builder) } 
+                            "color" -> textColor =
+                                try { getInt(builder) }
                                 catch (e: Exception) { get(builder)?.hashCode() ?: 0 }
-                            "align" -> align = 
-                                try { getInt(builder) } 
+                            "align" -> align =
+                                try { getInt(builder) }
                                 catch (e: Exception) { get(builder)?.hashCode() ?: 0 }
-                            "padding" -> padding = 
-                                try { getInt(builder) } 
+                            "padding" -> padding =
+                                try { getInt(builder) }
                                 catch (e: Exception) { get(builder)?.hashCode() ?: 0 }
-                            "background" -> background = 
-                                try { getInt(builder) } 
+                            "background" -> background =
+                                try { getInt(builder) }
                                 catch (e: Exception) { get(builder)?.hashCode() ?: 0 }
                         }
                     }
@@ -202,14 +202,14 @@ object LatexCache {
                     AppLogger.d("LatexCache", "Error accessing $fieldName: ${e.message}")
                 }
             }
-            
+
             // 获取所有需要的字段
             safeGetField("textSize")
             safeGetField("color")
-            safeGetField("align") 
+            safeGetField("align")
             safeGetField("padding")
             safeGetField("background")
-            
+
         } catch (e: Exception) {
             AppLogger.w("LatexCache", "Error accessing builder properties: ${e.message}")
             // Fallback to formula-only key if reflection fails

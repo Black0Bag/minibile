@@ -240,9 +240,9 @@ fun PackageDetailsDialog(
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Surface(
-                                color = if (metaPackage?.isBuiltIn == true) 
-                                    MaterialTheme.colorScheme.primaryContainer 
-                                else 
+                                color = if (metaPackage?.isBuiltIn == true)
+                                    MaterialTheme.colorScheme.primaryContainer
+                                else
                                     MaterialTheme.colorScheme.secondaryContainer,
                                 shape = RoundedCornerShape(4.dp)
                             ) {
@@ -618,7 +618,7 @@ fun PackageDetailsDialog(
                             Text(stringResource(R.string.pkg_delete))
                         }
                     }
-                    
+
                     FilledTonalButton(onClick = onDismiss) {
                         Text(stringResource(R.string.pkg_close))
                     }
@@ -895,9 +895,9 @@ private fun ToolCard(
                     modifier = Modifier.size(20.dp),
                     tint = MaterialTheme.colorScheme.primary
                 )
-                
+
                 Spacer(modifier = Modifier.width(8.dp))
-                
+
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = tool.name,
@@ -917,7 +917,7 @@ private fun ToolCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                
+
                 FilledTonalButton(
                     onClick = { onExecute(tool) },
                     modifier = Modifier.height(32.dp),
@@ -929,11 +929,11 @@ private fun ToolCard(
                     )
                 }
             }
-            
+
             // 参数信息
             if (tool.parameters.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(8.dp))
-                
+
                 FlowRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(4.dp),

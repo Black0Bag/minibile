@@ -1,5 +1,5 @@
 package com.ai.assistance.operit.core.tools
- 
+
  import android.content.Context
  import android.os.Build
  import com.ai.assistance.operit.core.tools.javascript.JsToolManager
@@ -31,7 +31,7 @@ import kotlinx.serialization.json.JsonPrimitive
  import kotlinx.coroutines.runBlocking
  import kotlinx.coroutines.flow.last
  import java.util.Locale
- 
+
  /**
   * Represents a package of tools that can be imported by the AI
   */
@@ -39,7 +39,7 @@ import kotlinx.serialization.json.JsonPrimitive
  data class LocalizedText(
      val values: Map<String, String>
  ) {
- 
+
      fun resolve(context: Context): String {
          val locale = try {
              if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -51,19 +51,19 @@ import kotlinx.serialization.json.JsonPrimitive
          } catch (_: Exception) {
              Locale.getDefault()
          }
- 
+
          val languageTag = try {
              locale.toLanguageTag()
          } catch (_: Exception) {
              ""
          }
- 
+
          val language = try {
              locale.language
          } catch (_: Exception) {
              ""
          }
- 
+
          val preferredKeys = mutableListOf<String>().apply {
              if (languageTag.isNotBlank()) {
                  add(languageTag)
@@ -77,12 +77,12 @@ import kotlinx.serialization.json.JsonPrimitive
              add("en")
              add("zh")
          }
- 
+
          for (key in preferredKeys) {
              val value = values[key] ?: values[key.lowercase()]
              if (value != null) return value
          }
- 
+
          return values.values.firstOrNull().orEmpty()
      }
 
@@ -117,14 +117,14 @@ import kotlinx.serialization.json.JsonPrimitive
 
          return values.values.firstOrNull().orEmpty()
      }
- 
+
      companion object {
          fun of(value: String): LocalizedText {
              return LocalizedText(mapOf("default" to value))
          }
      }
  }
- 
+
 object LocalizedTextSerializer : KSerializer<LocalizedText> {
 
     override val descriptor: SerialDescriptor =
@@ -195,7 +195,7 @@ object StringOrStringListSerializer : KSerializer<List<String>> {
         }
     }
 }
- 
+
  /**
   * Represents an environment variable declaration for a package
   */
@@ -206,7 +206,7 @@ object StringOrStringListSerializer : KSerializer<List<String>> {
      val required: Boolean = true,
      val defaultValue: String? = null
  )
- 
+
  /**
   * Custom serializer for EnvVar that handles both old format (string) and new format (object)
   * Old format: "GITHUB_TOKEN"
@@ -214,15 +214,15 @@ object StringOrStringListSerializer : KSerializer<List<String>> {
   */
  object EnvVarSerializer : KSerializer<EnvVar> {
      private val delegateSerializer = JsonObject.serializer()
-     
+
      override val descriptor: SerialDescriptor = delegateSerializer.descriptor
-     
+
      override fun deserialize(decoder: Decoder): EnvVar {
          val jsonDecoder = decoder as? JsonDecoder
              ?: throw IllegalArgumentException("EnvVarSerializer can only be used with JSON")
-         
+
          val element = jsonDecoder.decodeJsonElement()
-         
+
          // Handle old format: simple string
          if (element is JsonPrimitive) {
              return EnvVar(
@@ -232,12 +232,12 @@ object StringOrStringListSerializer : KSerializer<List<String>> {
                  defaultValue = null
              )
          }
-         
+
          // Handle new format: object
          if (element is JsonObject) {
              val name = element["name"]?.jsonPrimitive?.content
                  ?: throw IllegalArgumentException("EnvVar must have a 'name' field")
-             
+
              val descriptionElement = element["description"]
              val description = if (descriptionElement != null) {
                  val json = Json { ignoreUnknownKeys = true }
@@ -245,7 +245,7 @@ object StringOrStringListSerializer : KSerializer<List<String>> {
              } else {
                  LocalizedText.of("")
              }
-             
+
              val requiredElement = element["required"]
              val required = if (requiredElement != null) {
                  when (requiredElement) {
@@ -267,9 +267,9 @@ object StringOrStringListSerializer : KSerializer<List<String>> {
              } else {
                  true
              }
-             
+
              val defaultValue = element["defaultValue"]?.jsonPrimitive?.content
-             
+
              return EnvVar(
                  name = name,
                  description = description,
@@ -277,10 +277,10 @@ object StringOrStringListSerializer : KSerializer<List<String>> {
                  defaultValue = defaultValue
              )
          }
-         
+
          throw IllegalArgumentException("EnvVar must be a string or an object")
      }
-     
+
      override fun serialize(encoder: Encoder, value: EnvVar) {
          // Always serialize in new format
          val jsonObject = buildJsonObject {
@@ -296,7 +296,7 @@ object StringOrStringListSerializer : KSerializer<List<String>> {
          encoder.encodeSerializableValue(JsonObject.serializer(), jsonObject)
      }
  }
- 
+
 @Serializable
 data class ToolPackage(
     val name: String,
@@ -334,7 +334,7 @@ data class ToolPackage(
     @Serializable(with = StringOrStringListSerializer::class)
     val author: List<String> = emptyList()
 )
- 
+
  @Serializable
  data class ToolPackageState(
      val id: String,
@@ -343,7 +343,7 @@ data class ToolPackage(
      val excludeTools: List<String> = emptyList(),
      val tools: List<PackageTool> = emptyList()
  )
- 
+
  /**
   * Represents a tool within a package
   */
@@ -355,7 +355,7 @@ data class ToolPackage(
      val script: String, // JavaScript or compatible script that defines this tool's behavior (formerly operScript)
      val advice: Boolean = false
  )
- 
+
  /**
   * Represents a parameter for a tool in a package
   */
@@ -366,7 +366,7 @@ data class ToolPackage(
      val type: String, // e.g., "string", "number", "boolean"
      val required: Boolean = true
  )
- 
+
  /**
   * Executor for package tools
   */
@@ -375,9 +375,9 @@ data class ToolPackage(
      private val context: Context,
      private val packageManager: PackageManager
  ) : ToolExecutor {
- 
+
      private val jsToolManager = JsToolManager.getInstance(context, packageManager)
- 
+
      override fun invoke(tool: AITool): ToolResult {
          // Parse packageName:toolName pattern
          val parts = tool.name.split(":")
@@ -389,10 +389,10 @@ data class ToolPackage(
                  error = "Invalid package tool format. Expected 'packageName:toolName'"
              )
          }
- 
+
          val packageName = parts[0]
          val toolName = parts[1]
- 
+
          // Verify this executor is for the right package
          if (packageName != toolPackage.name) {
              return ToolResult(
@@ -402,7 +402,7 @@ data class ToolPackage(
                  error = "Package mismatch: expected ${toolPackage.name}, got $packageName"
              )
          }
- 
+
          // Find the tool in the package
          val packageTool = toolPackage.tools.find { it.name == toolName }
              ?: return ToolResult(
@@ -411,22 +411,22 @@ data class ToolPackage(
                  result = StringResultData(""),
                  error = "Tool '$toolName' not found in package '${toolPackage.name}'"
              )
- 
+
          // Execute the script using runBlocking since we can't make this a suspending function
          // without changing the interface. We collect the last result for single-result compatibility.
          return runBlocking {
              jsToolManager.executeScript(packageTool.script, tool).last()
          }
      }
- 
+
      override fun invokeAndStream(tool: AITool): Flow<ToolResult> {
          // Find the tool in the package
          val packageTool = toolPackage.tools.find { it.name.endsWith(tool.name.split(":").last()) }
              ?: error("Tool not found in package for streaming") // Should be validated before
- 
+
          return jsToolManager.executeScript(packageTool.script, tool)
      }
- 
+
      override fun validateParameters(tool: AITool): ToolValidationResult {
          // Parse packageName:toolName pattern
          val parts = tool.name.split(":")
@@ -436,10 +436,10 @@ data class ToolPackage(
                  errorMessage = "Invalid package tool format. Expected 'packageName:toolName'"
              )
          }
- 
+
          val packageName = parts[0]
          val toolName = parts[1]
- 
+
          // Verify this executor is for the right package
          if (packageName != toolPackage.name) {
              return ToolValidationResult(
@@ -447,30 +447,30 @@ data class ToolPackage(
                  errorMessage = "Package mismatch: expected ${toolPackage.name}, got $packageName"
              )
          }
- 
+
          // Find the tool in the package
          val packageTool = toolPackage.tools.find { it.name == toolName }
              ?: return ToolValidationResult(
                  valid = false,
                  errorMessage = "Tool '$toolName' not found in package '${toolPackage.name}'"
              )
- 
+
          // Validate that all required parameters are present
          val missingParams = packageTool.parameters
              .filter { it.required }
              .map { it.name }
              .filter { paramName -> tool.parameters.none { it.name == paramName } }
- 
+
          if (missingParams.isNotEmpty()) {
              return ToolValidationResult(
                  valid = false,
                  errorMessage = "Missing required parameters: ${missingParams.joinToString(", ")}"
              )
          }
- 
+
          return ToolValidationResult(valid = true)
      }
- 
+
      /**
       * Returns information about the tools available in this package
       */
@@ -479,7 +479,7 @@ data class ToolPackage(
          sb.appendLine("Package: ${toolPackage.name}")
          sb.appendLine("Description: ${toolPackage.description.resolve(context)}")
          sb.appendLine("Tools:")
- 
+
          toolPackage.tools.forEach { tool ->
              sb.appendLine("  - ${tool.name}: ${tool.description.resolve(context)}")
              if (tool.parameters.isNotEmpty()) {
@@ -490,7 +490,7 @@ data class ToolPackage(
                  }
              }
          }
- 
+
          return sb.toString()
      }
  }

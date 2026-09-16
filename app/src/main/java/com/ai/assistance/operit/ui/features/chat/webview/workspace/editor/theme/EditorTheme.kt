@@ -23,18 +23,18 @@ data class EditorTheme(
     val attributeColor: Color,
     val selectorColor: Color,
     val processingColor: Color,
-    
+
     // Markdown特定颜色
     val headingColor: Color,
     val quoteColor: Color,
     val listItemColor: Color,
     val codeColor: Color,
-    
+
     // 行号
     val gutterBackground: Color,
     val gutterBorder: Color,
     val lineNumberColor: Color,
-    
+
     // 字体大小
     val fontSize: TextUnit
 )
@@ -56,16 +56,16 @@ val DarkTheme = EditorTheme(
     attributeColor = Color(0xFF9CDCFE),
     selectorColor = Color(0xFFD7BA7D),
     processingColor = Color(0xFFC586C0),
-    
+
     headingColor = Color(0xFF569CD6),
     quoteColor = Color(0xFF608B4E),
     listItemColor = Color(0xFFD7BA7D),
     codeColor = Color(0xFFDCDCAA),
-    
+
     gutterBackground = Color(0xFF2A2D2E),
     gutterBorder = Color(0xFF3A3D41),
     lineNumberColor = Color(0xFF858585),
-    
+
     fontSize = 14.sp
 )
 
@@ -86,16 +86,16 @@ val LightTheme = EditorTheme(
     attributeColor = Color(0xFF001080),
     selectorColor = Color(0xFF800000),
     processingColor = Color(0xFFAF00DB),
-    
+
     headingColor = Color(0xFF0000FF),
     quoteColor = Color(0xFF008000),
     listItemColor = Color(0xFF800000),
     codeColor = Color(0xFF795E26),
-    
+
     gutterBackground = Color(0xFFF8F8F8),
     gutterBorder = Color(0xFFE5E5E5),
     lineNumberColor = Color(0xFF8A8F98),
-    
+
     fontSize = 14.sp
 )
 

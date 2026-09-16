@@ -31,7 +31,7 @@ fun CommandResultDialog(
     if (showDialog) {
         AlertDialog(
                 onDismissRequest = onDismiss,
-                title = { 
+                title = {
                     Column {
                         Text(
                             text = title,

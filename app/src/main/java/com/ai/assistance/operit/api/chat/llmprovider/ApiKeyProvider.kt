@@ -45,7 +45,7 @@ class MultiApiKeyProvider(
         return mutex.withLock {
             val config = modelConfigManager.getModelConfig(configId)
                 ?: throw IllegalStateException("Config with ID $configId not found")
-            
+
             // 筛选出启用的key
             val enabledKeys = config.apiKeyPool.filter { it.isEnabled }
             AppLogger.d("ApiKeyProvider", "Config ${config.name}: Found ${enabledKeys.size} enabled keys out of ${config.apiKeyPool.size} total keys")
@@ -57,7 +57,7 @@ class MultiApiKeyProvider(
                 } else {
                     enabledKeys
                 }
-            
+
             if (candidateKeys.isEmpty()) {
                 if (hasAnyAvailabilityMark) {
                     AppLogger.e(
@@ -80,7 +80,7 @@ class MultiApiKeyProvider(
             // 从当前索引开始寻找下一个有效的key
             val startIndex = config.currentKeyIndex % candidateKeys.size
             val selectedKey = candidateKeys[startIndex]
-            
+
             AppLogger.d("ApiKeyProvider", "Config ${config.name}: Using key ${startIndex + 1}/${candidateKeys.size} - '${selectedKey.name}' (sk-...${selectedKey.key.takeLast(4)})")
 
             // 更新并保存下一个索引

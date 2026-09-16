@@ -132,12 +132,12 @@ class AccessibilityShellExecutor(private val context: Context) : ShellExecutor {
  * 无障碍服务的 ShellProcess 实现
  */
 private class AccessibilityShellProcess(
-    private val command: String, 
+    private val command: String,
     private val executor: AccessibilityShellExecutor
 ) : ShellProcess {
     private var completed = false
     private var exitCode = -1
-    
+
     override val stdout: Flow<String> = callbackFlow {
         // 无障碍服务不能执行真正的shell命令，返回错误信息
         trySend("Accessibility service cannot execute shell commands directly")

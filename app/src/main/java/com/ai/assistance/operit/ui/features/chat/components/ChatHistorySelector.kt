@@ -160,8 +160,8 @@ private sealed interface HistoryListItem {
         val characterGroupId: String? = null
     ) : HistoryListItem
     data class Header(
-        val key: String, 
-        val name: String, 
+        val key: String,
+        val name: String,
         val groupValue: String?,
         val characterCardName: String? = null
     ) : HistoryListItem
@@ -462,7 +462,7 @@ fun ChatHistorySelector(
     var groupToRename by remember { mutableStateOf<GroupTarget?>(null) }
     var groupToDelete by remember { mutableStateOf<GroupTarget?>(null) }
     var hasLongPressedGroup by rememberLocal("has_long_pressed_group", defaultValue = false)
-    
+
     // 搜索相关状态
     var showSearchBox by remember { mutableStateOf(false) }
     var matchedChatIdsByContent by remember { mutableStateOf<Set<String>>(emptySet()) }
@@ -884,7 +884,7 @@ fun ChatHistorySelector(
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    
+
                     // 编辑选项
                     Surface(
                         modifier = Modifier
@@ -916,14 +916,14 @@ fun ChatHistorySelector(
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             Text(
-                                stringResource(R.string.edit_title), 
+                                stringResource(R.string.edit_title),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.clearAndSetSemantics {}
                             )
                         }
                     }
-                    
+
                     // 上移选项
                     Surface(
                         modifier = Modifier
@@ -965,14 +965,14 @@ fun ChatHistorySelector(
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             Text(
-                                stringResource(R.string.move_up), 
+                                stringResource(R.string.move_up),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.clearAndSetSemantics {}
                             )
                         }
                     }
-                    
+
                     // 下移选项
                     Surface(
                         modifier = Modifier
@@ -1014,7 +1014,7 @@ fun ChatHistorySelector(
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             Text(
-                                stringResource(R.string.move_down), 
+                                stringResource(R.string.move_down),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.clearAndSetSemantics {}
@@ -1117,7 +1117,7 @@ fun ChatHistorySelector(
                             )
                         }
                     }
-                    
+
                     // 删除选项
                     Surface(
                         modifier = Modifier
@@ -1149,14 +1149,14 @@ fun ChatHistorySelector(
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             Text(
-                                stringResource(R.string.delete), 
+                                stringResource(R.string.delete),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onErrorContainer,
                                 modifier = Modifier.clearAndSetSemantics {}
                             )
                         }
                     }
-                    
+
                     Spacer(modifier = Modifier.height(8.dp))
 
                     TextButton(
@@ -1203,7 +1203,7 @@ fun ChatHistorySelector(
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    
+
                     // 重命名选项
                     Surface(
                         modifier = Modifier
@@ -1235,14 +1235,14 @@ fun ChatHistorySelector(
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             Text(
-                                stringResource(R.string.rename_group), 
+                                stringResource(R.string.rename_group),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.clearAndSetSemantics {}
                             )
                         }
                     }
-                    
+
                     // 删除选项
                     Surface(
                         modifier = Modifier
@@ -1274,14 +1274,14 @@ fun ChatHistorySelector(
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             Text(
-                                stringResource(R.string.delete_group), 
+                                stringResource(R.string.delete_group),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onErrorContainer,
                                 modifier = Modifier.clearAndSetSemantics {}
                             )
                         }
                     }
-                    
+
                     Spacer(modifier = Modifier.height(8.dp))
 
                     TextButton(
@@ -1313,7 +1313,7 @@ fun ChatHistorySelector(
                     onClick = {
                         if (newGroupNameText.isNotBlank() && newGroupNameText != groupToRename!!.groupName) {
                             onUpdateGroupName(
-                                groupToRename!!.groupName, 
+                                groupToRename!!.groupName,
                                 newGroupNameText,
                                 groupToRename!!.characterCardName
                             )
@@ -1382,7 +1382,7 @@ fun ChatHistorySelector(
                     TextButton(
                         onClick = {
                             onDeleteGroup(
-                                groupToDelete!!.groupName, 
+                                groupToDelete!!.groupName,
                                 true,
                                 groupToDelete!!.characterCardName
                             )
@@ -1422,7 +1422,7 @@ fun ChatHistorySelector(
                     TextButton(
                         onClick = {
                             onDeleteGroup(
-                                groupToDelete!!.groupName, 
+                                groupToDelete!!.groupName,
                                 false,
                                 groupToDelete!!.characterCardName
                             )
@@ -1660,7 +1660,7 @@ fun ChatHistorySelector(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
-                    
+
                     listOf(
                         Triple(
                             ChatHistoryDisplayMode.BY_CHARACTER_CARD,
@@ -1726,11 +1726,11 @@ fun ChatHistorySelector(
                             }
                         }
                     }
-                    
+
                     Spacer(modifier = Modifier.height(16.dp))
                     HorizontalDivider()
                     Spacer(modifier = Modifier.height(16.dp))
-                    
+
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -1810,9 +1810,9 @@ fun ChatHistorySelector(
                             )
                         }
                     }
-                    
+
                     Spacer(modifier = Modifier.height(16.dp))
-                    
+
                     TextButton(
                         onClick = { showSettingsDialog = false },
                         modifier = Modifier.align(Alignment.End)
@@ -1934,7 +1934,7 @@ fun ChatHistorySelector(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
-                onClick = { 
+                onClick = {
                     val (characterCardName, characterGroupId) = resolveBindingForCreate(
                         historyDisplayMode = historyDisplayMode,
                         activePrompt = activePrompt,
@@ -2076,14 +2076,14 @@ fun ChatHistorySelector(
                             } else {
                                 characterCardAvatarUri
                             }
-                        
+
                         val isExpanded = !collapsedCharacters.contains(item.key)
                         val stateDescription = if (isExpanded) {
                             stringResource(R.string.expanded)
                         } else {
                             stringResource(R.string.collapsed)
                         }
-                        
+
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -2121,7 +2121,7 @@ fun ChatHistorySelector(
                                         .size(24.dp)
                                         .clip(CircleShape)
                                         .background(
-                                            if (avatarUri != null) Color.Transparent 
+                                            if (avatarUri != null) Color.Transparent
                                             else MaterialTheme.colorScheme.primaryContainer
                                         ),
                                     contentAlignment = Alignment.Center
@@ -2154,7 +2154,7 @@ fun ChatHistorySelector(
                                     modifier = Modifier.clearAndSetSemantics {}
                                 )
                             }
-                            
+
                             Box(
                                 modifier = Modifier
                                     .weight(1f)
@@ -2188,7 +2188,7 @@ fun ChatHistorySelector(
                         } else {
                             stringResource(R.string.collapsed)
                         }
-                        
+
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()

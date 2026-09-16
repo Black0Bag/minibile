@@ -285,11 +285,11 @@ class MCPBridgeClient(private val context: Context, private val serviceName: Str
 
                     if (result != null && result.optBoolean("success", false)) {
                         val responseObj = result.optJSONObject("result")
-                        
+
                         // getServiceStatus always returns single service object format
                         val active = responseObj?.optBoolean("active", false) ?: false
                         val ready = responseObj?.optBoolean("ready", false) ?: false
-                        
+
                         // Only consider it connected when active AND ready.
                         if (active && ready) {
                             lastPingTime = System.currentTimeMillis() - startTime
@@ -476,7 +476,7 @@ class MCPBridgeClient(private val context: Context, private val serviceName: Str
     /** Synchronous tool call with Map */
     fun callToolSync(method: String, params: Map<String, Any>): JSONObject? {
         val paramsJson = JSONObject()
-        params.forEach { (key, value) -> 
+        params.forEach { (key, value) ->
             // 将值转换为正确的 JSON 类型
             val jsonValue = convertToJsonType(value)
             paramsJson.put(key, jsonValue)
@@ -581,20 +581,20 @@ class MCPBridgeClient(private val context: Context, private val serviceName: Str
             withContext(Dispatchers.IO) {
                 try {
                     val listResponse = MCPBridge.sendCommand(context, buildListServicesCommand()) ?: return@withContext null
-                    
+
                     if (listResponse.optBoolean("success", false)) {
                         val services = listResponse.optJSONObject("result")?.optJSONArray("services")
-                        
+
                         if (services != null) {
                             for (i in 0 until services.length()) {
                                 val service = services.optJSONObject(i)
                                 val name = service?.optString("name", "")
-                                
+
                                 if (name == serviceName) {
                                     val active = service.optBoolean("active", false)
                                     val ready = service.optBoolean("ready", false)
                                     val toolCount = service.optInt("toolCount", 0)
-                                    
+
                                     // 从响应中提取工具名称列表
                                     val toolNames = mutableListOf<String>()
                                     val toolsArray = service.optJSONArray("tools")
@@ -607,7 +607,7 @@ class MCPBridgeClient(private val context: Context, private val serviceName: Str
                                             }
                                         }
                                     }
-                                    
+
                                     return@withContext ServiceInfo(
                                         name = name,
                                         active = active,
@@ -627,7 +627,7 @@ class MCPBridgeClient(private val context: Context, private val serviceName: Str
             }
 
     /** Get tool descriptions provided by the service as a list of strings */
-    suspend fun getToolDescriptions(): List<String> = 
+    suspend fun getToolDescriptions(): List<String> =
             withContext(Dispatchers.IO) {
                 try {
                     val tools = getTools()

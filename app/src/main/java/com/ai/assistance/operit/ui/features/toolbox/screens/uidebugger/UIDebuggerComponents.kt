@@ -76,7 +76,7 @@ fun UIDebuggerOverlay(
     val viewModel: UIDebuggerViewModel = UIDebuggerViewModel.getInstance()
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
-    
+
     // 简化状态管理 - 只管理UI分析和元素选择
     var isUIAnalysisActive by remember { mutableStateOf(false) }
     var selectedElement by remember { mutableStateOf<UIElement?>(null) }
@@ -132,7 +132,7 @@ fun UIDebuggerOverlay(
                 onStartListening = { viewModel.startActivityListening() },
                 onStopListening = { viewModel.stopActivityListening() },
                 onClearEvents = { viewModel.clearActivityEvents() },
-                onDismiss = { 
+                onDismiss = {
                     viewModel.toggleActivityMonitor()
                     // 不再自动停止监听，让用户手动控制
                 },
@@ -148,7 +148,7 @@ fun UIDebuggerOverlay(
             val clipboardManager = LocalClipboardManager.current
             val currentActivityName = uiState.currentAnalyzedActivityName
             val currentPackageName = uiState.currentAnalyzedPackageName
-            
+
             Card(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
@@ -210,7 +210,7 @@ fun UIDebuggerOverlay(
                             )
                         }
                     }
-                    
+
                     if (currentActivityName != null) {
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
@@ -220,7 +220,7 @@ fun UIDebuggerOverlay(
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
-                    
+
                     if (currentPackageName != null) {
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
@@ -266,9 +266,9 @@ fun UIDebuggerOverlay(
                             // 处理异常
                         }
                     },
-                    containerColor = if (isUIAnalysisActive) 
-                        MaterialTheme.colorScheme.primary 
-                    else 
+                    containerColor = if (isUIAnalysisActive)
+                        MaterialTheme.colorScheme.primary
+                    else
                         MaterialTheme.colorScheme.secondaryContainer,
                     modifier = Modifier.size(40.dp)
                 ) {
@@ -436,9 +436,9 @@ fun ElementHighlightOverlay(
                     val tappedElement = elements
                         .filter { element ->
                             element.bounds?.let { bounds ->
-                                offset.x >= bounds.left && 
-                                offset.x <= bounds.right && 
-                                offset.y >= bounds.top && 
+                                offset.x >= bounds.left &&
+                                offset.x <= bounds.right &&
+                                offset.y >= bounds.top &&
                                 offset.y <= bounds.bottom
                             } ?: false
                         }
@@ -447,7 +447,7 @@ fun ElementHighlightOverlay(
                                 bounds.width() * bounds.height()
                             } ?: Int.MAX_VALUE
                         }
-                    
+
                     tappedElement?.let(onElementClick)
                 }
             }
@@ -470,7 +470,7 @@ private fun DrawScope.drawElementHighlight(
     bounds: android.graphics.Rect
 ) {
     val color = Color.Red
-    
+
     drawRect(
         color = color,
         topLeft = Offset(bounds.left.toFloat(), bounds.top.toFloat()),
@@ -487,7 +487,7 @@ fun ElementInfoPanel(
 ) {
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
-    
+
     Surface(
         modifier = modifier
             .widthIn(max = 300.dp)
@@ -521,9 +521,9 @@ fun ElementInfoPanel(
                     )
                 }
             }
-            
+
             Spacer(modifier = Modifier.height(12.dp))
-            
+
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(4.dp))
@@ -536,9 +536,9 @@ fun ElementInfoPanel(
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
-            
+
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             // ActivityName特殊显示区域
             if (element.activityName != null) {
                 Card(
@@ -592,10 +592,10 @@ fun ElementInfoPanel(
                         }
                     }
                 }
-                
+
                 Spacer(modifier = Modifier.height(8.dp))
             }
-            
+
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
@@ -607,7 +607,7 @@ fun ElementInfoPanel(
                     fontSize = 12.sp,
                     modifier = Modifier.fillMaxWidth()
                 )
-                
+
                 if (element.bounds != null) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
@@ -619,9 +619,9 @@ fun ElementInfoPanel(
             }
         }
     }
-} 
+}
 
- 
+
 
 
 // 编辑相关组件

@@ -53,17 +53,17 @@ import java.io.FileOutputStream
 
 /**
  * 消息图片生成器
- * 
+ *
  * 将选中的消息渲染为图片，用于分享
  * 使用 ScrollView + ComposeView 方案支持任意长度的内容
  */
 object MessageImageGenerator {
-    
+
     private const val TAG = "MessageImageGenerator"
-    
+
     /**
      * 生成消息图片
-     * 
+     *
      * @param context Android 上下文
      * @param messages 要渲染的消息列表
      * @param userMessageColor 用户消息背景色
@@ -114,25 +114,25 @@ object MessageImageGenerator {
                 ActivePromptManager.getInstance(context)
                     .activeThemePreferenceSnapshotFlow
                     .first()
-            
+
             // 获取 Activity 和根视图，用于临时附加 ComposeView
             val activity = context.findActivity() ?: throw IllegalStateException("Context is not an Activity.")
             val rootView = activity.findViewById<ViewGroup>(android.R.id.content)
-            
+
             // 在主线程上创建、附加和捕获 Composable 内容
             val bitmap = withContext(Dispatchers.Main) {
                 // 检查当前是否为暗色模式
-                val isDarkTheme = (context.resources.configuration.uiMode and 
-                    Configuration.UI_MODE_NIGHT_MASK) == 
+                val isDarkTheme = (context.resources.configuration.uiMode and
+                    Configuration.UI_MODE_NIGHT_MASK) ==
                     Configuration.UI_MODE_NIGHT_YES
-                
+
                 // 根据暗色模式选择颜色方案
                 val colorScheme = if (isDarkTheme) {
                     darkColorScheme()
                 } else {
                     lightColorScheme()
                 }
-                
+
                 // 创建 ComposeView，包含所有消息内容
                 val composeView = ComposeView(context).apply {
                     setBackgroundColor(AndroidColor.TRANSPARENT)
@@ -312,7 +312,7 @@ object MessageImageGenerator {
                         }
                     }
                 }
-                
+
                 // 将 ComposeView 包装在 ScrollView 中，以支持任意高度
                 val scrollView = ScrollView(context).apply {
                     setBackgroundColor(AndroidColor.TRANSPARENT)
@@ -333,36 +333,36 @@ object MessageImageGenerator {
                     width,
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 )
-                
+
                 // 添加到根视图（视图在屏幕外，用户看不到）
                 rootView.addView(scrollView)
-                
+
                 // 手动触发测量和布局，确保内容完全展开
                 // 使用 EXACTLY 模式指定宽度，UNSPECIFIED 模式让高度自由扩展
                 val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
                 val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
                 scrollView.measure(widthMeasureSpec, heightMeasureSpec)
                 scrollView.layout(0, 0, scrollView.measuredWidth, scrollView.measuredHeight)
-                
+
                 AppLogger.d(TAG, "ScrollView 测量完成，尺寸: ${scrollView.measuredWidth}x${scrollView.measuredHeight}")
-                
+
                 // 等待 Compose 完成布局（给它一些时间）
                 delay(500)
-                
+
                 val capturedBitmap: Bitmap
                 try {
                     // 使用 ScrollView 子视图的完整高度创建 Bitmap
                     // 这是关键：getChildAt(0).height 获取完整的内容高度
                     val contentHeight = scrollView.getChildAt(0).height
                     AppLogger.d(TAG, "内容完整高度: $contentHeight")
-                    
+
                     var tempBitmap = Bitmap.createBitmap(
                         scrollView.width,
                         contentHeight,
                         Bitmap.Config.ARGB_8888
                     )
                     val canvas = Canvas(tempBitmap)
-                    
+
                     // includeBackground=true 时，外围保持透明，仅卡片内部渲染应用背景
                     val backgroundColor = if (includeBackground) {
                         AndroidColor.TRANSPARENT
@@ -372,9 +372,9 @@ object MessageImageGenerator {
                         AndroidColor.WHITE
                     }
                     canvas.drawColor(backgroundColor)
-                    
+
                     scrollView.draw(canvas)
-                    
+
                     // 检查是否为硬件 Bitmap，如果是则转换为软件 Bitmap
                     // 软件渲染不支持硬件 Bitmap，需要转换为软件 Bitmap
                     capturedBitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && tempBitmap.config == Bitmap.Config.HARDWARE) {
@@ -385,7 +385,7 @@ object MessageImageGenerator {
                     } else {
                         tempBitmap
                     }
-                    
+
                     AppLogger.d(TAG, "捕获成功，图片尺寸: ${capturedBitmap.width}x${capturedBitmap.height}")
                 } catch (e: Throwable) {
                     AppLogger.e(TAG, "捕获失败", e)
@@ -397,30 +397,30 @@ object MessageImageGenerator {
                 }
                 capturedBitmap
             }
-            
+
             // 在 IO 线程上保存文件
             return withContext(Dispatchers.IO) {
                 val outputDir = File(context.cacheDir, "shared_images")
                 if (!outputDir.exists()) {
                     outputDir.mkdirs()
                 }
-                
+
                 val timestamp = System.currentTimeMillis()
                 val outputFile = File(outputDir, "messages_$timestamp.png")
-                
+
                 FileOutputStream(outputFile).use { out ->
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
                     out.flush()
                 }
-                
+
                 AppLogger.d(TAG, "图片已保存到: ${outputFile.absolutePath}, 大小: ${outputFile.length()} bytes")
-                
+
                 // 回收 Bitmap
                 bitmap.recycle()
-                
+
                 outputFile
             }
-            
+
         } catch (e: Exception) {
             AppLogger.e(TAG, "生成消息图片失败", e)
             throw e

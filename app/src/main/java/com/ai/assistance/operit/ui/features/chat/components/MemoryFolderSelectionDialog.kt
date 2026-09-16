@@ -53,29 +53,29 @@ fun MemoryFolderSelectionDialog(
     onConfirm: (List<String>) -> Unit
 ) {
     if (!visible) return
-    
+
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    
+
     // 选中的文件夹路径
     var selectedFolders by remember { mutableStateOf(setOf<String>()) }
-    
+
     // 使用 rememberLocal 持久化展开状态（与 FolderNavigator 共享同一个 key）
     var expandedFoldersState by rememberLocal(
         key = "folder_navigator_expanded_state",
         defaultValue = FolderExpandedState(),
         serializer = serializer()
     )
-    
+
     // 所有可用的文件夹路径（扁平列表）
     var folderPaths by remember { mutableStateOf<List<String>>(emptyList()) }
-    
+
     // 文件夹树结构
     var folderTree by remember { mutableStateOf<List<FolderNode>>(emptyList()) }
-    
+
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
-    
+
     // 加载文件夹列表
     LaunchedEffect(visible) {
         if (visible) {
@@ -94,7 +94,7 @@ fun MemoryFolderSelectionDialog(
             }
         }
     }
-    
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -112,7 +112,7 @@ fun MemoryFolderSelectionDialog(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
-                
+
                 when {
                     isLoading -> {
                         Box(
@@ -223,7 +223,7 @@ private fun LazyListScope.renderFolderTree(
             onToggleExpanded = { onToggleExpanded(node.path) }
         )
     }
-    
+
     // 如果展开，递归渲染子节点
     if (node.path in expandedFolders && node.children.isNotEmpty()) {
         node.children.forEach { childNode ->
@@ -253,7 +253,7 @@ private fun FolderTreeItem(
 ) {
     val context = LocalContext.current
     val indent = (node.level * 20).dp
-    
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -282,18 +282,18 @@ private fun FolderTreeItem(
             // 占位符，保持对齐
             Spacer(modifier = Modifier.width(24.dp))
         }
-        
+
         Spacer(modifier = Modifier.width(4.dp))
-        
+
         // 复选框
         Checkbox(
             checked = isSelected,
             onCheckedChange = { onToggleSelection() },
             modifier = Modifier.size(20.dp)
         )
-        
+
         Spacer(modifier = Modifier.width(8.dp))
-        
+
         // 文件夹图标
         Icon(
             imageVector = if (isExpanded && hasChildren) {
@@ -309,9 +309,9 @@ private fun FolderTreeItem(
             },
             modifier = Modifier.size(20.dp)
         )
-        
+
         Spacer(modifier = Modifier.width(8.dp))
-        
+
         // 文件夹名称（可点击区域）
         Text(
             text = node.name,

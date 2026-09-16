@@ -34,10 +34,10 @@ data class OperitNodeInfo(
 
     @SerializedName("visible")
     val isVisibleToUser: Boolean,
-    
+
     @SerializedName("focused")
     val isFocused: Boolean,
-    
+
     @SerializedName("checked")
     val isChecked: Boolean
     // 可以根据需要添加更多属性
@@ -53,4 +53,4 @@ data class OperitNodeInfo(
             null
         }
     }
-} 
+}

@@ -23,13 +23,13 @@ object TextSegmenter {
     private var baseInitialized = false
 
     private val loadedUserDictPaths = ConcurrentHashMap.newKeySet<String>()
-    
+
     // 关键词缓存，提高性能
     private val segmentCache = ConcurrentHashMap<String, List<String>>()
-    
+
     // 最大缓存大小
     private const val MAX_CACHE_SIZE = 1000
-    
+
     /**
      * 初始化分词器，可选加载自定义词典
      * @param context 应用上下文
@@ -75,7 +75,7 @@ object TextSegmenter {
         loadedUserDictPaths.add(normalizedPath)
         AppLogger.d(TAG, "已加载自定义词典: $normalizedPath")
     }
-    
+
     /**
      * 对文本进行分词
      * @param text 要分词的文本
@@ -84,18 +84,18 @@ object TextSegmenter {
      */
     fun segment(text: String, useCached: Boolean = true): List<String> {
         if (text.isBlank()) return emptyList()
-        
+
         // 查询缓存
         if (useCached && segmentCache.containsKey(text)) {
             return segmentCache[text] ?: emptyList()
         }
-        
+
         try {
             // 使用结巴分词器进行分词
             val result = segmenter.process(text, JiebaSegmenter.SegMode.SEARCH)
                 .map { it.word }
                 .filter { it.length > 1 } // 过滤掉单字（通常噪音较多）
-            
+
             // 缓存结果（控制缓存大小）
             if (useCached) {
                 // 如果缓存太大，清除一半
@@ -105,7 +105,7 @@ object TextSegmenter {
                 }
                 segmentCache[text] = result
             }
-            
+
             return result
         } catch (e: Exception) {
             AppLogger.e(TAG, "分词失败: ${e.message}")
@@ -114,14 +114,14 @@ object TextSegmenter {
                 .filter { it.length > 1 }
         }
     }
-    
+
     /**
      * 清除分词缓存
      */
     fun clearCache() {
         segmentCache.clear()
     }
-    
+
     /**
      * 计算文本与关键词的相关性得分
      * @param text 要检查的文本
@@ -130,43 +130,43 @@ object TextSegmenter {
      */
     fun calculateRelevance(text: String, keywords: List<String>): Double {
         if (text.isBlank() || keywords.isEmpty()) return 0.0
-        
+
         // 优化: 截断过长的文本，避免处理过多数据
         val maxLength = 5000
         val textToProcess = if (text.length > maxLength) text.substring(0, maxLength) else text
         val textLower = textToProcess.lowercase()
-        
+
         // 快速检查: 如果任何关键词包含在文本中，就说明有相关性
-        val hasDirectMatch = keywords.any { keyword -> 
-            textLower.contains(keyword.lowercase()) 
+        val hasDirectMatch = keywords.any { keyword ->
+            textLower.contains(keyword.lowercase())
         }
-        
+
         // 如果没有直接匹配，可能相关性很低，直接返回0以避免更多计算
         if (!hasDirectMatch) {
             return 0.0
         }
-        
+
         // 匹配包含的关键词数量
-        val exactMatches = keywords.count { keyword -> 
-            textLower.contains(keyword.lowercase()) 
+        val exactMatches = keywords.count { keyword ->
+            textLower.contains(keyword.lowercase())
         }
-        
+
         // 如果有足够的精确匹配，就不需要进行更昂贵的分词操作
         if (exactMatches >= keywords.size / 2 || exactMatches >= 3) {
             val quickScore = (exactMatches * 2.0) / (keywords.size * 3.0)
             return quickScore.coerceIn(0.0, 1.0)
         }
-        
+
         // 只有必要时才进行分词处理
         val textSegments = segment(textLower)
-        
+
         // 匹配分词后的部分
         val segmentMatches = keywords.count { keyword ->
             textSegments.any { segment -> segment.contains(keyword.lowercase()) }
         }
-        
+
         // 计算总得分：精确匹配*2 + 分词匹配*1，然后归一化
         val totalScore = (exactMatches * 2.0 + segmentMatches) / (keywords.size * 3.0)
         return totalScore.coerceIn(0.0, 1.0) // 将得分限制在0-1范围内
     }
-} 
+}

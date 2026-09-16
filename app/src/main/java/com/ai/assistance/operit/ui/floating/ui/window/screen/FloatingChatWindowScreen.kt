@@ -1347,7 +1347,7 @@ private fun BoxScope.BottomResizeHandle(
 @Composable
 private fun ProcessingStatusIndicator(floatContext: FloatContext) {
     val state = floatContext.inputProcessingState.value
-    
+
     if (state !is InputProcessingState.Idle && state !is InputProcessingState.Completed) {
         val text = when (state) {
             is InputProcessingState.Processing -> state.message
@@ -1360,15 +1360,15 @@ private fun ProcessingStatusIndicator(floatContext: FloatContext) {
             is InputProcessingState.Error -> stringResource(R.string.floating_error, state.message)
             else -> stringResource(R.string.floating_processing)
         }
-        
-        val backgroundColor = if (state is InputProcessingState.Error) 
-            MaterialTheme.colorScheme.errorContainer 
-        else 
+
+        val backgroundColor = if (state is InputProcessingState.Error)
+            MaterialTheme.colorScheme.errorContainer
+        else
             MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.9f)
-            
-        val contentColor = if (state is InputProcessingState.Error) 
-            MaterialTheme.colorScheme.onErrorContainer 
-        else 
+
+        val contentColor = if (state is InputProcessingState.Error)
+            MaterialTheme.colorScheme.onErrorContainer
+        else
             MaterialTheme.colorScheme.onSurfaceVariant
 
         Box(

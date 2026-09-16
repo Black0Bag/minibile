@@ -71,19 +71,19 @@ object StreamLogger {
 interface Stream<T> {
     /** 流是否处于锁定状态 */
     val isLocked: Boolean
-    
+
     /** 缓存的元素数量 */
     val bufferedCount: Int
-    
+
     /** 锁定流 - 暂停接收新数据但继续发送 */
     suspend fun lock()
-    
+
     /** 解锁流 - 恢复接收并发送缓存的数据 */
     suspend fun unlock()
-    
+
     /** 清空缓存的数据 */
     fun clearBuffer()
-    
+
     /** 收集Stream发出的值 */
     suspend fun collect(collector: StreamCollector<T>)
 
@@ -112,10 +112,10 @@ abstract class AbstractStream<T> : Stream<T> {
     private val isLockedFlag = AtomicBoolean(false)
     private val isClosedFlag = AtomicBoolean(false)
     private val buffer = ConcurrentLinkedQueue<T>()
-    
+
     override val isLocked: Boolean get() = isLockedFlag.get()
     override val bufferedCount: Int get() = buffer.size
-    
+
     override suspend fun lock() {
         mutex.withLock {
             if (!isLockedFlag.get() && !isClosedFlag.get()) {
@@ -126,7 +126,7 @@ abstract class AbstractStream<T> : Stream<T> {
             }
         }
     }
-    
+
     override suspend fun unlock() {
         mutex.withLock {
             if (isLockedFlag.compareAndSet(true, false)) {
@@ -135,7 +135,7 @@ abstract class AbstractStream<T> : Stream<T> {
                     // StreamLogger.d("Stream", "流已解锁，发送缓存数据 (${bufferSize}项)")
                     val tempList = ArrayList<T>(buffer)
                     buffer.clear()
-                
+
                     // 无论流是否关闭，都尝试处理所有缓冲项
                     for (item in tempList) {
                         try {
@@ -152,13 +152,13 @@ abstract class AbstractStream<T> : Stream<T> {
             }
         }
     }
-    
+
     override fun clearBuffer() {
         val size = buffer.size
         buffer.clear()
         StreamLogger.d("Stream", "已清空缓冲区 ($size 项)")
     }
-    
+
     /** 当流被锁定时，将值存入缓冲区 */
     protected suspend fun tryBuffer(value: T): Boolean {
         if (isLockedFlag.get() && !isClosedFlag.get()) {
@@ -168,10 +168,10 @@ abstract class AbstractStream<T> : Stream<T> {
         }
         return false
     }
-    
+
     /** 在流解锁时处理缓冲区中的项目 */
     protected abstract suspend fun emitBufferedItem(item: T)
-    
+
     /**
      * 标记流已关闭，此方法应在流完成或发生错误时调用
      * 如果流处于锁定状态，此方法将允许处理缓冲区数据
@@ -180,7 +180,7 @@ abstract class AbstractStream<T> : Stream<T> {
         isClosedFlag.set(true)
         // StreamLogger.d("Stream", "流已标记为关闭")
     }
-    
+
     /**
      * 检查流是否已关闭
      */
@@ -193,7 +193,7 @@ class FlowAsStream<T>(private val flow: Flow<T>) : AbstractStream<T>() {
 
     override suspend fun collect(collector: StreamCollector<T>) {
         activeCollector = collector
-        
+
         try {
             flow.collect { value ->
                 // 如果流被锁定，则缓存值
@@ -205,7 +205,7 @@ class FlowAsStream<T>(private val flow: Flow<T>) : AbstractStream<T>() {
         } finally {
             // 流收集完成或异常时，标记流已关闭
             markClosed()
-            
+
             // 如果流在关闭时处于锁定状态，解锁以处理缓冲的数据
             if (isLocked) {
                 StreamLogger.i("FlowAsStream", "流关闭时处于锁定状态，尝试解锁处理缓冲数据")
@@ -217,7 +217,7 @@ class FlowAsStream<T>(private val flow: Flow<T>) : AbstractStream<T>() {
             }
         }
     }
-    
+
     override suspend fun emitBufferedItem(item: T) {
         // 即使流已关闭，也尝试发送缓冲的数据
         activeCollector?.emit(item)

@@ -21,14 +21,14 @@ class ShizukuInstaller {
         private const val TAG = "ShizukuInstaller"
         private const val SHIZUKU_APK_FILENAME = "shizuku.apk"
         private const val SHIZUKU_PACKAGE_NAME = "moe.shizuku.privileged.api"
-        
+
         // 缓存版本信息，避免重复计算
         private var cachedInstalledVersion: String? = null
         private var cachedBundledVersion: String? = null
         private var cachedUpdateNeeded: Boolean? = null
         private var lastCheckTime: Long = 0
         private const val CACHE_EXPIRE_TIME = 60 * 1000 // 缓存有效期1分钟
-        
+
         /**
          * 从assets目录复制Shizuku APK到应用私有目录
          * @param context Android上下文
@@ -36,7 +36,7 @@ class ShizukuInstaller {
          */
         fun extractApkFromAssets(context: Context): File? {
             val apkFile = File(context.cacheDir, SHIZUKU_APK_FILENAME)
-            
+
             try {
                 context.assets.open(SHIZUKU_APK_FILENAME).use { inputStream ->
                     FileOutputStream(apkFile).use { outputStream ->
@@ -54,7 +54,7 @@ class ShizukuInstaller {
                 return null
             }
         }
-        
+
         /**
          * 检查应用私有目录中是否存在提取的APK文件
          * @param context Android上下文
@@ -64,7 +64,7 @@ class ShizukuInstaller {
             val apkFile = File(context.cacheDir, SHIZUKU_APK_FILENAME)
             return apkFile.exists() && apkFile.length() > 0
         }
-        
+
         /**
          * 安装或更新内置的Shizuku APK
          * @param context Android上下文
@@ -123,7 +123,7 @@ class ShizukuInstaller {
                 return false
             }
         }
-        
+
         /**
          * 获取内置Shizuku APK版本信息
          * @param context Android上下文
@@ -151,7 +151,7 @@ class ShizukuInstaller {
                 return unknown
             }
         }
-        
+
         /**
          * 获取已安装的Shizuku版本
          * @param context Android上下文
@@ -163,7 +163,7 @@ class ShizukuInstaller {
                 AppLogger.i(TAG, "从缓存获取已安装Shizuku版本: $cachedInstalledVersion")
                 return cachedInstalledVersion
             }
-            
+
             try {
                 val packageManager = context.packageManager
                 val packageInfo: PackageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -187,7 +187,7 @@ class ShizukuInstaller {
                 return null
             }
         }
-        
+
         /**
          * 检查是否需要更新Shizuku
          * @param context Android上下文
@@ -255,7 +255,7 @@ class ShizukuInstaller {
                 return false
             }
         }
-        
+
         /**
          * 从完整版本号中提取主版本号部分
          * 例如: "13.5.0.r1234" -> "13.5.0"
@@ -264,25 +264,25 @@ class ShizukuInstaller {
             // 正则表达式匹配主版本号部分 (x.y.z)
             val mainVersionRegex = """^(\d+)\.(\d+)\.(\d+)""".toRegex()
             val matchResult = mainVersionRegex.find(version)
-            
+
             val result = matchResult?.value ?: version.split("-", ".", "+", " ").take(3).joinToString(".")
             return result
         }
-        
+
         /**
          * 更新缓存时间戳
          */
         private fun updateCacheTimestamp() {
             lastCheckTime = System.currentTimeMillis()
         }
-        
+
         /**
          * 检查缓存是否已过期
          */
         private fun isCacheExpired(): Boolean {
             return System.currentTimeMillis() - lastCheckTime > CACHE_EXPIRE_TIME
         }
-        
+
         /**
          * 清除所有缓存
          */
@@ -294,4 +294,4 @@ class ShizukuInstaller {
             AppLogger.d(TAG, "Shizuku版本缓存已清除")
         }
     }
-} 
+}

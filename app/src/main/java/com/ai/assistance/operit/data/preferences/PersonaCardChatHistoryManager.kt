@@ -18,21 +18,21 @@ private val Context.personaCardChatDataStore by preferencesDataStore(
  * 为每个角色卡提供单独的对话历史存储槽位
  */
 class PersonaCardChatHistoryManager private constructor(private val context: Context) {
-    
+
     private val dataStore = context.personaCardChatDataStore
     private val gson = Gson()
-    
+
     companion object {
         @Volatile
         private var INSTANCE: PersonaCardChatHistoryManager? = null
-        
+
         fun getInstance(context: Context): PersonaCardChatHistoryManager {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: PersonaCardChatHistoryManager(context.applicationContext).also { INSTANCE = it }
             }
         }
     }
-    
+
     /**
      * 聊天消息数据类
      */
@@ -41,14 +41,14 @@ class PersonaCardChatHistoryManager private constructor(private val context: Con
         val content: String,
         val timestamp: Long = System.currentTimeMillis()
     )
-    
+
     /**
      * 获取指定角色卡的聊天历史Key
      */
     private fun getChatHistoryKey(characterCardId: String): Preferences.Key<String> {
         return stringPreferencesKey("chat_history_$characterCardId")
     }
-    
+
     /**
      * 保存聊天历史
      */
@@ -58,7 +58,7 @@ class PersonaCardChatHistoryManager private constructor(private val context: Con
             preferences[getChatHistoryKey(characterCardId)] = json
         }
     }
-    
+
     /**
      * 加载聊天历史
      */
@@ -72,7 +72,7 @@ class PersonaCardChatHistoryManager private constructor(private val context: Con
             emptyList()
         }
     }
-    
+
     /**
      * 获取聊天历史Flow
      */
@@ -87,7 +87,7 @@ class PersonaCardChatHistoryManager private constructor(private val context: Con
             }
         }
     }
-    
+
     /**
      * 清空指定角色卡的聊天历史
      */
@@ -96,7 +96,7 @@ class PersonaCardChatHistoryManager private constructor(private val context: Con
             preferences.remove(getChatHistoryKey(characterCardId))
         }
     }
-    
+
     /**
      * 清空所有聊天历史
      */

@@ -36,20 +36,20 @@ fun GlassyChip(
     onClick: () -> Unit
 ) {
     // Brighter, high-contrast cyan for better visibility
-    val accentColor = Color(0xFF00E5FF) 
-    
+    val accentColor = Color(0xFF00E5FF)
+
     val backgroundColor by animateColorAsState(
         targetValue = if (selected) Color.Black.copy(alpha = 0.6f) else Color.Black.copy(alpha = 0.25f),
-        animationSpec = tween(300), 
+        animationSpec = tween(300),
         label = "chipBg"
     )
-    
+
     val borderColor by animateColorAsState(
         targetValue = if (selected) accentColor.copy(alpha = 0.8f) else Color.White.copy(alpha = 0.15f),
         animationSpec = tween(300),
         label = "chipBorder"
     )
-    
+
     val contentColor by animateColorAsState(
         targetValue = if (selected) accentColor else Color.White.copy(alpha = 0.8f),
         animationSpec = tween(300),

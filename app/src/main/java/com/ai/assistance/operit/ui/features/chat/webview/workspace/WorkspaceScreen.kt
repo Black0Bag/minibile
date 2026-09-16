@@ -37,7 +37,7 @@ fun WorkspaceScreen(
                 isVisible = isVisible,
                 onExportClick = onExportClick
             )
-        
+
     } else if (currentChat != null) {
         WorkspaceSetup(
             chatId = currentChat.id,

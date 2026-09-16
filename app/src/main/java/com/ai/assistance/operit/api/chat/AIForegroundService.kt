@@ -143,7 +143,7 @@ class AIForegroundService : Service() {
         private val activeReplyNotificationTags = ConcurrentHashMap.newKeySet<String>()
         private val externalHttpStateFlow = MutableStateFlow(ExternalChatHttpState())
         val externalHttpState = externalHttpStateFlow.asStateFlow()
-        
+
         // Intent extras keys
         const val EXTRA_CHARACTER_NAME = "extra_character_name"
         const val EXTRA_AVATAR_URI = "extra_avatar_uri"
@@ -536,7 +536,7 @@ class AIForegroundService : Service() {
         AppLogger.d(TAG, "Wake listening suspended by floating fullscreen: $wakeListeningSuspendedForFloatingFullscreen")
         applyWakeListeningState()
     }
-    
+
     private fun applyWakeListeningState() {
         wakeStateApplyJob?.cancel()
         wakeStateApplyJob =
@@ -705,7 +705,7 @@ class AIForegroundService : Service() {
         audioManager = null
         wakeListeningSuspendedForExternalRecording = false
     }
-    
+
     // 存储通知信息
     private var characterName: String? = null
     private var avatarUri: String? = null
@@ -1267,7 +1267,7 @@ class AIForegroundService : Service() {
                 manager.notify(NOTIFICATION_ID, createNotification())
             }
         }
-        
+
         // 当 External HTTP 处于启用状态时，使用 START_STICKY 提高后台保活强度；
         // 其他场景仍由 EnhancedAIService 与前台交互精确控制生命周期。
         return if (isExternalHttpEnabledNow()) START_STICKY else START_NOT_STICKY
@@ -2008,5 +2008,5 @@ class AIForegroundService : Service() {
 
         return builder.build()
     }
-    
+
 }

@@ -44,7 +44,7 @@ object TtsCleaner {
         }
 
         AppLogger.d(TAG, "clean(list): Starting with text='$text' | Patterns count=${regexPatterns.size}")
-        
+
         var cleanedText = text
         regexPatterns.forEachIndexed { index, pattern ->
             if (pattern.isNotBlank()) {
@@ -64,7 +64,7 @@ object TtsCleaner {
                 AppLogger.d(TAG, "clean(list): Pattern[$index] is blank, skipping")
             }
         }
-        
+
         AppLogger.d(TAG, "clean(list): Final result='$cleanedText'")
         return cleanedText
     }

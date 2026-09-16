@@ -37,20 +37,20 @@ interface CompletionProvider {
      * @return 补全项列表
      */
     fun getCompletionItems(text: CharSequence, position: Int): List<CompletionItem>
-    
+
     /**
      * 获取补全项 (兼容String类型)
      */
     fun getCompletionItems(text: String, position: Int): List<CompletionItem> {
         return getCompletionItems(text as CharSequence, position)
     }
-    
+
     /**
      * 获取触发字符
      * 当输入这些字符时会触发补全
      */
     fun getTriggerCharacters(): Set<Char> = setOf('.', ':')
-    
+
     /**
      * 是否应该显示补全
      * @param text 当前文本
@@ -62,14 +62,14 @@ interface CompletionProvider {
         val currentChar = text[position - 1]
         return currentChar.isLetterOrDigit() || currentChar in getTriggerCharacters()
     }
-    
+
     /**
      * 是否应该显示补全 (兼容String类型)
      */
     fun shouldShowCompletion(text: String, position: Int): Boolean {
         return shouldShowCompletion(text as CharSequence, position)
     }
-    
+
     /**
      * 获取当前前缀
      * @param text 当前文本
@@ -77,23 +77,23 @@ interface CompletionProvider {
      */
     fun getPrefix(text: CharSequence, position: Int): String {
         if (position <= 0) return ""
-        
+
         var start = position - 1
         while (start >= 0 && (text[start].isLetterOrDigit() || text[start] == '_')) {
             start--
         }
-        
+
         return if (start < position - 1) {
             text.subSequence(start + 1, position).toString()
         } else {
             ""
         }
     }
-    
+
     /**
      * 获取当前前缀 (兼容String类型)
      */
     fun getPrefix(text: String, position: Int): String {
         return getPrefix(text as CharSequence, position)
     }
-} 
+}

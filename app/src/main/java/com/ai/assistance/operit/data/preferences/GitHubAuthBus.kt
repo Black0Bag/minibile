@@ -10,4 +10,4 @@ object GitHubAuthBus {
     fun postAuthCode(code: String?) {
         _authCode.value = code
     }
-} 
+}

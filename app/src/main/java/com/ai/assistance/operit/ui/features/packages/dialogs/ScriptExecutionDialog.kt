@@ -190,9 +190,9 @@ fun ScriptExecutionDialog(
                                 Card(
                                     modifier = Modifier.fillMaxWidth(),
                                     colors = CardDefaults.cardColors(
-                                        containerColor = if (result.success) 
+                                        containerColor = if (result.success)
                                             MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
-                                        else 
+                                        else
                                             MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)
                                     )
                                 ) {

@@ -9,12 +9,12 @@ package com.ai.assistance.operit.core.avatar.common.model
 interface IFrameSequenceAvatarModel : AvatarModel {
     /** The asset path to the animation file (e.g., "pets/emoji/happy.webp"). */
     val animationPath: String
-    
+
     /** Whether the animation should loop infinitely. */
     val shouldLoop: Boolean
         get() = true
-    
+
     /** The repeat count for the animation (0 means infinite loop). */
     val repeatCount: Int
         get() = 0
-} 
+}

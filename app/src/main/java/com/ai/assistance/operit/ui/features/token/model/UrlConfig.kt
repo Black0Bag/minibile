@@ -30,8 +30,8 @@ data class UrlConfig(
 
 // 导航目标数据类
 data class NavDestination(
-    val title: String, 
-    val url: String, 
+    val title: String,
+    val url: String,
     val icon: ImageVector
 )
 
@@ -42,4 +42,4 @@ fun getIconForIndex(index: Int): ImageVector = when (index) {
     2 -> Icons.Default.CreditCard
     3 -> Icons.Default.Person
     else -> Icons.Default.Key
-} 
+}

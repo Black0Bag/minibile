@@ -120,7 +120,7 @@ data class GitHubReleaseAsset(
  * 提供GitHub用户信息、仓库操作等功能
  */
 class GitHubApiService(private val context: Context) {
-    
+
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
@@ -136,14 +136,14 @@ class GitHubApiService(private val context: Context) {
             chain.proceed(newRequest)
         }
         .build()
-    
+
     private val json = Json {
         ignoreUnknownKeys = true
         isLenient = true
     }
-    
+
     private val authPreferences = GitHubAuthPreferences.getInstance(context)
-    
+
     companion object {
         private const val TAG = "GitHubApiService"
         private const val GITHUB_API_BASE = "https://api.github.com"
@@ -155,14 +155,14 @@ class GitHubApiService(private val context: Context) {
         try {
             val authHeader = authPreferences.getAuthorizationHeader()
                 ?: return@withContext Result.failure(Exception("No access token available"))
-            
+
             val request = Request.Builder()
                 .url("$GITHUB_API_BASE/user")
                 .addHeader("Authorization", authHeader)
                 .build()
-            
+
             val response = client.newCall(request).execute()
-            
+
             if (response.isSuccessful) {
                 val responseBody = response.body?.string()
                 if (responseBody != null) {
@@ -178,7 +178,7 @@ class GitHubApiService(private val context: Context) {
             Result.failure(e)
         }
     }
-    
+
     /**
      * 根据用户名获取GitHub用户信息
      */
@@ -186,7 +186,7 @@ class GitHubApiService(private val context: Context) {
         try {
             val requestBuilder = Request.Builder()
                 .url("$GITHUB_API_BASE/users/$username")
-            
+
             // 如果用户已登录，添加认证头以提高API配额
             authPreferences.getAuthorizationHeader()?.let { authHeader ->
                 requestBuilder.addHeader("Authorization", authHeader)
@@ -209,7 +209,7 @@ class GitHubApiService(private val context: Context) {
             Result.failure(e)
         }
     }
-    
+
     /**
      * 搜索仓库
      */
@@ -232,10 +232,10 @@ class GitHubApiService(private val context: Context) {
                 .addQueryParameter("page", page.toString())
                 .addQueryParameter("per_page", perPage.toString())
                 .build()
-            
+
             val requestBuilder = Request.Builder()
                 .url(url)
-            
+
             // 如果用户已登录，添加认证头以提高API配额
             authPreferences.getAuthorizationHeader()?.let { authHeader ->
                 requestBuilder.addHeader("Authorization", authHeader)
@@ -279,7 +279,7 @@ class GitHubApiService(private val context: Context) {
             } else {
                 "$GITHUB_API_BASE/user/repos"
             }
-            
+
             val httpUrl = HttpUrl.Builder()
                 .scheme("https")
                 .host("api.github.com")
@@ -298,18 +298,18 @@ class GitHubApiService(private val context: Context) {
                 .addQueryParameter("page", page.toString())
                 .addQueryParameter("per_page", perPage.toString())
                 .build()
-            
+
             val requestBuilder = Request.Builder().url(httpUrl)
-            
+
             // 如果是获取当前用户的仓库，需要认证
             if (username == null) {
                 val authHeader = authPreferences.getAuthorizationHeader()
                     ?: return@withContext Result.failure(Exception("No access token available"))
                 requestBuilder.addHeader("Authorization", authHeader)
             }
-            
+
             val response = client.newCall(requestBuilder.build()).execute()
-            
+
             if (response.isSuccessful) {
                 val responseBody = response.body?.string()
                 if (responseBody != null) {
@@ -336,14 +336,14 @@ class GitHubApiService(private val context: Context) {
         try {
             val requestBuilder = Request.Builder()
                 .url("$GITHUB_API_BASE/repos/$owner/$repo")
-            
+
             // 如果用户已登录，添加认证头以提高API配额
             authPreferences.getAuthorizationHeader()?.let { authHeader ->
                 requestBuilder.addHeader("Authorization", authHeader)
             }
-            
+
             val response = client.newCall(requestBuilder.build()).execute()
-            
+
             if (response.isSuccessful) {
                 val responseBody = response.body?.string()
                 if (responseBody != null) {
@@ -359,7 +359,7 @@ class GitHubApiService(private val context: Context) {
             Result.failure(e)
         }
     }
-    
+
     /**
      * 获取仓库的Releases
      */
@@ -380,17 +380,17 @@ class GitHubApiService(private val context: Context) {
                 .addQueryParameter("page", page.toString())
                 .addQueryParameter("per_page", perPage.toString())
                 .build()
-            
+
             val requestBuilder = Request.Builder()
                 .url(url)
-            
+
             // 如果用户已登录，添加认证头以提高API配额
             authPreferences.getAuthorizationHeader()?.let { authHeader ->
                 requestBuilder.addHeader("Authorization", authHeader)
             }
-            
+
             val response = client.newCall(requestBuilder.build()).execute()
-            
+
             if (response.isSuccessful) {
                 val responseBody = response.body?.string()
                 if (responseBody != null) {

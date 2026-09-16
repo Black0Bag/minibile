@@ -11,24 +11,24 @@ class HtmlCompletionProvider : DefaultCompletionProvider() {
         "select", "option", "textarea", "script", "style", "link", "meta", "title", "section",
         "article", "header", "footer", "nav", "aside", "main", "canvas", "video", "audio"
     )
-    
+
     // HTML属性
     private val htmlAttributes = listOf(
         "id", "class", "style", "href", "src", "alt", "width", "height", "type", "value",
         "placeholder", "name", "action", "method", "target", "rel", "onclick", "onchange",
         "onsubmit", "onload", "title", "disabled", "checked", "selected", "required", "readonly"
     )
-    
+
     override fun getCompletionItems(text: CharSequence, position: Int): List<CompletionItem> {
         val prefix = getPrefix(text, position)
         if (prefix.isEmpty()) return emptyList()
-        
+
         val completions = mutableListOf<CompletionItem>()
-        
+
         // 判断当前是否在标签内部
         val isInTagContext = isInTagContext(text, position)
         val isInAttributeContext = isInAttributeContext(text, position)
-        
+
         when {
             // 在标签开始位置 (例如: <di|)
             isInTagContext && !isInAttributeContext -> {
@@ -40,7 +40,7 @@ class HtmlCompletionProvider : DefaultCompletionProvider() {
                     ))
                 }
             }
-            
+
             // 在属性位置 (例如: <div cl|)
             isInAttributeContext -> {
                 htmlAttributes.filter { it.startsWith(prefix) }.forEach {
@@ -51,7 +51,7 @@ class HtmlCompletionProvider : DefaultCompletionProvider() {
                     ))
                 }
             }
-            
+
             // 普通位置，提供标签补全
             else -> {
                 htmlTags.filter { it.startsWith(prefix) }.forEach {
@@ -61,7 +61,7 @@ class HtmlCompletionProvider : DefaultCompletionProvider() {
                         kind = CompletionItemKind.SNIPPET
                     ))
                 }
-                
+
                 // 添加从文件中提取的ID和类名
                 val idAndClasses = extractIdAndClasses(text.toString())
                 idAndClasses.filter { it.startsWith(prefix) }.forEach {
@@ -73,20 +73,20 @@ class HtmlCompletionProvider : DefaultCompletionProvider() {
                 }
             }
         }
-        
+
         return completions
     }
-    
+
     /**
      * 判断当前位置是否在标签内部
      * 例如: <div |> 返回true
      */
     private fun isInTagContext(text: CharSequence, position: Int): Boolean {
         if (position <= 0) return false
-        
+
         var start = position - 1
         var foundOpenBracket = false
-        
+
         // 向前查找，直到找到 < 或 >
         while (start >= 0) {
             when (text[start]) {
@@ -98,10 +98,10 @@ class HtmlCompletionProvider : DefaultCompletionProvider() {
             }
             start--
         }
-        
+
         return foundOpenBracket
     }
-    
+
     /**
      * 判断当前位置是否在属性上下文中
      * 例如: <div cl|> 返回true
@@ -109,9 +109,9 @@ class HtmlCompletionProvider : DefaultCompletionProvider() {
     private fun isInAttributeContext(text: CharSequence, position: Int): Boolean {
         if (position <= 0) return false
         if (!isInTagContext(text, position)) return false
-        
+
         var start = position - 1
-        
+
         // 向前查找，直到找到标签名后的空格
         while (start >= 0) {
             val c = text[start]
@@ -119,16 +119,16 @@ class HtmlCompletionProvider : DefaultCompletionProvider() {
             if (c == ' ') return true // 找到空格，说明在属性上下文中
             start--
         }
-        
+
         return false
     }
-    
+
     /**
      * 从HTML文本中提取ID和类名
      */
     private fun extractIdAndClasses(text: String): List<String> {
         val result = mutableListOf<String>()
-        
+
         // 提取ID: id="someId"
         val idPattern = "id=[\"']([^\"']+)[\"']".toRegex()
         idPattern.findAll(text).forEach { matchResult ->
@@ -138,7 +138,7 @@ class HtmlCompletionProvider : DefaultCompletionProvider() {
                 result.add("#$id") // 添加CSS选择器形式
             }
         }
-        
+
         // 提取类名: class="class1 class2"
         val classPattern = "class=[\"']([^\"']+)[\"']".toRegex()
         classPattern.findAll(text).forEach { matchResult ->
@@ -150,24 +150,24 @@ class HtmlCompletionProvider : DefaultCompletionProvider() {
                 }
             }
         }
-        
+
         return result
     }
-    
+
     override fun getTriggerCharacters(): Set<Char> = setOf('<', ' ', '"', '\'', '.')
-    
+
     override fun getPrefix(text: CharSequence, position: Int): String {
         if (position <= 0) return ""
-        
+
         var start = position - 1
         while (start >= 0 && (text[start].isLetterOrDigit() || text[start] == '_' || text[start] == '-' || text[start] == '#' || text[start] == '.')) {
             start--
         }
-        
+
         return if (start < position - 1) {
             text.subSequence(start + 1, position).toString()
         } else {
             ""
         }
     }
-} 
+}

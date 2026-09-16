@@ -108,12 +108,12 @@ fun FFmpegToolboxScreen(navController: NavController) {
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer
                     )
-                ) { 
+                ) {
                     Text(
                         text = context.getString(R.string.common_command_templates),
                         textAlign = TextAlign.Center,
                         maxLines = 2
-                    ) 
+                    )
                 }
 
                 Button(
@@ -154,12 +154,12 @@ fun FFmpegToolboxScreen(navController: NavController) {
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary
                     )
-                ) { 
+                ) {
                     Text(
                         text = if (isProcessing) context.getString(R.string.ffmpeg_processing) else context.getString(R.string.execute_command),
                         textAlign = TextAlign.Center,
                         maxLines = 2
-                    ) 
+                    )
                 }
             }
         }

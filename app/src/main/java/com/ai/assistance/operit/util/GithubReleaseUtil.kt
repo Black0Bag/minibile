@@ -216,4 +216,4 @@ class GithubReleaseUtil(private val context: Context) {
             null
         }
     }
-} 
+}

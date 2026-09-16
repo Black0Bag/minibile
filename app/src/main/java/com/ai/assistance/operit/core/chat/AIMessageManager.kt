@@ -1068,7 +1068,7 @@ object AIMessageManager {
                 } else {
                     summaryWithQuotes
                 }
-                
+
                 ChatMessage(
                     sender = "summary",
                     content = finalSummary,

@@ -847,7 +847,7 @@ class ConversationService(
             // its entire subtree to form a comprehensive description for the AI.
             if (node.isClickable) {
                 val parts = mutableListOf<String>()
-                
+
                 // Start by collecting standard properties like resource ID, class, and bounds.
                 node.resourceId?.takeIf { it.isNotBlank() }?.let { parts.add("id: $it") }
 
@@ -986,7 +986,7 @@ class ConversationService(
                 com.ai.assistance.operit.util.AppLogger.e("ConversationService", "获取表情分组失败", e)
                 emptyList()
             }
-            
+
             if (availableCategories.isNotEmpty()) {
                 val emotionListText = availableCategories.joinToString(", ")
                 waifuRules.add(FunctionalPrompts.waifuEmotionRule(emotionListText))
@@ -995,7 +995,7 @@ class ConversationService(
                 waifuRules.add(FunctionalPrompts.waifuNoCustomEmojiRule())
             }
         }
-        
+
         if (waifuEnableSelfie) {
             waifuRules.add(FunctionalPrompts.waifuSelfieRule(waifuSelfiePrompt))
         }
@@ -1059,13 +1059,13 @@ class ConversationService(
      */
     private suspend fun replacePromptPlaceholders(prompt: String, aiName: String): String {
         var finalPrompt = prompt
-        
+
         val globalUserName = displayPreferencesManager.globalUserName.first() ?: "User"
-        
+
         // 替换占位符
         finalPrompt = finalPrompt.replace("{{user}}", globalUserName)
         finalPrompt = finalPrompt.replace("{{char}}", aiName)
-        
+
         return finalPrompt
     }
 
@@ -1081,7 +1081,7 @@ class ConversationService(
         recordTokenUsage: Boolean = true,
     ): String {
         val currentLanguage = LocaleUtils.getCurrentLanguage(context)
-        
+
         // 根据当前语言确定目标语言
         val targetLanguage = when (currentLanguage) {
             LocaleUtils.LanguageCodes.CHINESE -> context.getString(R.string.conversation_language_chinese)
@@ -1094,38 +1094,38 @@ class ConversationService(
             LocaleUtils.LanguageCodes.ROMANIAN -> "Romanian"
             else -> context.getString(R.string.conversation_language_chinese) // 默认翻译为中文
         }
-        
+
         val translationPrompt = """
 ${FunctionalPrompts.translationUserPrompt(targetLanguage, text)}
         """.trim()
-        
+
         val chatHistory = listOf(
             PromptTurn(
                 kind = PromptTurnKind.SYSTEM,
                 content = FunctionalPrompts.translationSystemPrompt()
             )
         )
-        
+
         val contentBuilder = StringBuilder()
-        
+
         try {
             // 获取翻译功能的AIService实例
             val translationService = multiServiceManager.getServiceForFunction(FunctionType.TRANSLATION)
-            
+
             // 获取模型参数
             val modelParameters = multiServiceManager.getModelParametersForFunction(FunctionType.TRANSLATION)
-            
+
             val stream = translationService.sendMessage(
                 context = context,
                 chatHistory = chatHistory + PromptTurn(kind = PromptTurnKind.USER, content = translationPrompt),
                 modelParameters = modelParameters,
                 recordTokenUsage = recordTokenUsage,
             )
-            
+
             stream.collect { content ->
                 contentBuilder.append(content)
             }
-            
+
             return contentBuilder.toString().trim()
         } catch (e: Exception) {
             throw e
@@ -1147,7 +1147,7 @@ ${FunctionalPrompts.translationUserPrompt(targetLanguage, text)}
         if (toolDescriptions.isEmpty()) {
             return ""
         }
-        
+
         val toolList = toolDescriptions.joinToString("\n") { "- $it" }
 
         val useEnglish = LocaleUtils.getCurrentLanguage(context).lowercase().startsWith("en")
@@ -1165,28 +1165,28 @@ ${FunctionalPrompts.translationUserPrompt(targetLanguage, text)}
                     content = FunctionalPrompts.packageDescriptionSystemPrompt(useEnglish)
                 )
             )
-        
+
         val contentBuilder = StringBuilder()
-        
+
         try {
             // 获取总结功能的AIService实例
             val summaryService = multiServiceManager.getServiceForFunction(FunctionType.SUMMARY)
-            
+
             // 获取模型参数
             val modelParameters = multiServiceManager.getModelParametersForFunction(FunctionType.SUMMARY)
-            
+
             val stream = summaryService.sendMessage(
                 context = context,
                 chatHistory = chatHistory + PromptTurn(kind = PromptTurnKind.USER, content = descriptionPrompt),
                 modelParameters = modelParameters,
             )
-            
+
             stream.collect { content ->
                 contentBuilder.append(content)
             }
-            
+
             val result = ChatUtils.removeThinkingContent(contentBuilder.toString().trim())
-            
+
             // 如果生成失败或内容为空，返回空字符串表示生成失败
             return if (result.isBlank()) {
                 ""
@@ -1213,7 +1213,7 @@ ${FunctionalPrompts.translationUserPrompt(targetLanguage, text)}
     ): String {
         return try {
             val service = multiServiceManager.getServiceForFunction(FunctionType.IMAGE_RECOGNITION)
-            
+
             // 添加图片到池子并获取ID
             val imageId = com.ai.assistance.operit.util.ImagePoolManager.addImage(imagePath)
             if (imageId == "error") {
@@ -1227,10 +1227,10 @@ ${FunctionalPrompts.translationUserPrompt(targetLanguage, text)}
             } else {
                 "$imageLink\n$userIntent"
             }
-            
+
             // 获取模型参数
             val modelParameters = multiServiceManager.getModelParametersForFunction(FunctionType.IMAGE_RECOGNITION)
-            
+
             // 调用AI服务分析图片
             val result = StringBuilder()
             service.sendMessage(
@@ -1240,10 +1240,10 @@ ${FunctionalPrompts.translationUserPrompt(targetLanguage, text)}
             ).collect { chunk ->
                 result.append(chunk)
             }
-            
+
             // 清理图片缓存
             com.ai.assistance.operit.util.ImagePoolManager.removeImage(imageId)
-            
+
             ChatUtils.removeThinkingContent(result.toString()).trim()
         } catch (e: Exception) {
             AppLogger.e(TAG, "识图分析失败", e)

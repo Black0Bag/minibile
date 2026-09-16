@@ -259,7 +259,7 @@ private fun PermissionDetails(
     ) {
         DetailItem(label = stringResource(R.string.requested_operation), value = operationDescription)
         DetailItem(label = stringResource(R.string.used_tool), value = toolName)
-        
+
         if (!toolParameters.isNullOrEmpty()) {
             Text(
                 text = stringResource(R.string.parameter_details),
@@ -269,7 +269,7 @@ private fun PermissionDetails(
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Medium
             )
-            
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -363,7 +363,7 @@ class PermissionRequestOverlay(private val context: Context) {
                 )
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
-                
+
                 // 可选：使用Toast提示用户
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(

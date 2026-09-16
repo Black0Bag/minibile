@@ -1433,7 +1433,7 @@ data class AutomationConfigSearchResult(
     val foundConfigs: List<ConfigInfo>,
     val totalFound: Int
 ) : ToolResultData() {
-    
+
     @Serializable
     data class ConfigInfo(
         val appName: String,
@@ -1483,7 +1483,7 @@ data class AutomationPlanParametersResult(
     val planSteps: Int,
     val planDescription: String
 ) : ToolResultData() {
-    
+
     @Serializable
     data class ParameterInfo(
         val key: String,
@@ -1532,7 +1532,7 @@ data class AutomationExecutionResult(
     val finalState: UIStateInfo?,
     val executionSteps: Int
 ) : ToolResultData() {
-    
+
     @Serializable
     data class UIStateInfo(
         val nodeId: String,
@@ -1578,7 +1578,7 @@ data class AutomationFunctionListResult(
     val functions: List<FunctionInfo>,
     val totalCount: Int
 ) : ToolResultData() {
-    
+
     @Serializable
     data class FunctionInfo(
         val name: String,
@@ -1665,13 +1665,13 @@ data class GrepResultData(
     @EncodeDefault
     val env: String = "android"
 ) : ToolResultData() {
-    
+
     @Serializable
     data class FileMatch(
         val filePath: String,
         val lineMatches: List<LineMatch>
     )
-    
+
     @Serializable
     data class LineMatch(
         val lineNumber: Int,
@@ -1696,7 +1696,7 @@ data class GrepResultData(
             append(line.substring(separatorIndex + 1))
         }
     }
-    
+
     override fun toString(): String {
         val sb = StringBuilder()
         sb.appendLine("[$env] Grep Search Result:")
@@ -1820,7 +1820,7 @@ data class ChatListResultData(
     val currentChatId: String?,
     val chats: List<ChatInfo>
 ) : ToolResultData() {
-    
+
     @Serializable
     data class ChatInfo(
         val id: String,
@@ -1835,7 +1835,7 @@ data class ChatListResultData(
         val characterCardId: String? = null,
         val characterGroupId: String? = null
     )
-    
+
     override fun toString(): String {
         val sb = StringBuilder()
         sb.appendLine("Chat List ($totalCount total):")

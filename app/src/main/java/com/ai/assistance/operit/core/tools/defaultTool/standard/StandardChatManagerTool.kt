@@ -808,7 +808,7 @@ class StandardChatManagerTool(private val context: Context) {
         return try {
             // 重置 deferred
             connectionDeferred = CompletableDeferred()
-            
+
             val intent = startIntent ?: Intent(appContext, FloatingChatService::class.java)
 
             val bound =
@@ -829,7 +829,7 @@ class StandardChatManagerTool(private val context: Context) {
                         Context.BIND_AUTO_CREATE
                     )
                 }
-            
+
             if (!bound) {
                 AppLogger.e(TAG, "Failed to bind service")
                 connectionDeferred.complete(false)
@@ -959,7 +959,7 @@ class StandardChatManagerTool(private val context: Context) {
             }
 
             val connected = ensureServiceConnected(intent)
-            
+
             if (connected) {
                 try {
                     floatingService?.setFloatingWindowVisible(true)
@@ -1076,7 +1076,7 @@ class StandardChatManagerTool(private val context: Context) {
                     )
                 }
             }
-            
+
             // 创建新对话（不切换当前对话）
             core.createNewChat(
                 group = effectiveGroup,
@@ -1298,14 +1298,14 @@ class StandardChatManagerTool(private val context: Context) {
 
             // 切换对话
             core.switchChatLocal(chatId)
-            
+
             // 等待切换完成（最多等待1秒）
             var attempts = 0
             while (attempts < 10 && core.currentChatId.value != chatId) {
                 delay(100)
                 attempts++
             }
-            
+
             if (core.currentChatId.value == chatId) {
                 ToolResult(
                     toolName = tool.name,

@@ -104,4 +104,4 @@ fun SerializableColorScheme.toComposeColorScheme(): ColorScheme {
         outlineVariant = Color(this.outlineVariant.toULong()),
         scrim = Color(this.scrim.toULong())
     )
-} 
+}

@@ -37,4 +37,4 @@ object IntRangeSerializer : KSerializer<IntRange> {
         }
         return IntRange(start, endInclusive)
     }
-} 
+}

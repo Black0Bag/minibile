@@ -48,4 +48,4 @@ object OperitTerminalManager {
             ReleaseInfo(it.version, it.downloadUrl, it.releaseNotes)
         }
     }
-} 
+}

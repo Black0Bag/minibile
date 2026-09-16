@@ -271,7 +271,7 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
                 error = "Invalid time range: start_time must be <= end_time."
             )
         }
-        
+
         // 如果查询是 "*" 且用户没有显式指定 limit，则返回所有结果
         val isWildcardQuery = query.trim() == "*"
         val defaultLimit = if (isWildcardQuery && limit == null) {
@@ -412,7 +412,7 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
     ): ToolResult = withContext(Dispatchers.IO) {
         val totalChunks = memoryRepository.getTotalChunkCount(memory.id)
         val validLimit = (limitParam?.toIntOrNull() ?: 20).coerceAtLeast(1)
-        
+
         try {
             // 优先级：query > chunk_range > chunk_index
             val chunks = when {
@@ -435,7 +435,7 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
                     // 解析为1-based索引，转换为0-based
                     val startIndex = (rangeParts[0].toIntOrNull() ?: 1) - 1
                     val endIndex = (rangeParts[1].toIntOrNull() ?: totalChunks) - 1
-                    
+
                     if (startIndex < 0 || endIndex >= totalChunks || startIndex > endIndex) {
                         return@withContext ToolResult(
                             toolName = toolName,
@@ -489,7 +489,7 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
             }
 
             AppLogger.d(TAG, "Retrieved ${chunks.size} chunks from document '${memory.title}': $chunkInfo")
-            
+
             ToolResult(
                 toolName = toolName,
                 success = true,
@@ -517,7 +517,7 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
         val memoryRepository = getMemoryRepository(resolveActiveProfileId(tool))
         val title = tool.parameters.find { it.name == "title" }?.value ?: ""
         val content = tool.parameters.find { it.name == "content" }?.value ?: ""
-        
+
         if (title.isBlank() || content.isBlank()) {
             return ToolResult(
                 toolName = tool.name,
@@ -539,7 +539,7 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
                 ?.map { it.trim() }
                 ?.filter { it.isNotEmpty() }
                 ?.distinct()
-             
+
             val memory = memoryRepository.createMemory(
                 title = title,
                 content = content,
@@ -548,7 +548,7 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
                 folderPath = folderPath,
                 tags = tags
             )
-            
+
             if (memory != null) {
                 val message = "Successfully created memory: '$title' (UUID: ${memory.uuid})"
                 AppLogger.d(TAG, message)
@@ -579,7 +579,7 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
     private suspend fun executeUpdateMemory(tool: AITool): ToolResult {
         val memoryRepository = getMemoryRepository(resolveActiveProfileId(tool))
         val oldTitle = tool.parameters.find { it.name == "old_title" }?.value
-        
+
         if (oldTitle.isNullOrBlank()) {
             return ToolResult(
                 toolName = tool.name,
@@ -612,7 +612,7 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
             val newFolderPath = tool.parameters.find { it.name == "folder_path" }?.value ?: memory.folderPath
             val tagsParam = tool.parameters.find { it.name == "tags" }?.value
             val newTags = tagsParam?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() }
-            
+
             val updatedMemory = memoryRepository.updateMemory(
                 memory = memory,
                 newTitle = newTitle,
@@ -624,7 +624,7 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
                 newFolderPath = newFolderPath,
                 newTags = newTags
             )
-            
+
             if (updatedMemory != null) {
                 val message = "Successfully updated memory from '$oldTitle' to '$newTitle'"
                 AppLogger.d(TAG, message)
@@ -655,7 +655,7 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
     private suspend fun executeDeleteMemory(tool: AITool): ToolResult {
         val memoryRepository = getMemoryRepository(resolveActiveProfileId(tool))
         val title = tool.parameters.find { it.name == "title" }?.value
-        
+
         if (title.isNullOrBlank()) {
             return ToolResult(
                 toolName = tool.name,
@@ -679,7 +679,7 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
             }
 
             val deleted = memoryRepository.deleteMemory(memory.id)
-            
+
             if (deleted) {
                 val message = "Successfully deleted memory: '$title'"
                 AppLogger.d(TAG, message)
@@ -730,7 +730,7 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
 
             val message = "Successfully updated user.md"
             AppLogger.d(TAG, message)
-            
+
             ToolResult(
                 toolName = tool.name,
                 success = true,
@@ -808,7 +808,7 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
         val memoryRepository = getMemoryRepository(resolveActiveProfileId(tool))
         val sourceTitle = tool.parameters.find { it.name == "source_title" }?.value
         val targetTitle = tool.parameters.find { it.name == "target_title" }?.value
-        
+
         if (sourceTitle.isNullOrBlank() || targetTitle.isNullOrBlank()) {
             return ToolResult(
                 toolName = tool.name,
@@ -825,10 +825,10 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
             val linkType = tool.parameters.find { it.name == "link_type" }?.value ?: "related"
             val weight = tool.parameters.find { it.name == "weight" }?.value?.toFloatOrNull() ?: 0.7f
             val description = tool.parameters.find { it.name == "description" }?.value ?: ""
-            
+
             // 限制 weight 在有效范围内
             val validWeight = weight.coerceIn(0.0f, 1.0f)
-            
+
             // 查找源记忆和目标记忆
             val sourceMemory = memoryRepository.findMemoryByTitle(sourceTitle)
             if (sourceMemory == null) {
@@ -839,7 +839,7 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
                     error = "Source memory not found with title: $sourceTitle"
                 )
             }
-            
+
             val targetMemory = memoryRepository.findMemoryByTitle(targetTitle)
             if (targetMemory == null) {
                 return ToolResult(
@@ -849,7 +849,7 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
                     error = "Target memory not found with title: $targetTitle"
                 )
             }
-            
+
             // 创建链接
             memoryRepository.linkMemories(
                 source = sourceMemory,
@@ -858,7 +858,7 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
                 weight = validWeight,
                 description = description
             )
-            
+
             val resultData = MemoryLinkResultData(
                 sourceTitle = sourceTitle,
                 targetTitle = targetTitle,
@@ -866,9 +866,9 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
                 weight = validWeight,
                 description = description
             )
-            
+
             AppLogger.d(TAG, "Successfully linked memories: '$sourceTitle' -> '$targetTitle' (type: $linkType, weight: $validWeight)")
-            
+
             ToolResult(
                 toolName = tool.name,
                 success = true,
@@ -1296,12 +1296,12 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
     ): MemoryQueryResultData = withContext(Dispatchers.IO) {
         val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
         val isWildcardQuery = query.trim() == "*"
-        
+
         val memoryInfos = memories.map { memory ->
             val content: String
             val chunkInfo: String?
             val chunkIndices: List<Int>?
-            
+
             if (memory.isDocumentNode) {
                 // 对于文档节点，执行"二次探查"，获取匹配的区块内容
                 AppLogger.d(TAG, "Memory result is a document ('${memory.title}'). Fetching specific matching chunks for query: '$query'")
@@ -1311,14 +1311,14 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
                 if (matchingChunks.isNotEmpty()) {
                     // 收集分块索引（使用1-based显示）
                     chunkIndices = matchingChunks.map { it.chunkIndex }
-                    
+
                     // 生成分块信息摘要
                     chunkInfo = if (matchingChunks.size == 1) {
                         "Chunk ${matchingChunks[0].chunkIndex + 1}/$totalChunks"
                     } else {
                         "Chunks ${matchingChunks.map { it.chunkIndex + 1 }.take(5).joinToString(", ")}/$totalChunks"
                     }
-                    
+
                     if (isWildcardQuery || limit > 20) {
                         // 截断模式：只显示文档标题和分块信息
                         content = "Document: ${memory.title} ($totalChunks chunks)"
@@ -1326,7 +1326,7 @@ class MemoryQueryToolExecutor(private val context: Context) : ToolExecutor {
                         // 将匹配的区块内容拼接起来，每个区块显示编号
                         content = "Document: ${memory.title}\n" +
                             matchingChunks.take(5) // 最多取5个最相关的区块
-                                .joinToString("\n---\n") { chunk -> 
+                                .joinToString("\n---\n") { chunk ->
                                     "Chunk ${chunk.chunkIndex + 1}/$totalChunks:\n${chunk.content}"
                                 }
                     }

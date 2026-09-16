@@ -25,4 +25,4 @@ fun EmptyState(message: String) {
             Text(text = message, style = MaterialTheme.typography.bodyLarge)
         }
     }
-} 
+}

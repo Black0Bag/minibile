@@ -43,7 +43,7 @@ class ScreenCaptureActivity : Activity() {
         if (requestCode == REQUEST_CODE_CAPTURE) {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 AppLogger.d(TAG, "Screen capture permission granted")
-                
+
                 // Android 14 requirement: Start foreground service with mediaProjection type BEFORE calling getMediaProjection
                 MediaProjectionHolder.permissionResultCode = resultCode
                 MediaProjectionHolder.permissionResultData = data

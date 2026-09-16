@@ -59,7 +59,7 @@ open class DebuggerFileSystemTools(context: Context) : AccessibilityFileSystemTo
                 AndroidUserPathUtils.isCurrentUserPackageDataPath(normalizedPath, appPackage)
         }
     }
-    
+
     /**
      * 判断路径是否为Operit应用的内部存储路径
      * 仅针对 Operit 应用自身数据目录路径返回true
@@ -97,7 +97,7 @@ open class DebuggerFileSystemTools(context: Context) : AccessibilityFileSystemTo
 
         val path = tool.parameters.find { it.name == "path" }?.value ?: ""
         PathValidator.validateAndroidPath(path, tool.name)?.let { return it }
-        
+
         // 如果是Operit内部存储路径，使用super（AccessibilityFileSystemTools）的高权限方法
         if (isOperitInternalPath(path)) {
             return super.listFiles(tool)
@@ -409,7 +409,7 @@ open class DebuggerFileSystemTools(context: Context) : AccessibilityFileSystemTo
         val path = tool.parameters.find { it.name == "path" }?.value ?: ""
         val textOnly = tool.parameters.find { it.name == "text_only" }?.value?.toBoolean() ?: false
         PathValidator.validateAndroidPath(path, tool.name)?.let { return it }
-        
+
         // 如果是Operit内部存储路径，使用super的高权限方法
         if (isOperitInternalPath(path)) {
             return super.readFileFull(tool)
@@ -423,7 +423,7 @@ open class DebuggerFileSystemTools(context: Context) : AccessibilityFileSystemTo
                     error = "Path parameter is required"
             )
         }
-        
+
         try {
             // First check if the file exists using shell command
             val existsResult =
@@ -529,7 +529,7 @@ open class DebuggerFileSystemTools(context: Context) : AccessibilityFileSystemTo
         }
         val path = tool.parameters.find { it.name == "path" }?.value ?: ""
         PathValidator.validateAndroidPath(path, tool.name)?.let { return it }
-        
+
         // 如果是Operit内部存储路径，使用super的高权限方法
         if (isOperitInternalPath(path)) {
             return super.readFile(tool)
@@ -643,7 +643,7 @@ open class DebuggerFileSystemTools(context: Context) : AccessibilityFileSystemTo
         }
         val path = tool.parameters.find { it.name == "path" }?.value ?: ""
         PathValidator.validateAndroidPath(path, tool.name)?.let { return it }
-        
+
         // 如果是Operit内部存储路径，使用super的高权限方法
         if (isOperitInternalPath(path)) {
             return super.readFilePart(tool)
@@ -787,28 +787,28 @@ open class DebuggerFileSystemTools(context: Context) : AccessibilityFileSystemTo
         if (isOperitInternalPath(path)) {
             return super.handleSpecialFileRead(tool, path, fileExt)
         }
-        
+
         // 如果文件可读，直接使用父类逻辑（更高效）
         if (file.exists() && file.canRead()) {
             return super.handleSpecialFileRead(tool, path, fileExt)
         }
 
         AppLogger.d(TAG, "File not directly readable (permission restricted), trying Shell copy for: $path")
-        
+
         // 创建临时文件用于中转
         val tempFile = File(context.cacheDir, "shell_copy_${System.currentTimeMillis()}.$fileExt")
-        
+
         return try {
             // 使用cat命令复制文件内容
             // 注意：使用cat而不是cp，因为cp可能保留权限属性导致仍然无法读取
             val copyResult = AndroidShellExecutor.executeShellCommand("cat '$path' > '${tempFile.absolutePath}'")
-            
+
             if (!copyResult.success) {
                 AppLogger.w(TAG, "Shell copy failed: ${copyResult.stderr}")
                 // 复制失败，回退到父类逻辑（虽然很可能也失败，但能返回一致的错误信息）
                 return super.handleSpecialFileRead(tool, path, fileExt)
             }
-            
+
             // 检查临时文件是否有效
             if (!tempFile.exists() || tempFile.length() == 0L) {
                 AppLogger.w(TAG, "Temp file is empty or does not exist after copy")
@@ -817,7 +817,7 @@ open class DebuggerFileSystemTools(context: Context) : AccessibilityFileSystemTo
 
             // 使用临时文件路径调用父类处理逻辑
             val tempToolResult = super.handleSpecialFileRead(tool, tempFile.absolutePath, fileExt)
-            
+
             // 如果处理成功，修正返回结果中的 path 为原始路径
             if (tempToolResult != null && tempToolResult.success) {
                 val resultData = tempToolResult.result
@@ -827,9 +827,9 @@ open class DebuggerFileSystemTools(context: Context) : AccessibilityFileSystemTo
                     )
                 }
             }
-            
+
             tempToolResult
-            
+
         } catch (e: Exception) {
             AppLogger.e(TAG, "Error in shell copy strategy", e)
             super.handleSpecialFileRead(tool, path, fileExt)
@@ -858,7 +858,7 @@ open class DebuggerFileSystemTools(context: Context) : AccessibilityFileSystemTo
         PathValidator.validateAndroidPath(path, tool.name)?.let { return it }
         val content = tool.parameters.find { it.name == "content" }?.value ?: ""
         val append = tool.parameters.find { it.name == "append" }?.value?.toBoolean() ?: false
-        
+
         // 如果是Operit内部存储路径，使用super的高权限方法
         if (isOperitInternalPath(path)) {
             return super.writeFile(tool)
@@ -1083,7 +1083,7 @@ open class DebuggerFileSystemTools(context: Context) : AccessibilityFileSystemTo
         val path = tool.parameters.find { it.name == "path" }?.value ?: ""
 
         PathValidator.validateAndroidPath(path, tool.name)?.let { return it }
-        
+
         // 如果是Operit内部存储路径，使用super的高权限方法
         if (isOperitInternalPath(path)) {
             return super.deleteFile(tool)
@@ -1223,7 +1223,7 @@ open class DebuggerFileSystemTools(context: Context) : AccessibilityFileSystemTo
         val path = tool.parameters.find { it.name == "path" }?.value ?: ""
 
         PathValidator.validateAndroidPath(path, tool.name)?.let { return it }
-        
+
         // 如果是Operit内部存储路径，使用super的高权限方法
         if (isOperitInternalPath(path)) {
             return super.fileExists(tool)
@@ -1313,7 +1313,7 @@ open class DebuggerFileSystemTools(context: Context) : AccessibilityFileSystemTo
         }
         PathValidator.validateAndroidPath(sourcePath, tool.name)?.let { return it }
         PathValidator.validateAndroidPath(destPath, tool.name)?.let { return it }
-        
+
         // 如果源文件或目标文件在Operit内部存储，使用super的高权限方法
         if (isOperitInternalPath(sourcePath) || isOperitInternalPath(destPath)) {
             return super.moveFile(tool)
@@ -1389,16 +1389,16 @@ open class DebuggerFileSystemTools(context: Context) : AccessibilityFileSystemTo
         val environment = tool.parameters.find { it.name == "environment" }?.value
         val sourceEnvironment = tool.parameters.find { it.name == "source_environment" }?.value
         val destEnvironment = tool.parameters.find { it.name == "dest_environment" }?.value
-        
+
         // 确定源和目标环境
         val srcEnv = sourceEnvironment ?: environment ?: "android"
         val dstEnv = destEnvironment ?: environment ?: "android"
-        
+
         // 如果是 Linux 环境或跨环境操作，委托给父类处理
         if (srcEnv.lowercase() == "linux" || dstEnv.lowercase() == "linux") {
             return super.copyFile(tool)
         }
-        
+
         val sourcePath = tool.parameters.find { it.name == "source" }?.value ?: ""
         val destPath = tool.parameters.find { it.name == "destination" }?.value ?: ""
         val recursive = tool.parameters.find { it.name == "recursive" }?.value?.toBoolean() ?: true
@@ -1407,7 +1407,7 @@ open class DebuggerFileSystemTools(context: Context) : AccessibilityFileSystemTo
         }
         PathValidator.validateAndroidPath(sourcePath, tool.name, "source")?.let { return it }
         PathValidator.validateAndroidPath(destPath, tool.name, "destination")?.let { return it }
-        
+
         // 如果源文件或目标文件在Operit内部存储，使用super的高权限方法
         if (isOperitInternalPath(sourcePath) || isOperitInternalPath(destPath)) {
             return super.copyFile(tool)
@@ -1563,7 +1563,7 @@ open class DebuggerFileSystemTools(context: Context) : AccessibilityFileSystemTo
             return super.makeDirectory(tool)
         }
         PathValidator.validateAndroidPath(path, tool.name)?.let { return it }
-        
+
         // 如果是Operit内部存储路径，使用super的高权限方法
         if (isOperitInternalPath(path)) {
             return super.makeDirectory(tool)
@@ -1592,7 +1592,7 @@ open class DebuggerFileSystemTools(context: Context) : AccessibilityFileSystemTo
                     AndroidShellExecutor.executeShellCommand(
                             "test -d '$path' && echo 'exists' || echo 'not exists'"
                     )
-            
+
             if (checkDirResult.success && checkDirResult.stdout.trim() == "exists") {
                 // 目录已存在，返回成功
                 return ToolResult(
@@ -1631,7 +1631,7 @@ open class DebuggerFileSystemTools(context: Context) : AccessibilityFileSystemTo
                         AndroidShellExecutor.executeShellCommand(
                                 "test -d '$path' && echo 'exists' || echo 'not exists'"
                         )
-                
+
                 if (recheckDirResult.success && recheckDirResult.stdout.trim() == "exists") {
                     // 目录已存在，返回成功
                     return ToolResult(
@@ -1647,7 +1647,7 @@ open class DebuggerFileSystemTools(context: Context) : AccessibilityFileSystemTo
                             error = ""
                     )
                 }
-                
+
                 return ToolResult(
                         toolName = tool.name,
                         success = false,
@@ -1873,7 +1873,7 @@ open class DebuggerFileSystemTools(context: Context) : AccessibilityFileSystemTo
         val path = tool.parameters.find { it.name == "path" }?.value ?: ""
 
         PathValidator.validateAndroidPath(path, tool.name)?.let { return it }
-        
+
         // 如果是Operit内部存储路径，使用super的高权限方法
         if (isOperitInternalPath(path)) {
             return super.fileInfo(tool)

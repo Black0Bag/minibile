@@ -757,7 +757,7 @@ class MemoryRepository(private val context: Context, profileId: String) {
                     .thenByDescending { it.memory.updatedAt.time }
             )
     }
-    
+
     /**
      * 从外部文档创建记忆。
      * @param title 文档记忆的标题。
@@ -1044,17 +1044,17 @@ class MemoryRepository(private val context: Context, profileId: String) {
     ) = withContext(Dispatchers.IO) {
         // 检查链接是否已存在
         val existingLink = source.links.find { link ->
-            link.target.target?.id == target.id && 
+            link.target.target?.id == target.id &&
             link.type == type
         }
-        
+
         if (existingLink != null) {
             // 链接已存在，可以选择更新或直接返回
             // 这里我们选择直接返回，不创建重复链接
             com.ai.assistance.operit.util.AppLogger.d("MemoryRepo", "Link already exists from memory ${source.id} to ${target.id} with type $type")
             return@withContext
         }
-        
+
         // Coerce the weight to be within the valid range [0.0, 1.0] to ensure data integrity.
         val sanitizedWeight = weight.coerceIn(0.0f, 1.0f)
         val link = MemoryLink(type = type, weight = sanitizedWeight, description = description)
@@ -1397,7 +1397,7 @@ class MemoryRepository(private val context: Context, profileId: String) {
         // This is crucial for finding "长安大学" within the query "长安大学在西安".
         val reverseContainmentResults =
                 memoriesToSearch.filter { memory -> textMatchesLexicalToken(query, memory.title) }
-        
+
         if (reverseContainmentResults.isNotEmpty()) {
             com.ai.assistance.operit.util.AppLogger.d("MemoryRepo", "Reverse containment: ${reverseContainmentResults.size} matches")
         }
@@ -1476,11 +1476,11 @@ class MemoryRepository(private val context: Context, profileId: String) {
         topMemoriesForExpansion.forEach { (sourceId, _) ->
             val sourceMemory = memoriesToSearch.find { it.id == sourceId } ?: return@forEach
             val sourceScore = scores[sourceId] ?: 0.0
-            
+
             // 重置关系缓存以获取最新连接
             sourceMemory.links.reset()
             sourceMemory.backlinks.reset()
-            
+
             // Propagate score through outgoing links
             sourceMemory.links.forEach { link ->
                 val targetMemory = link.target.target
@@ -1492,7 +1492,7 @@ class MemoryRepository(private val context: Context, profileId: String) {
                     edgesTraversed++
                 }
             }
-            
+
             // Propagate score through incoming links (backlinks)
             sourceMemory.backlinks.forEach { link ->
                 val targetMemory = link.source.target
@@ -2113,14 +2113,14 @@ class MemoryRepository(private val context: Context, profileId: String) {
         val normalizedOldPath = normalizeFolderPath(oldPath) ?: return@withContext false
         val normalizedNewPath = normalizeFolderPath(newPath) ?: return@withContext false
         if (normalizedOldPath == normalizedNewPath) return@withContext true
-        
+
         try {
             // 获取该文件夹及其所有子文件夹下的记忆
             val memories = memoryBox.all.filter { memory ->
                 val path = normalizeFolderPath(memory.folderPath) ?: return@filter false
                 path == normalizedOldPath || path.startsWith("$normalizedOldPath/")
             }
-            
+
             // 批量更新路径
             memories.forEach { memory ->
                 val currentPath = normalizeFolderPath(memory.folderPath) ?: return@forEach
@@ -2130,7 +2130,7 @@ class MemoryRepository(private val context: Context, profileId: String) {
                     normalizedNewPath + currentPath.removePrefix(normalizedOldPath)
                 }
             }
-            
+
             memoryBox.put(memories)
             true
         } catch (e: Exception) {
@@ -2173,7 +2173,7 @@ class MemoryRepository(private val context: Context, profileId: String) {
             // 检查是否已存在该文件夹
             val exists = memoryBox.all.any { normalizeFolderPath(it.folderPath) == normalizedFolderPath }
             if (exists) return@withContext true
-            
+
             // 创建一个占位记忆
             val placeholder = Memory(
                 title = context.getString(R.string.memory_repository_folder_description_title),
@@ -2522,7 +2522,7 @@ class MemoryRepository(private val context: Context, profileId: String) {
                 val targetMemory = link.target.target
                 val sourceId = sourceMemory?.uuid
                 val targetId = targetMemory?.uuid
-                
+
                 // Only add edges if both source and target are in the filtered list
                 if (sourceId != null &&
                     targetId != null &&
@@ -2538,7 +2538,7 @@ class MemoryRepository(private val context: Context, profileId: String) {
                     } else {
                         false
                     }
-                    
+
                     edges.add(
                         Edge(
                             id = link.id,
@@ -2589,13 +2589,13 @@ class MemoryRepository(private val context: Context, profileId: String) {
     suspend fun exportMemoriesToJson(): String = withContext(Dispatchers.IO) {
         // 获取所有非文档节点的记忆
         val memories = memoryBox.query(Memory_.isDocumentNode.equal(false)).build().find()
-        
+
         // 转换为可序列化格式
         val serializableMemories = memories.map { memory ->
             // 获取标签名称
             memory.tags.reset()
             val tagNames = memory.tags.map { it.name }
-            
+
             SerializableMemory(
                 uuid = memory.uuid,
                 title = memory.title,
@@ -2610,19 +2610,19 @@ class MemoryRepository(private val context: Context, profileId: String) {
                 tagNames = tagNames
             )
         }
-        
+
         // 获取所有链接关系（只包含非文档节点之间的链接）
         val memoryUuids = memories.map { it.uuid }.toSet()
         val serializableLinks = mutableListOf<SerializableLink>()
-        
+
         memories.forEach { memory ->
             memory.links.reset()
             memory.links.forEach { link ->
                 val sourceUuid = link.source.target?.uuid
                 val targetUuid = link.target.target?.uuid
-                
+
                 // 只导出两端都是非文档节点的链接
-                if (sourceUuid != null && targetUuid != null && 
+                if (sourceUuid != null && targetUuid != null &&
                     sourceUuid in memoryUuids && targetUuid in memoryUuids) {
                     serializableLinks.add(
                         SerializableLink(
@@ -2636,7 +2636,7 @@ class MemoryRepository(private val context: Context, profileId: String) {
                 }
             }
         }
-        
+
         // 创建导出数据
         val exportData = MemoryExportData(
             memories = serializableMemories,
@@ -2644,15 +2644,15 @@ class MemoryRepository(private val context: Context, profileId: String) {
             exportDate = Date(),
             version = "1.0"
         )
-        
+
         // 序列化为 JSON
-        val json = Json { 
+        val json = Json {
             prettyPrint = true
             ignoreUnknownKeys = true
         }
         json.encodeToString(exportData)
     }
-    
+
     /**
      * 从 JSON 字符串导入记忆
      * @param jsonString JSON 格式的记忆库数据
@@ -2663,29 +2663,29 @@ class MemoryRepository(private val context: Context, profileId: String) {
         jsonString: String,
         strategy: ImportStrategy = ImportStrategy.SKIP
     ): MemoryImportResult = withContext(Dispatchers.IO) {
-        val json = Json { 
+        val json = Json {
             ignoreUnknownKeys = true
         }
-        
+
         try {
             val exportData = json.decodeFromString<MemoryExportData>(jsonString)
-            
+
             var newCount = 0
             var updatedCount = 0
             var skippedCount = 0
             val uuidMap = mutableMapOf<String, Memory>() // 旧UUID -> 新Memory对象
-            
+
             // 导入记忆
             exportData.memories.forEach { serializableMemory ->
                 val existingMemory = memoryBox.query(Memory_.uuid.equal(serializableMemory.uuid))
                     .build().findFirst()
-                
+
                 when {
                     existingMemory != null && strategy == ImportStrategy.SKIP -> {
                         skippedCount++
                         uuidMap[serializableMemory.uuid] = existingMemory
                     }
-                    
+
                     existingMemory != null && strategy == ImportStrategy.UPDATE -> {
                         // 更新现有记忆
                         existingMemory.apply {
@@ -2701,11 +2701,11 @@ class MemoryRepository(private val context: Context, profileId: String) {
                         memoryBox.put(existingMemory)
                         updatedCount++
                         uuidMap[serializableMemory.uuid] = existingMemory
-                        
+
                         // 更新标签
                         updateMemoryTags(existingMemory, serializableMemory.tagNames)
                     }
-                    
+
                     else -> {
                         // 创建新记忆
                         val newMemory = createMemoryFromSerializable(
@@ -2717,20 +2717,20 @@ class MemoryRepository(private val context: Context, profileId: String) {
                     }
                 }
             }
-            
+
             // 导入链接关系
             var newLinksCount = 0
             exportData.links.forEach { serializableLink ->
                 val sourceMemory = uuidMap[serializableLink.sourceUuid]
                 val targetMemory = uuidMap[serializableLink.targetUuid]
-                
+
                 if (sourceMemory != null && targetMemory != null) {
                     // 检查链接是否已存在 - 查询所有链接并手动过滤
                     val existingLink = sourceMemory.links.find { link ->
-                        link.target.target?.id == targetMemory.id && 
+                        link.target.target?.id == targetMemory.id &&
                         link.type == serializableLink.type
                     }
-                    
+
                     if (existingLink == null) {
                         val newLink = MemoryLink(
                             type = serializableLink.type,
@@ -2747,22 +2747,22 @@ class MemoryRepository(private val context: Context, profileId: String) {
                     }
                 }
             }
-            
+
             com.ai.assistance.operit.util.AppLogger.d("MemoryRepo", "Import completed: $newCount new, $updatedCount updated, $skippedCount skipped, $newLinksCount links")
-            
+
             MemoryImportResult(
                 newMemories = newCount,
                 updatedMemories = updatedCount,
                 skippedMemories = skippedCount,
                 newLinks = newLinksCount
             )
-            
+
         } catch (e: Exception) {
             com.ai.assistance.operit.util.AppLogger.e("MemoryRepo", "Failed to import memories", e)
             throw e
         }
     }
-    
+
     /**
      * 从可序列化的记忆数据创建 Memory 对象
      * @param serializable 可序列化的记忆数据
@@ -2785,15 +2785,15 @@ class MemoryRepository(private val context: Context, profileId: String) {
             createdAt = serializable.createdAt,
             updatedAt = serializable.updatedAt
         )
-        
+
         memoryBox.put(memory)
-        
+
         // 添加标签
         updateMemoryTags(memory, serializable.tagNames)
-        
+
         return memory
     }
-    
+
     /**
      * 更新记忆的标签
      * @param memory 要更新的记忆
@@ -2801,13 +2801,13 @@ class MemoryRepository(private val context: Context, profileId: String) {
      */
     private fun updateMemoryTags(memory: Memory, tagNames: List<String>) {
         memory.tags.clear()
-        
+
         tagNames.forEach { tagName ->
             val tag = tagBox.query(MemoryTag_.name.equal(tagName)).build().findFirst()
                 ?: MemoryTag(name = tagName).also { tagBox.put(it) }
             memory.tags.add(tag)
         }
-        
+
         memoryBox.put(memory)
     }
 

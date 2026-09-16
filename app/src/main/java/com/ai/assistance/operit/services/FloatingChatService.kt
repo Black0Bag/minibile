@@ -235,7 +235,7 @@ class FloatingChatService : Service(), FloatingWindowCallback {
                     AppLogger.d(TAG, "聊天历史已更新: ${messages.size} 条消息")
                 }
             }
-            
+
             // 订阅附件列表更新
             serviceScope.launch {
                 chatCore.attachments.collect { newAttachments ->
@@ -257,7 +257,7 @@ class FloatingChatService : Service(), FloatingWindowCallback {
                     AppLogger.d(TAG, "输入处理状态已更新: $state")
                 }
             }
-            
+
             // 设置 EnhancedAIService 就绪回调，以便监听输入处理状态
             chatCore.setOnEnhancedAiServiceReady { aiService ->
                 AppLogger.d(TAG, "EnhancedAIService 已就绪，开始监听输入处理状态")
@@ -619,7 +619,7 @@ class FloatingChatService : Service(), FloatingWindowCallback {
                 }
             } catch (_: Exception) {
             }
-            
+
             serviceScope.cancel()
             saveState()
             super.onDestroy()
@@ -686,7 +686,7 @@ class FloatingChatService : Service(), FloatingWindowCallback {
 
     override fun onSendMessage(message: String, promptType: PromptFunctionType) {
         AppLogger.d(TAG, "onSendMessage: $message, promptType: $promptType")
-        
+
         // 直接使用 chatCore 发送消息，不再通过 SharedFlow
         serviceScope.launch {
             try {
@@ -695,7 +695,7 @@ class FloatingChatService : Service(), FloatingWindowCallback {
                     promptFunctionType = promptType,
                     messageTextOverride = message
                 )
-                
+
                 AppLogger.d(TAG, "消息已通过 chatCore 发送")
             } catch (e: Exception) {
                 AppLogger.e(TAG, "发送消息时出错", e)
@@ -705,7 +705,7 @@ class FloatingChatService : Service(), FloatingWindowCallback {
 
     override fun onCancelMessage() {
         AppLogger.d(TAG, "onCancelMessage")
-        
+
         // 直接使用 chatCore 取消消息，不再通过 SharedFlow
         chatCore.cancelCurrentMessage()
     }

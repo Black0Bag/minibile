@@ -208,7 +208,7 @@ class StreamInterceptor<T, R>(
     private var onEach: (T) ->  R
 ) {
     // 下游流，用于向外部提供数据
-    val interceptedStream: Stream<R> = stream { 
+    val interceptedStream: Stream<R> = stream {
         // 收集上游流的数据并转发
         sourceStream.collect { value ->
             emit(onEach(value))

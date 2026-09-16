@@ -103,7 +103,7 @@ fun MemorySearchBar(
     ) {
         IconButton(onClick = onMenuClick) {
             Icon(
-                Icons.Default.Folder, 
+                Icons.Default.Folder,
                 contentDescription = "Toggle Folders",
                 tint = MaterialTheme.colorScheme.primary
             )

@@ -27,7 +27,7 @@ import com.ai.assistance.operit.data.mcp.MCPLocalServer
 
 /**
  * Actions component for the MCP server details diaAppLogger.
- * 
+ *
  * @param server The MCP server to display actions for
  * @param isInstalled Whether the server is installed
  * @param onInstall Callback to be invoked when the install button is clicked
@@ -99,4 +99,4 @@ fun MCPServerDetailsActions(
             }
         }
     }
-} 
+}

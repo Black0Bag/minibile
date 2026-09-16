@@ -22,4 +22,4 @@ enum class AvatarType {
 
     /** 3D model animation (e.g., MikuMikuDance, VRM). */
     MMD
-} 
+}

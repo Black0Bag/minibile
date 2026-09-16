@@ -32,7 +32,7 @@ enum class MarkdownProcessorType {
     BLOCK_LATEX, // LaTeX块级公式
     TABLE, // 表格支持
     XML_BLOCK, // XML块级元素
- 
+
     // 内联处理器
     BOLD,
     ITALIC,
@@ -48,9 +48,9 @@ enum class MarkdownProcessorType {
     HTML_BREAK
 }
 
-/** 
- * Markdown数据模型 
- * 
+/**
+ * Markdown数据模型
+ *
  */
 class MarkdownNode(val type: MarkdownProcessorType, initialContent: String = "") {
     val content: SmartString = SmartString(initialContent)

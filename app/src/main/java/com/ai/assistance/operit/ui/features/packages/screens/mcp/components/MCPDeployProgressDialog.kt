@@ -73,9 +73,9 @@ fun MCPDeployProgressDialog(
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                     )
-                    
+
                     Spacer(modifier = Modifier.weight(1f))
-                    
+
                     // 环境变量按钮
                     if (onEnvironmentVariablesChange != null) {
                         IconButton(
@@ -89,7 +89,7 @@ fun MCPDeployProgressDialog(
                             )
                         }
                     }
-                    
+
                     // 非进行中状态才显示关闭按钮
                     if (deploymentStatus !is DeploymentStatus.InProgress) {
                         IconButton(
@@ -104,7 +104,7 @@ fun MCPDeployProgressDialog(
                         }
                     }
                 }
-                
+
                 // 插件名称
                 Text(
                         text = pluginName,
@@ -185,7 +185,7 @@ fun MCPDeployProgressDialog(
                 // 输出日志区域
                 if (outputMessages.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(16.dp))
-                    
+
                     Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(bottom = 8.dp)

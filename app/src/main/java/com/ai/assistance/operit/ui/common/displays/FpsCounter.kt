@@ -27,12 +27,12 @@ fun FpsCounter(
     enabled: Boolean = true
 ) {
     if (!enabled) return
-    
+
     // FPS状态
     var fps by remember { mutableStateOf(0) }
     var frameCount by remember { mutableStateOf(0) }
     var lastFrameTimeNanos by remember { mutableStateOf(0L) }
-    
+
     // 帧率颜色，根据帧率值动态变化
     val fpsColor by remember(fps) {
         derivedStateOf {
@@ -43,7 +43,7 @@ fun FpsCounter(
             }
         }
     }
-    
+
     // 使用Choreographer监听帧绘制
     DisposableEffect(Unit) {
         val frameCallback = object : Choreographer.FrameCallback {
@@ -54,7 +54,7 @@ fun FpsCounter(
                     // 计算自上次回调以来的时间差（纳秒）
                     val timeDiffNanos = frameTimeNanos - lastFrameTimeNanos
                     frameCount++
-                    
+
                     // 每秒更新一次FPS值
                     if (timeDiffNanos >= TimeUnit.SECONDS.toNanos(1)) {
                         // 计算FPS = 帧数 / 时间（秒）
@@ -63,22 +63,22 @@ fun FpsCounter(
                         lastFrameTimeNanos = frameTimeNanos
                     }
                 }
-                
+
                 // 继续监听下一帧
                 Choreographer.getInstance().postFrameCallback(this)
             }
         }
-        
+
         // 注册帧回调
         Choreographer.getInstance().postFrameCallback(frameCallback)
-        
+
         // 清理
         onDispose {
             // 取消帧回调
             Choreographer.getInstance().removeFrameCallback(frameCallback)
         }
     }
-    
+
     // 为了在低帧率情况下也能更新显示，添加一个定时器保持UI刷新
     LaunchedEffect(Unit) {
         while (true) {
@@ -86,7 +86,7 @@ fun FpsCounter(
             // 空操作，只是为了触发重组
         }
     }
-    
+
     // FPS显示UI
     Box(
         modifier = modifier
@@ -102,4 +102,4 @@ fun FpsCounter(
             fontWeight = FontWeight.Bold
         )
     }
-} 
+}

@@ -64,7 +64,7 @@ fun TokenConfigWebViewScreen(onNavigateBack: () -> Unit) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val urlConfigManager = remember { UrlConfigManager(context) }
-    
+
     // 获取URL配置
     val urlConfig by urlConfigManager.urlConfigFlow.collectAsState(initial = com.ai.assistance.operit.ui.features.token.model.UrlConfig())
 
@@ -103,13 +103,13 @@ fun TokenConfigWebViewScreen(onNavigateBack: () -> Unit) {
             ): Boolean {
                 request?.url?.let { uri ->
                     val url = uri.toString()
-                    
+
                     // 只拦截明确需要外部应用处理的协议
-                    if (url.startsWith("alipays:") || 
-                        url.startsWith("alipay:") || 
+                    if (url.startsWith("alipays:") ||
+                        url.startsWith("alipay:") ||
                         url.startsWith("weixin:") ||
                         url.startsWith("weixins:")) {
-                        
+
                         try {
                             val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, uri)
                             intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -121,12 +121,12 @@ fun TokenConfigWebViewScreen(onNavigateBack: () -> Unit) {
                             return false
                         }
                     }
-                    
+
                     // 对于http/https链接，让WebView正常加载
                     if (url.startsWith("http://") || url.startsWith("https://")) {
                         return false
                     }
-                    
+
                     // 对于其他协议（如javascript:, about:等），也让WebView处理
                     // 不要尝试用外部应用打开
                 }
@@ -136,11 +136,11 @@ fun TokenConfigWebViewScreen(onNavigateBack: () -> Unit) {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 isLoading = false
-                
+
                 // 更新选中的标签
                 url?.let { finishedUrl ->
                         navDestinations.forEachIndexed { index, destination ->
-                        if (finishedUrl.contains(destination.url) || 
+                        if (finishedUrl.contains(destination.url) ||
                             destination.url.contains(finishedUrl)) {
                                 selectedTabIndex = index
                         }
@@ -153,7 +153,7 @@ fun TokenConfigWebViewScreen(onNavigateBack: () -> Unit) {
     // 设置WebView
     DisposableEffect(webView) {
         webView.webViewClient = webViewClient
-        
+
         // 加载初始URL
         if (urlConfig.signInUrl.isNotEmpty()) {
             webView.loadUrl(urlConfig.signInUrl)
@@ -242,7 +242,7 @@ fun TokenConfigWebViewScreen(onNavigateBack: () -> Unit) {
                                             imageVector = destination.icon,
                                             contentDescription = destination.title,
                                             modifier = Modifier.size(24.dp),
-                                    tint = if (isSelected) 
+                                    tint = if (isSelected)
                                                             MaterialTheme.colorScheme.primary
                                                     else Color.Gray
                                     )
@@ -252,8 +252,8 @@ fun TokenConfigWebViewScreen(onNavigateBack: () -> Unit) {
                                     Text(
                                             text = destination.title,
                                             fontSize = 12.sp,
-                                    fontWeight = if (isSelected) 
-                                        FontWeight.Medium 
+                                    fontWeight = if (isSelected)
+                                        FontWeight.Medium
                                                     else FontWeight.Normal,
                                     color = if (isSelected)
                                                             MaterialTheme.colorScheme.primary
@@ -271,7 +271,7 @@ fun TokenConfigWebViewScreen(onNavigateBack: () -> Unit) {
                     factory = { webView },
                     modifier = Modifier.fillMaxSize()
             )
-            
+
             // 加载指示器
             if (isLoading) {
                 LinearProgressIndicator(

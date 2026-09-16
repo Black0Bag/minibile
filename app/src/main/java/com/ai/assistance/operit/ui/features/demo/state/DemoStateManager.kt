@@ -225,7 +225,7 @@ class DemoStateManager(private val context: Context, private val coroutineScope:
                     updateShizukuRunning = { _uiState.value.isShizukuRunning.value = it },
                     updateShizukuPermission = { _uiState.value.hasShizukuPermission.value = it },
                     updateOperitTerminalInstalled = { _uiState.value.isOperitTerminalInstalled.value = it },
-                    updateOperitTerminalRunning = { isOperitTerminalRunning -> 
+                    updateOperitTerminalRunning = { isOperitTerminalRunning ->
                         // Add logic if needed for OperitTerminal running state
                     },
                     updateStoragePermission = { _uiState.value.hasStoragePermission.value = it },
@@ -283,15 +283,15 @@ class DemoStateManager(private val context: Context, private val coroutineScope:
             }
 
             val terminal = Terminal.getInstance(context)
-            
+
             // 检查pnpm安装状态
             val pnpmResult = terminal.executeCommand(sessionId, "command -v pnpm")
             isPnpmInstalled.value = pnpmResult != null && pnpmResult.contains("pnpm")
-            
+
             // 检查python安装状态
             val pythonResult = terminal.executeCommand(sessionId, "command -v python")
             var hasPython = pythonResult != null && (pythonResult.contains("python") || pythonResult.contains("/python"))
-            
+
             // 如果python不存在，检查python3
             if (!hasPython) {
                 val python3Result = terminal.executeCommand(sessionId, "command -v python3")
@@ -304,7 +304,7 @@ class DemoStateManager(private val context: Context, private val coroutineScope:
                 // 尝试检查pip
                 val pipResult = terminal.executeCommand(sessionId, "command -v pip")
                 hasPip = pipResult != null && pipResult.contains("pip")
-                
+
                 // 如果pip不存在，检查pip3
                 if (!hasPip) {
                     val pip3Result = terminal.executeCommand(sessionId, "command -v pip3")
@@ -317,9 +317,9 @@ class DemoStateManager(private val context: Context, private val coroutineScope:
 
             // 更新环境就绪状态 - 只有pnpm和python(包含pip)都准备好时才为true
             isNodejsPythonEnvironmentReady.value = isPnpmInstalled.value && isPythonInstalled.value
-            
+
             AppLogger.d(TAG, "NodeJS环境检查 - pnpm: ${isPnpmInstalled.value}, python: $hasPython, pip: $hasPip, python环境: ${isPythonInstalled.value}, 整体ready: ${isNodejsPythonEnvironmentReady.value}")
-            
+
         } catch (e: Exception) {
             AppLogger.e(TAG, "检查NodeJS和Python环境时出错", e)
             isPnpmInstalled.value = false
@@ -368,29 +368,29 @@ suspend fun refreshPermissionsAndStatus(
             val terminal = Terminal.getInstance(context)
             val pnpmResult = terminal.executeCommand(sessionId, "command -v pnpm")
             val isPnpmInstalled = pnpmResult != null && pnpmResult.contains("pnpm")
-            
+
             val pythonResult = terminal.executeCommand(sessionId, "command -v python")
             var hasPython = pythonResult != null && (pythonResult.contains("python") || pythonResult.contains("/python"))
-            
+
             if (!hasPython) {
                 val python3Result = terminal.executeCommand(sessionId, "command -v python3")
                 hasPython = python3Result != null && (python3Result.contains("python3") || python3Result.contains("/python3"))
             }
-            
+
             // 检查pip安装状态 - 只有python存在时才检查pip
             var hasPip = false
             if (hasPython) {
                 // 尝试检查pip
                 val pipResult = terminal.executeCommand(sessionId, "command -v pip")
                 hasPip = pipResult != null && pipResult.contains("pip")
-                
+
                 // 如果pip不存在，检查pip3
                 if (!hasPip) {
                     val pip3Result = terminal.executeCommand(sessionId, "command -v pip3")
                     hasPip = pip3Result != null && pip3Result.contains("pip3")
                 }
             }
-            
+
             // 只有pnpm和python(包含pip)都准备好时才为true
             isPnpmInstalled && hasPython && hasPip
         } else {

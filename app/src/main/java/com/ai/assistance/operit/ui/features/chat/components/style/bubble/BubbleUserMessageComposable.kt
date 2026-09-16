@@ -241,9 +241,9 @@ fun BubbleUserMessageComposable(
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(12.dp)
                         )
-                        
+
                         Spacer(modifier = Modifier.width(4.dp))
-                        
+
                         Text(
                             text = "${reply.sender}: ${reply.content}",
                             style = MaterialTheme.typography.bodySmall,
@@ -538,7 +538,7 @@ fun BubbleUserMessageComposable(
                         }
                     }
                 }
-                
+
                 // Message bubble
                 BoxWithConstraints {
                     val maxBubbleWidth = maxWidth * 0.85f
@@ -718,7 +718,7 @@ fun BubbleUserMessageComposable(
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                         }
-                        
+
                         IconButton(onClick = { showImagePreview.value = false }) {
                             Icon(
                                 imageVector = Icons.Default.Close,
@@ -846,10 +846,10 @@ private fun parseMessageContent(context: android.content.Context, content: Strin
             content = displayContent
         )
     }
-    
+
     // Remove reply tag from content
-    cleanedContent = replyMatch?.let { 
-        cleanedContent.replace(it.value, "").trim() 
+    cleanedContent = replyMatch?.let {
+        cleanedContent.replace(it.value, "").trim()
     } ?: cleanedContent
 
     val workspaceAttachments = mutableListOf<AttachmentData>()
@@ -895,11 +895,11 @@ private fun parseMessageContent(context: android.content.Context, content: Strin
         // Try to find matches with both patterns
         val pairedMatches = pairedTagPattern.findAll(cleanedContent).toList()
         val selfClosingMatches = selfClosingPattern.findAll(cleanedContent).toList()
-        
+
         // Combine and sort all matches by position
         val allMatches = (pairedMatches.map { it to true } + selfClosingMatches.map { it to false })
                 .sortedBy { it.first.range.first }
-        
+
         // Remove overlapping matches (prefer paired tag format)
         val matches = mutableListOf<Pair<MatchResult, Boolean>>()
         var lastEnd = -1
@@ -909,7 +909,7 @@ private fun parseMessageContent(context: android.content.Context, content: Strin
                         lastEnd = match.range.last
                 }
         }
-        
+
         if (matches.isEmpty()) {
                 return MessageParseResult(
                     cleanedContent,

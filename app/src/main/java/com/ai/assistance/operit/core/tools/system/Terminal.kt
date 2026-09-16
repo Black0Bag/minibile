@@ -80,7 +80,7 @@ class Terminal private constructor(private val context: Context) {
         AppLogger.d(TAG, "Session ${newSession.id} initialized successfully")
         return newSession.id
     }
-    
+
     /**
      * 切换到指定会话
      */
@@ -102,12 +102,12 @@ class Terminal private constructor(private val context: Context) {
         val deferred = CompletableDeferred<String>()
         val output = StringBuilder()
         var completionOutput: String? = null
-        
+
         // 生成命令ID
         val commandId = java.util.UUID.randomUUID().toString()
-        
+
         val collectorReady = CompletableDeferred<Unit>()
-        
+
         // 先开始订阅事件流，然后再发送命令
         val job = scope.launch {
             commandEvents
@@ -127,14 +127,14 @@ class Terminal private constructor(private val context: Context) {
 
         // 等待收集器准备就绪
         collectorReady.await()
-        
+
         // 直接向指定会话发送命令，不切换当前会话
         terminalManager.sendCommandToSession(sessionId, command, commandId)
 
         val result = deferred.await()
-        
+
         job.cancel()
-        
+
         return result
     }
 
@@ -178,7 +178,7 @@ class Terminal private constructor(private val context: Context) {
             collectorJob.join()
         }
     }
-    
+
     /**
      * 发送输入到当前会话
      */
