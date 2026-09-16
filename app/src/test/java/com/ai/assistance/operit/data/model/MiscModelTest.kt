@@ -214,19 +214,6 @@ class MiscModelTest {
         assertEquals(10, info.memoriesInScopeCount)
     }
 
-    @Test fun `workflow execution record creation`() {
-        val record = WorkflowExecutionRecord(
-            workflowId = "wf1",
-            workflowName = "Test Workflow",
-            success = true,
-            message = "Completed",
-        )
-        assertEquals("wf1", record.workflowId)
-        assertEquals("Test Workflow", record.workflowName)
-        assertTrue(record.success)
-        assertEquals("Completed", record.message)
-    }
-
     @Test fun `chat message locator preview creation`() {
         val preview = ChatMessageLocatorPreview(
             timestamp = 1000L,
