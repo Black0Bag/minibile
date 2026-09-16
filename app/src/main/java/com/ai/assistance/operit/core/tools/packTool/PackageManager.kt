@@ -158,14 +158,6 @@ private constructor(private val context: Context, private val aiToolHandler: AIT
         val bytes: ByteArray
     )
 
-        val containerPackageName: String,
-        val toolPkgId: String,
-        val templateId: String,
-        val displayName: String,
-        val description: String,
-        val resourceKey: String
-    )
-
     data class ToolPkgWorkspaceTemplate(
         val containerPackageName: String,
         val toolPkgId: String,
@@ -1433,14 +1425,6 @@ private constructor(private val context: Context, private val aiToolHandler: AIT
         resolveContext: Context? = null
     ): List<ToolPkgNavigationEntry> {
         return toolPkgFacade.getToolPkgNavigationEntries(resolveContext)
-    }
-
-        resolveContext: Context? = null
-    }
-
-        containerPackageName: String,
-        templateId: String
-    ): Result<Workflow> {
     }
 
     fun getToolPkgWorkspaceTemplates(

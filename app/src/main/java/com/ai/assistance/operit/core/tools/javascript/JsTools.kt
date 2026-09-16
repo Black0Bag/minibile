@@ -1390,12 +1390,6 @@ fun getJsToolsDefinition(): String {
                 }
             },
             
-            // 工作流工具
-            Workflow: {
-                // 获取所有工作流
-                getAll: () => {
-                    return toolCall("get_all_workflows", {});
-                },
                 // 创建新工作流
                 create: (name, description = "", nodes = null, connections = null, enabled = true) => {
                     const params = { name, description, enabled: enabled.toString() };

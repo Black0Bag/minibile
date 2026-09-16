@@ -783,7 +783,6 @@ class AIForegroundService : Service() {
     @Volatile
     private var wakeStopInProgress: Boolean = false
 
-    private var lastSpeechWorkflowCheckAtMs: Long = 0L
 
     private fun ensureWakeSpeechProvider(): SpeechService {
         val existing = wakeSpeechProvider
@@ -1658,9 +1657,6 @@ class AIForegroundService : Service() {
 
                     try {
                         val now = System.currentTimeMillis()
-                        val shouldCheckWorkflows = result.isFinal || now - lastSpeechWorkflowCheckAtMs >= 350L
-                        if (shouldCheckWorkflows) {
-                            lastSpeechWorkflowCheckAtMs = now
                         }
                     } catch (e: Exception) {
                         AppLogger.e(TAG, "Speech trigger processing failed: ${e.message}", e)

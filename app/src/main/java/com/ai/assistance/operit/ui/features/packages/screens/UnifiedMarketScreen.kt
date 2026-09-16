@@ -127,7 +127,6 @@ private val MarketCategoryNameResById =
     mapOf(
         "search_research" to R.string.market_category_search_research,
         "dev_code" to R.string.market_category_dev_code,
-        "automation_workflow" to R.string.market_category_automation_workflow,
         "docs_knowledge" to R.string.market_category_docs_knowledge,
         "media_content" to R.string.market_category_media_content,
         "chat_communication" to R.string.market_category_chat_communication,
@@ -142,7 +141,6 @@ private val MarketCategoryIconById =
     mapOf(
         "search_research" to Icons.Default.Search,
         "dev_code" to Icons.Default.Code,
-        "automation_workflow" to Icons.Default.AutoAwesome,
         "docs_knowledge" to Icons.Default.Description,
         "media_content" to Icons.Default.Image,
         "chat_communication" to Icons.Default.Chat,

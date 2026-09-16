@@ -62,7 +62,6 @@ fun FullscreenInputDialog(
                     IconButton(onClick = { finishEditing() }) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = stringResource(R.string.workflow_close)
                         )
                     }
 

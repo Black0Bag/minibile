@@ -15,11 +15,6 @@ import kotlinx.serialization.json.JsonPrimitive
 internal class PackageManagerToolPkgFacade(
     private val packageManager: PackageManager
 ) {
-        Json {
-            ignoreUnknownKeys = true
-            classDiscriminator = "__type"
-        }
-
     private fun buildToolPkgToolboxUiModules(
         container: ToolPkgContainerRuntime,
         localizationContext: Context,
@@ -175,26 +170,6 @@ internal class PackageManagerToolPkgFacade(
                     PackageManager.ToolPkgDesktopWidget::order,
                     PackageManager.ToolPkgDesktopWidget::title,
                     PackageManager.ToolPkgDesktopWidget::widgetId
-                )
-            )
-    }
-
-        container: ToolPkgContainerRuntime,
-        localizationContext: Context
-            .map { template ->
-                    containerPackageName = container.packageName,
-                    toolPkgId = container.packageName,
-                    templateId = template.id,
-                    displayName =
-                        template.displayName.resolve(localizationContext).trim().ifBlank {
-                            template.id
-                        },
-                    description = template.description.resolve(localizationContext),
-                    resourceKey = template.resourceKey
-                )
-            }
-            .sortedWith(
-                compareBy(
                 )
             )
     }
@@ -370,77 +345,6 @@ internal class PackageManagerToolPkgFacade(
                     PackageManager.ToolPkgDesktopWidget::widgetId
                 )
             )
-    }
-
-        resolveContext: Context? = null
-        packageManager.ensureInitialized()
-        val enabledSet = packageManager.getEnabledPackageNameSetInternal()
-        val localizationContext = resolveContext ?: packageManager.contextInternal
-        return packageManager.toolPkgContainersInternal.values
-            .filter { container -> enabledSet.contains(container.packageName) }
-            .flatMap { container ->
-                    container = container,
-                    localizationContext = localizationContext
-                )
-            }
-    }
-
-        containerPackageName: String,
-        templateId: String
-    ): Result<Workflow> {
-        packageManager.ensureInitialized()
-        return runCatching {
-            val normalizedContainerPackageName = packageManager.normalizePackageName(containerPackageName)
-            val runtime =
-                packageManager.toolPkgContainersInternal[normalizedContainerPackageName]
-                    ?: throw IllegalArgumentException("ToolPkg container not found: $containerPackageName")
-            val enabledSet = packageManager.getEnabledPackageNameSetInternal()
-            if (!enabledSet.contains(runtime.packageName)) {
-                throw IllegalStateException("ToolPkg container is not enabled: ${runtime.packageName}")
-            }
-
-            val template =
-                    it.id.equals(templateId.trim(), ignoreCase = true)
-                } ?: throw IllegalArgumentException("Workflow template not found: $templateId")
-            val resource =
-                runtime.resources.firstOrNull {
-                    it.key.equals(template.resourceKey, ignoreCase = true)
-                } ?: throw IllegalStateException(
-                    "Workflow template resource not found: ${template.resourceKey}"
-                )
-            if (ToolPkgArchiveParser.isDirectoryResourceMime(resource.mime)) {
-                throw IllegalStateException(
-                    "Workflow template resource must be a file: ${template.resourceKey}"
-                )
-            }
-
-            val bytes =
-                packageManager.readToolPkgResourceBytes(runtime, resource.path)
-                    ?: throw IllegalStateException(
-                        "Workflow template resource is unavailable: ${template.resourceKey}"
-                    )
-            val templateWorkflowId = UUID.randomUUID().toString()
-            val templateElement =
-                JsonObject(
-                        ("id" to JsonPrimitive(templateWorkflowId))
-                )
-            val decoded =
-            val now = System.currentTimeMillis()
-            val importedWorkflow =
-                decoded.copy(
-                    id = templateWorkflowId,
-                    createdAt = now,
-                    updatedAt = now,
-                    lastExecutionTime = null,
-                    lastExecutionStatus = null,
-                    totalExecutions = 0,
-                    successfulExecutions = 0,
-                    failedExecutions = 0
-                )
-            kotlinx.coroutines.runBlocking {
-                    .getOrThrow()
-            }
-        }
     }
 
     fun getToolPkgWorkspaceTemplates(
