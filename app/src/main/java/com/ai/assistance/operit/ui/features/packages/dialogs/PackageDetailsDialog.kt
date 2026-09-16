@@ -333,11 +333,6 @@ fun PackageDetailsDialog(
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                         Text(
-                                            text = stringResource(R.string.pkg_toolpkg_workflow_templates, details.workflowTemplateCount),
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                        Text(
                                             text = stringResource(R.string.pkg_toolpkg_workspace_templates, details.workspaceTemplateCount),
                                             style = MaterialTheme.typography.bodySmall,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant

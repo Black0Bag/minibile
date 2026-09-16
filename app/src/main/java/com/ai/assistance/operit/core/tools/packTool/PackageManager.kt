@@ -126,7 +126,6 @@ private constructor(private val context: Context, private val aiToolHandler: AIT
         val author: List<String>,
         val resourceCount: Int,
         val wasmModuleCount: Int,
-        val workflowTemplateCount: Int,
         val workspaceTemplateCount: Int,
         val uiModuleCount: Int,
         val wasmModules: List<ToolPkgWasmModule>,
