@@ -5,8 +5,11 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import com.ai.assistance.operit.data.model.VibeCodingBuildAttemptEntity
 import com.ai.assistance.operit.data.model.VibeCodingBuildRunEntity
+import com.ai.assistance.operit.data.model.VibeCodingRecoveryCheckpointEntity
 import com.ai.assistance.operit.data.model.VibeCodingResearchRecordEntity
+import com.ai.assistance.operit.data.model.VibeCodingSubagentTaskEntity
 import com.ai.assistance.operit.data.model.VibeCodingTaskEntity
 import com.ai.assistance.operit.data.model.VibeCodingValidationRunEntity
 import kotlinx.coroutines.flow.Flow
@@ -72,4 +75,55 @@ interface VibeCodingTaskDao {
         deleteBuildRuns(taskId)
         runs.forEach { insertBuildRun(it.copy(taskId = taskId)) }
     }
+
+    // ─── Phase G: Build Attempts ───
+
+    @Query("SELECT * FROM vibecoding_build_attempts WHERE taskId = :taskId ORDER BY createdAt ASC")
+    suspend fun getBuildAttempts(taskId: String): List<VibeCodingBuildAttemptEntity>
+
+    @Query("SELECT * FROM vibecoding_build_attempts WHERE failureFingerprint = :fingerprint LIMIT 1")
+    suspend fun getAttemptByFingerprint(fingerprint: String): VibeCodingBuildAttemptEntity?
+
+    @Query("SELECT * FROM vibecoding_build_attempts WHERE runId = :runId ORDER BY createdAt DESC LIMIT 1")
+    suspend fun getLatestAttemptByRunId(runId: String): VibeCodingBuildAttemptEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertBuildAttempt(attempt: VibeCodingBuildAttemptEntity)
+
+    @Query("UPDATE vibecoding_build_attempts SET status = :status, fixCommitSha = :fixCommitSha WHERE attemptId = :attemptId")
+    suspend fun updateAttemptStatus(attemptId: String, status: String, fixCommitSha: String?)
+
+    @Query("DELETE FROM vibecoding_build_attempts WHERE taskId = :taskId")
+    suspend fun deleteBuildAttempts(taskId: String)
+
+    // ─── Phase G: Subagent Tasks ───
+
+    @Query("SELECT * FROM vibecoding_subagent_tasks WHERE parentTaskId = :taskId ORDER BY createdAt ASC")
+    suspend fun getSubagentTasks(taskId: String): List<VibeCodingSubagentTaskEntity>
+
+    @Query("SELECT * FROM vibecoding_subagent_tasks WHERE subtaskId = :subtaskId LIMIT 1")
+    suspend fun getSubagentTask(subtaskId: String): VibeCodingSubagentTaskEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSubagentTask(task: VibeCodingSubagentTaskEntity)
+
+    @Query("UPDATE vibecoding_subagent_tasks SET status = :status, result = :result, errorMessage = :errorMessage, completedAt = :completedAt WHERE subtaskId = :subtaskId")
+    suspend fun updateSubagentTaskResult(subtaskId: String, status: String, result: String?, errorMessage: String?, completedAt: Long?)
+
+    @Query("DELETE FROM vibecoding_subagent_tasks WHERE parentTaskId = :taskId")
+    suspend fun deleteSubagentTasks(taskId: String)
+
+    // ─── Phase G: Recovery Checkpoints ───
+
+    @Query("SELECT * FROM vibecoding_recovery_checkpoints WHERE taskId = :taskId ORDER BY createdAt DESC LIMIT 1")
+    suspend fun getLatestCheckpoint(taskId: String): VibeCodingRecoveryCheckpointEntity?
+
+    @Query("SELECT * FROM vibecoding_recovery_checkpoints WHERE buildRunId = :buildRunId ORDER BY createdAt DESC LIMIT 1")
+    suspend fun getCheckpointByBuildRunId(buildRunId: String): VibeCodingRecoveryCheckpointEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCheckpoint(checkpoint: VibeCodingRecoveryCheckpointEntity)
+
+    @Query("DELETE FROM vibecoding_recovery_checkpoints WHERE taskId = :taskId")
+    suspend fun deleteCheckpoints(taskId: String)
 }

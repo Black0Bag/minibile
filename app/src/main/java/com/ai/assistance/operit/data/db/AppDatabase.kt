@@ -19,8 +19,11 @@ import com.ai.assistance.operit.data.model.MessageVariantEntity
 import com.ai.assistance.operit.data.model.SessionTodoEntity
 import com.ai.assistance.operit.data.model.TokenStatsModelEntity
 import com.ai.assistance.operit.data.model.TokenUsageRecordEntity
+import com.ai.assistance.operit.data.model.VibeCodingBuildAttemptEntity
 import com.ai.assistance.operit.data.model.VibeCodingBuildRunEntity
+import com.ai.assistance.operit.data.model.VibeCodingRecoveryCheckpointEntity
 import com.ai.assistance.operit.data.model.VibeCodingResearchRecordEntity
+import com.ai.assistance.operit.data.model.VibeCodingSubagentTaskEntity
 import com.ai.assistance.operit.data.model.VibeCodingTaskEntity
 import com.ai.assistance.operit.data.model.VibeCodingValidationRunEntity
 /** 应用数据库，包含聊天表和消息表 */
@@ -36,8 +39,11 @@ import com.ai.assistance.operit.data.model.VibeCodingValidationRunEntity
         VibeCodingResearchRecordEntity::class,
         VibeCodingValidationRunEntity::class,
         VibeCodingBuildRunEntity::class,
+        VibeCodingBuildAttemptEntity::class,
+        VibeCodingSubagentTaskEntity::class,
+        VibeCodingRecoveryCheckpointEntity::class,
     ],
-    version = 23,
+    version = 24,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -541,6 +547,135 @@ abstract class AppDatabase : RoomDatabase() {
                 }
             }
 
+        /** v23 -> v24: Phase G recovery, subagent and build attempt tables. */
+        internal val MIGRATION_23_24 =
+            object : Migration(23, 24) {
+                override fun migrate(db: SupportSQLiteDatabase) {
+                    db.execSQL(
+                        """
+                        CREATE TABLE IF NOT EXISTS `vibecoding_build_attempts` (
+                            `attemptId` TEXT NOT NULL,
+                            `taskId` TEXT NOT NULL,
+                            `runId` TEXT NOT NULL,
+                            `sourceSha` TEXT NOT NULL,
+                            `failureFingerprint` TEXT NOT NULL,
+                            `failureCategory` TEXT NOT NULL,
+                            `fixDescription` TEXT NOT NULL,
+                            `fixCommitSha` TEXT,
+                            `status` TEXT NOT NULL,
+                            `createdAt` INTEGER NOT NULL,
+                            PRIMARY KEY(`attemptId`),
+                            FOREIGN KEY(`taskId`) REFERENCES `vibecoding_tasks`(`id`) ON DELETE CASCADE
+                        )
+                        """.trimIndent()
+                    )
+                    db.execSQL("CREATE INDEX IF NOT EXISTS `index_vibecoding_build_attempts_taskId` ON `vibecoding_build_attempts` (`taskId`)")
+                    db.execSQL("CREATE INDEX IF NOT EXISTS `index_vibecoding_build_attempts_runId` ON `vibecoding_build_attempts` (`runId`)")
+                    db.execSQL("CREATE INDEX IF NOT EXISTS `index_vibecoding_build_attempts_failureFingerprint` ON `vibecoding_build_attempts` (`failureFingerprint`)")
+
+                    db.execSQL(
+                        """
+                        CREATE TABLE IF NOT EXISTS `vibecoding_subagent_tasks` (
+                            `subtaskId` TEXT NOT NULL,
+                            `parentSessionId` TEXT NOT NULL,
+                            `parentTaskId` TEXT NOT NULL,
+                            `agentName` TEXT NOT NULL,
+                            `instruction` TEXT NOT NULL,
+                            `mode` TEXT NOT NULL,
+                            `maxSteps` INTEGER NOT NULL DEFAULT 10,
+                            `status` TEXT NOT NULL,
+                            `result` TEXT,
+                            `errorMessage` TEXT,
+                            `createdAt` INTEGER NOT NULL,
+                            `completedAt` INTEGER,
+                            PRIMARY KEY(`subtaskId`),
+                            FOREIGN KEY(`parentTaskId`) REFERENCES `vibecoding_tasks`(`id`) ON DELETE CASCADE
+                        )
+                        """.trimIndent()
+                    )
+                    db.execSQL("CREATE INDEX IF NOT EXISTS `index_vibecoding_subagent_tasks_parentTaskId` ON `vibecoding_subagent_tasks` (`parentTaskId`)")
+                    db.execSQL("CREATE INDEX IF NOT EXISTS `index_vibecoding_subagent_tasks_parentSessionId` ON `vibecoding_subagent_tasks` (`parentSessionId`)")
+
+                    db.execSQL(
+                        """
+                        CREATE TABLE IF NOT EXISTS `vibecoding_recovery_checkpoints` (
+                            `checkpointId` TEXT NOT NULL,
+                            `taskId` TEXT NOT NULL,
+                            `buildRunId` TEXT NOT NULL,
+                            `currentAttemptId` TEXT,
+                            `sourceSha` TEXT NOT NULL,
+                            `headSha` TEXT NOT NULL,
+                            `recoveryTarget` TEXT NOT NULL,
+                            `snapshotJson` TEXT NOT NULL,
+                            `createdAt` INTEGER NOT NULL,
+                            PRIMARY KEY(`checkpointId`),
+                            FOREIGN KEY(`taskId`) REFERENCES `vibecoding_tasks`(`id`) ON DELETE CASCADE
+                        )
+                        """.trimIndent()
+                    )
+                    db.execSQL("CREATE INDEX IF NOT EXISTS `index_vibecoding_recovery_checkpoints_taskId` ON `vibecoding_recovery_checkpoints` (`taskId`)")
+                    db.execSQL("CREATE INDEX IF NOT EXISTS `index_vibecoding_recovery_checkpoints_buildRunId` ON `vibecoding_recovery_checkpoints` (`buildRunId`)")
+                }
+
+                override fun migrate(connection: androidx.sqlite.SQLiteConnection) {
+                    val sqls = listOf(
+                        """CREATE TABLE IF NOT EXISTS `vibecoding_build_attempts` (
+                            `attemptId` TEXT NOT NULL,
+                            `taskId` TEXT NOT NULL,
+                            `runId` TEXT NOT NULL,
+                            `sourceSha` TEXT NOT NULL,
+                            `failureFingerprint` TEXT NOT NULL,
+                            `failureCategory` TEXT NOT NULL,
+                            `fixDescription` TEXT NOT NULL,
+                            `fixCommitSha` TEXT,
+                            `status` TEXT NOT NULL,
+                            `createdAt` INTEGER NOT NULL,
+                            PRIMARY KEY(`attemptId`),
+                            FOREIGN KEY(`taskId`) REFERENCES `vibecoding_tasks`(`id`) ON DELETE CASCADE
+                        )""",
+                        "CREATE INDEX IF NOT EXISTS `index_vibecoding_build_attempts_taskId` ON `vibecoding_build_attempts` (`taskId`)",
+                        "CREATE INDEX IF NOT EXISTS `index_vibecoding_build_attempts_runId` ON `vibecoding_build_attempts` (`runId`)",
+                        "CREATE INDEX IF NOT EXISTS `index_vibecoding_build_attempts_failureFingerprint` ON `vibecoding_build_attempts` (`failureFingerprint`)",
+                        """CREATE TABLE IF NOT EXISTS `vibecoding_subagent_tasks` (
+                            `subtaskId` TEXT NOT NULL,
+                            `parentSessionId` TEXT NOT NULL,
+                            `parentTaskId` TEXT NOT NULL,
+                            `agentName` TEXT NOT NULL,
+                            `instruction` TEXT NOT NULL,
+                            `mode` TEXT NOT NULL,
+                            `maxSteps` INTEGER NOT NULL DEFAULT 10,
+                            `status` TEXT NOT NULL,
+                            `result` TEXT,
+                            `errorMessage` TEXT,
+                            `createdAt` INTEGER NOT NULL,
+                            `completedAt` INTEGER,
+                            PRIMARY KEY(`subtaskId`),
+                            FOREIGN KEY(`parentTaskId`) REFERENCES `vibecoding_tasks`(`id`) ON DELETE CASCADE
+                        )""",
+                        "CREATE INDEX IF NOT EXISTS `index_vibecoding_subagent_tasks_parentTaskId` ON `vibecoding_subagent_tasks` (`parentTaskId`)",
+                        "CREATE INDEX IF NOT EXISTS `index_vibecoding_subagent_tasks_parentSessionId` ON `vibecoding_subagent_tasks` (`parentSessionId`)",
+                        """CREATE TABLE IF NOT EXISTS `vibecoding_recovery_checkpoints` (
+                            `checkpointId` TEXT NOT NULL,
+                            `taskId` TEXT NOT NULL,
+                            `buildRunId` TEXT NOT NULL,
+                            `currentAttemptId` TEXT,
+                            `sourceSha` TEXT NOT NULL,
+                            `headSha` TEXT NOT NULL,
+                            `recoveryTarget` TEXT NOT NULL,
+                            `snapshotJson` TEXT NOT NULL,
+                            `createdAt` INTEGER NOT NULL,
+                            PRIMARY KEY(`checkpointId`),
+                            FOREIGN KEY(`taskId`) REFERENCES `vibecoding_tasks`(`id`) ON DELETE CASCADE
+                        )""",
+                        "CREATE INDEX IF NOT EXISTS `index_vibecoding_recovery_checkpoints_taskId` ON `vibecoding_recovery_checkpoints` (`taskId`)",
+                        "CREATE INDEX IF NOT EXISTS `index_vibecoding_recovery_checkpoints_buildRunId` ON `vibecoding_recovery_checkpoints` (`buildRunId`)",
+                    )
+                    sqls.forEach { sql ->
+                        connection.prepare(sql).use { it.step() }
+                    }
+                }
+            }
+
         // 定义从版本2到3的迁移
         private val MIGRATION_2_3 =
             object : Migration(2, 3) {
@@ -660,7 +795,8 @@ abstract class AppDatabase : RoomDatabase() {
                                 MIGRATION_19_20,
                                 MIGRATION_20_21,
                                 MIGRATION_21_22,
-                                MIGRATION_22_23
+                                MIGRATION_22_23,
+                                MIGRATION_23_24
                             ) // 添加新的迁移
                             .build()
                     INSTANCE = instance

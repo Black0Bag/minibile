@@ -297,3 +297,120 @@ sealed interface VibeCodingDecision {
         val event: VibeCodingTaskEvent.Rejected = VibeCodingTaskEvent.Rejected(code, reason),
     ) : VibeCodingDecision
 }
+
+// ─── Phase G: Recovery, Subagent & Repair Loop ───
+
+/** A single attempt within a repair loop. Bounded by budget and fingerprint dedup. */
+@Serializable
+data class BuildAttempt(
+    val attemptId: String,
+    val taskId: String,
+    val runId: String,
+    val sourceSha: String,
+    val failureFingerprint: String,
+    val failureCategory: FailureCategory,
+    val fixDescription: String,
+    val fixCommitSha: String? = null,
+    val status: AttemptStatus,
+    val createdAt: Long = System.currentTimeMillis(),
+)
+
+@Serializable
+enum class FailureCategory {
+    INFRASTRUCTURE,
+    CODE,
+    CONFIG,
+    TIMEOUT,
+    UNKNOWN,
+}
+
+@Serializable
+enum class AttemptStatus {
+    INITIATED,
+    FIXING,
+    PR_OPENED,
+    CI_RUNNING,
+    SUCCEEDED,
+    FAILED,
+    ESCALATED,
+}
+
+/** Stable fingerprint for dedup: same fingerprint = same root cause, no retry. */
+@Serializable
+data class FailureFingerprint(
+    val fingerprint: String,
+    val failingJob: String,
+    val errorPattern: String,
+    val category: FailureCategory,
+)
+
+/** Repair budget gate: max 2 code attempts, infra retries unlimited within budget. */
+@Serializable
+data class RepairBudget(
+    val maxCodeAttempts: Int = 2,
+    val maxInfraRetries: Int = 3,
+    val codeAttemptsUsed: Int = 0,
+    val infraRetriesUsed: Int = 0,
+    val isExhausted: Boolean = false,
+) {
+    fun canAttempt(category: FailureCategory): Boolean =
+        if (category == FailureCategory.INFRASTRUCTURE) {
+            infraRetriesUsed < maxInfraRetries
+        } else {
+            codeAttemptsUsed < maxCodeAttempts
+        }
+
+    fun consume(category: FailureCategory): RepairBudget =
+        if (category == FailureCategory.INFRASTRUCTURE) {
+            copy(infraRetriesUsed = infraRetriesUsed + 1, isExhausted = infraRetriesUsed + 1 >= maxInfraRetries)
+        } else {
+            copy(codeAttemptsUsed = codeAttemptsUsed + 1, isExhausted = codeAttemptsUsed + 1 >= maxCodeAttempts)
+        }
+}
+
+/** Checkpoint for crash recovery: snapshot of build run + attempt state. */
+@Serializable
+data class RecoveryCheckpoint(
+    val checkpointId: String,
+    val taskId: String,
+    val buildRunId: String,
+    val currentAttemptId: String? = null,
+    val sourceSha: String,
+    val headSha: String,
+    val recoveryTarget: RecoveryTarget,
+    val snapshotJson: String,
+    val createdAt: Long = System.currentTimeMillis(),
+)
+
+@Serializable
+enum class RecoveryTarget {
+    RESUME_TRACKING,
+    RESUME_REPAIR,
+    RESUME_RELEASE,
+}
+
+/** Subagent task delegation model. */
+@Serializable
+data class SubagentTask(
+    val subtaskId: String,
+    val parentSessionId: String,
+    val parentTaskId: String,
+    val agentName: String,
+    val instruction: String,
+    val mode: CodingSessionMode,
+    val maxSteps: Int = 10,
+    val status: SubagentStatus,
+    val result: String? = null,
+    val errorMessage: String? = null,
+    val createdAt: Long = System.currentTimeMillis(),
+    val completedAt: Long? = null,
+)
+
+@Serializable
+enum class SubagentStatus {
+    PENDING,
+    RUNNING,
+    COMPLETED,
+    FAILED,
+    CANCELLED,
+}
