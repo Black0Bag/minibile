@@ -128,3 +128,79 @@ data class SessionTodoEntity(
     val parentTaskId: String? = null,
     val blockedReason: String? = null,
 )
+
+@Entity(
+    tableName = "vibecoding_build_attempts",
+    foreignKeys = [
+        ForeignKey(
+            entity = VibeCodingTaskEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["taskId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
+    indices = [Index("taskId"), Index("runId"), Index("failureFingerprint")],
+)
+data class VibeCodingBuildAttemptEntity(
+    @PrimaryKey val attemptId: String,
+    val taskId: String,
+    val runId: String,
+    val sourceSha: String,
+    val failureFingerprint: String,
+    val failureCategory: String,
+    val fixDescription: String,
+    val fixCommitSha: String? = null,
+    val status: String,
+    val createdAt: Long = System.currentTimeMillis(),
+)
+
+@Entity(
+    tableName = "vibecoding_subagent_tasks",
+    foreignKeys = [
+        ForeignKey(
+            entity = VibeCodingTaskEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["parentTaskId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
+    indices = [Index("parentTaskId"), Index("parentSessionId")],
+)
+data class VibeCodingSubagentTaskEntity(
+    @PrimaryKey val subtaskId: String,
+    val parentSessionId: String,
+    val parentTaskId: String,
+    val agentName: String,
+    val instruction: String,
+    val mode: String,
+    val maxSteps: Int = 10,
+    val status: String,
+    val result: String? = null,
+    val errorMessage: String? = null,
+    val createdAt: Long = System.currentTimeMillis(),
+    val completedAt: Long? = null,
+)
+
+@Entity(
+    tableName = "vibecoding_recovery_checkpoints",
+    foreignKeys = [
+        ForeignKey(
+            entity = VibeCodingTaskEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["taskId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
+    indices = [Index("taskId"), Index("buildRunId")],
+)
+data class VibeCodingRecoveryCheckpointEntity(
+    @PrimaryKey val checkpointId: String,
+    val taskId: String,
+    val buildRunId: String,
+    val currentAttemptId: String? = null,
+    val sourceSha: String,
+    val headSha: String,
+    val recoveryTarget: String,
+    val snapshotJson: String,
+    val createdAt: Long = System.currentTimeMillis(),
+)
