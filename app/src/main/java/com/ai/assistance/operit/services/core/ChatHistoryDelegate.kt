@@ -603,16 +603,6 @@ class ChatHistoryDelegate(
             }
         }
 
-        // 监听活跃目标变更：仅当当前为角色卡时才同步开场白
-        coroutineScope.launch {
-            activePromptManager.activePromptFlow.collect { activePrompt ->
-                if (activePrompt is ActivePrompt.CharacterCard) {
-                    val chatId = _currentChatId.value ?: return@collect
-                    syncOpeningStatementIfNoUserMessage(chatId)
-                }
-            }
-        }
-    }
 
     private suspend fun loadChatMessages(chatId: String) {
         try {
@@ -625,13 +615,6 @@ class ChatHistoryDelegate(
             if (selectedChat != null) {
                 onTokenStatisticsLoaded(chatId, selectedChat.inputTokens, selectedChat.outputTokens, selectedChat.currentWindowSize)
 
-
-            }
-
-            // 打开历史对话时也执行开场白同步：仅当当前会话还没有用户消息时
-            syncOpeningStatementIfNoUserMessage(chatId)
-
-        } catch (e: Exception) {
             AppLogger.e(TAG, "加载聊天消息失败", e)
         } finally {
             allowAddMessage.set(true)
@@ -661,105 +644,6 @@ class ChatHistoryDelegate(
         }
     }
 
-    private suspend fun syncOpeningStatementIfNoUserMessage(chatId: String) {
-        AppLogger.d(TAG, "开始同步开场白，聊天ID: $chatId")
-
-        historyUpdateMutex.withLock {
-            val chatMeta = _chatHistories.value.firstOrNull { it.id == chatId }
-            if (!null.isNullOrBlank()) {
-                AppLogger.d(TAG, "聊天 $chatId 绑定群组角色卡，跳过开场白同步")
-                return@withLock
-            }
-
-            val hasUserMessage = chatHistoryManager.hasUserMessage(chatId)
-
-            AppLogger.d(
-                TAG,
-                "从数据库检查消息 - 内存消息数: ${_chatHistory.value.size}, 是否有用户消息: $hasUserMessage",
-            )
-
-            if (hasUserMessage) {
-                AppLogger.d(TAG, "聊天 $chatId 已存在用户消息，跳过开场白同步")
-                return@withLock
-            }
-
-            val boundCardName = null
-            val boundCard = boundCardName?.let { characterCardManager.findCharacterCardByName(it) }
-            val activePrompt = activePromptManager.getActivePrompt()
-            val activeCard = when (activePrompt) {
-                is ActivePrompt.CharacterCard -> characterCardManager.getCharacterCard(activePrompt.id)
-                is ActivePrompt.CharacterGroup -> null
-            }
-            val effectiveCard = boundCard ?: activeCard
-
-            // 如果没有有效的角色卡，使用默认角色卡
-            if (effectiveCard == null) {
-                AppLogger.d(TAG, "没有有效的角色卡，跳过开场白处理")
-                return@withLock
-            }
-
-            val opening = effectiveCard.openingStatement
-            val roleName = effectiveCard.name
-            if (boundCard == null && boundCardName != null) {
-                AppLogger.w(TAG, "绑定角色卡未找到，回退使用当前活跃角色卡: $boundCardName")
-            }
-            AppLogger.d(TAG, "获取角色卡信息 - 名称: $roleName, 开场白长度: ${opening.length}, 是否为空: ${opening.isBlank()}, 绑定角色卡: $boundCardName")
-
-            // 使用数据库中的消息作为基准，但优先使用内存中的消息（如果已加载）
-            val currentMessages = _chatHistory.value.toMutableList()
-            val existingIndex = currentMessages.indexOfFirst { it.sender == "ai" }
-            AppLogger.d(TAG, "当前消息数量: ${currentMessages.size}, 现有AI消息索引: $existingIndex")
-
-            if (existingIndex >= 0) {
-                val existing = currentMessages[existingIndex]
-                val isOpeningMessage = existing.provider.isBlank() && existing.modelName.isBlank()
-                if (opening.isNotBlank()) {
-                    if (isOpeningMessage) {
-                        if (existing.content != opening || existing.roleName != roleName) {
-                            AppLogger.d(TAG, "更新现有开场白消息 - 原内容长度: ${existing.content.length}, 新内容长度: ${opening.length}, 原角色名: ${existing.roleName}, 新角色名: $roleName")
-                            val updated = existing.copy(content = opening, roleName = roleName)
-                            currentMessages[existingIndex] = updated
-                            setCurrentChatMessagesInMemory(currentMessages)
-                            chatHistoryManager.updateMessage(chatId, updated)
-                            AppLogger.d(TAG, "开场白消息更新完成")
-                        } else {
-                            AppLogger.d(TAG, "开场白内容未变化，无需更新")
-                        }
-                    } else {
-                        AppLogger.d(TAG, "已有AI消息非开场白，跳过同步")
-                    }
-                } else {
-                    if (isOpeningMessage) {
-                        AppLogger.d(TAG, "开场白为空，删除现有AI开场白消息，时间戳: ${existing.timestamp}")
-                        currentMessages.removeAt(existingIndex)
-                        setCurrentChatMessagesInMemory(currentMessages)
-                        chatHistoryManager.deleteMessage(chatId, existing.timestamp)
-                        AppLogger.d(TAG, "AI消息删除完成")
-                    } else {
-                        AppLogger.d(TAG, "开场白为空但现有AI消息非开场白，跳过删除")
-                    }
-                }
-            } else if (opening.isNotBlank()) {
-                val openingMessage = ChatMessage(
-                    sender = "ai",
-                    content = opening,
-                    timestamp = ChatMessageTimestampAllocator.next(),
-                    roleName = roleName,
-                    provider = "", // 开场白不是AI生成，使用空值
-                    modelName = "" // 开场白不是AI生成，使用空值
-                )
-                AppLogger.d(TAG, "添加新开场白消息 - 时间戳: ${openingMessage.timestamp}, 角色名: $roleName, 内容长度: ${opening.length}")
-                currentMessages.add(openingMessage)
-                setCurrentChatMessagesInMemory(currentMessages)
-                chatHistoryManager.addMessage(chatId, openingMessage)
-                AppLogger.d(TAG, "开场白消息添加完成，当前消息总数: ${currentMessages.size}")
-            } else {
-                AppLogger.d(TAG, "无现有AI消息且开场白为空，无需操作")
-            }
-        }
-
-        AppLogger.d(TAG, "开场白同步完成，聊天ID: $chatId")
-    }
 
     /** 检查是否应该创建新聊天，确保同步 */
     fun checkIfShouldCreateNewChat(): Boolean {
@@ -787,12 +671,6 @@ class ChatHistoryDelegate(
             val currentChatId = _currentChatId.value
             val inheritGroupFromChatId = if (inheritGroupFromCurrent) currentChatId else null
 
-            // 获取当前活跃的角色卡
-            val activePrompt = activePromptManager.getActivePrompt()
-            val activeCard = when (activePrompt) {
-                is ActivePrompt.CharacterCard -> characterCardManager.getCharacterCard(activePrompt.id)
-                is ActivePrompt.CharacterGroup -> null
-            }
             val resolvedCard =
                 if (characterGroupId.isNullOrBlank()) {
                     characterCardId
@@ -947,34 +825,9 @@ class ChatHistoryDelegate(
             }.getOrNull()
             return ChatDeletionReplacementTarget(
                 characterCardName = normalizedCardName,
-                characterCardId = matchedCard?.id,
-                includeUnboundChats = matchedCard?.isDefault == true
-            )
-        }
 
-        return when (val activePrompt = runCatching { activePromptManager.getActivePrompt() }.getOrNull()) {
-            is ActivePrompt.CharacterGroup -> {
-                ChatDeletionReplacementTarget(
-                    characterGroupId = activePrompt.id.trim().takeIf { it.isNotBlank() }
-                )
-            }
-
-            is ActivePrompt.CharacterCard -> {
-                val activeCard = runCatching {
-                    characterCardManager.getCharacterCard(activePrompt.id)
-                }.getOrNull()
-                if (activeCard != null) {
-                    ChatDeletionReplacementTarget(
-                        characterCardName = activeCard.name,
-                        characterCardId = activeCard.id,
-                        includeUnboundChats = activeCard.isDefault
-                    )
-                } else {
-                    ChatDeletionReplacementTarget()
-                }
-            }
-
-            null -> ChatDeletionReplacementTarget()
+        return ChatDeletionReplacementTarget()
+        return ChatDeletionReplacementTarget()
         }
     }
 

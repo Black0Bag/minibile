@@ -610,7 +610,6 @@ sealed class Screen(
                     navigateToLanguageSettings = { navigateTo(LanguageSettings) },
                     navigateToSpeechServicesSettings = { navigateTo(SpeechServicesSettings) },
                     navigateToExternalHttpChatSettings = { navigateTo(ExternalHttpChatSettings) },
-                    navigateToPersonaCardGeneration = { navigateTo(PersonaCardGeneration) },
                     navigateToWaifuModeSettings = { navigateTo(WaifuModeSettings) },
                     navigateToTokenUsageStatistics = { navigateTo(TokenUsageStatistics) },
                     navigateToContextSummarySettings = { navigateTo(ContextSummarySettings) },
@@ -863,27 +862,6 @@ sealed class Screen(
         }
     }
 
-    // 新增：人设卡生成页面
-    data object PersonaCardGeneration :
-        Screen(navItem = NavItem.Settings, titleRes = R.string.screen_title_persona_card_generation) {
-        @Composable
-        override fun Content(
-            navController: NavController,
-            navigateTo: ScreenNavigationHandler,
-            onGoBack: () -> Unit,
-            hasBackgroundImage: Boolean,
-            onLoading: (Boolean) -> Unit,
-            onError: (String) -> Unit,
-            onGestureConsumed: (Boolean) -> Unit
-        ) {
-            com.ai.assistance.operit.ui.features.settings.screens.PersonaCardGenerationScreen(
-                onNavigateToSettings = { navigateTo(Settings) },
-                onNavigateToModelConfig = { navigateTo(ModelConfig) },
-                onNavigateToModelPrompts = { navigateTo(ModelPromptsSettings) }
-            )
-        }
-    }
-
     // 新增：Waifu模式设置页面
     data object WaifuModeSettings :
         Screen(navItem = NavItem.Settings, titleRes = R.string.screen_title_waifu_mode_settings) {
@@ -954,7 +932,6 @@ sealed class Screen(
             ModelPromptsSettingsScreen(
                 onBackPressed = onGoBack,
                 onNavigateToMarket = { navigateTo(TagMarket) },
-                onNavigateToPersonaGeneration = { navigateTo(PersonaCardGeneration) },
                 onNavigateToChatManagement = { navigateTo(ChatHistorySettings) }
             )
         }

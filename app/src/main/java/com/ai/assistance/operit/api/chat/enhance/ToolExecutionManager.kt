@@ -142,63 +142,6 @@ object ToolExecutionManager {
         return tool.parameters.firstOrNull { it.name == name }?.value?.trim()
     }
 
-    private fun isInvocationAllowedForRoleCard(
-        invocation: ToolInvocation,
-        roleCardToolAccess: com.ai.assistance.operit.data.preferences.ResolvedCharacterCardToolAccess
-    ): Boolean {
-        val toolName = invocation.tool.name.trim()
-        val resolvedTarget = resolveToolTarget(invocation.tool).tool
-
-        return when {
-            toolName == CliToolModeSupport.SEARCH_TOOL_NAME -> true
-
-            toolName == CliToolModeSupport.PROXY_TOOL_NAME -> {
-                isResolvedTargetAllowedForRoleCard(resolvedTarget, roleCardToolAccess)
-            }
-
-            toolName == "use_package" -> {
-                if (!roleCardToolAccess.isBuiltinToolAllowed("use_package")) {
-                    false
-                } else {
-                    val sourceName = getParameterValue(invocation.tool, "package_name").orEmpty()
-                    sourceName.isBlank() || roleCardToolAccess.isExternalSourceAllowed(sourceName)
-                }
-            }
-
-            toolName == PACKAGE_PROXY_TOOL_NAME -> {
-                if (!roleCardToolAccess.isBuiltinToolAllowed("package_proxy")) {
-                    false
-                } else {
-                    val resolvedTargetName = resolvedTarget.name.trim()
-                    if (resolvedTargetName.isBlank() || !resolvedTargetName.contains(':')) {
-                        true
-                    } else {
-                        isResolvedTargetAllowedForRoleCard(resolvedTarget, roleCardToolAccess)
-                    }
-                }
-            }
-
-            toolName.contains(':') -> {
-                val sourceName = toolName.substringBefore(':').trim()
-                sourceName.isBlank() || roleCardToolAccess.isExternalSourceAllowed(sourceName)
-            }
-
-            else -> roleCardToolAccess.isBuiltinToolAllowed(toolName)
-        }
-    }
-
-    private fun buildRoleCardDeniedResult(
-        context: Context,
-        invocation: ToolInvocation
-    ): ToolResult {
-        return ToolResult(
-            toolName = resolveDisplayToolName(invocation.tool),
-            success = false,
-            result = StringResultData(""),
-            error = context.getString(R.string.character_card_tool_access_denied_runtime)
-        )
-    }
-
     private fun isEnglishLanguage(context: Context): Boolean {
         return LocaleUtils.getCurrentLanguage(context).lowercase().startsWith("en")
     }
@@ -242,29 +185,6 @@ object ToolExecutionManager {
             success = false,
             result = StringResultData(""),
             error = errorMessage
-        )
-    }
-
-    private fun isResolvedTargetAllowedForRoleCard(
-        resolvedTarget: AITool,
-        roleCardToolAccess: com.ai.assistance.operit.data.preferences.ResolvedCharacterCardToolAccess
-    ): Boolean {
-        val resolvedTargetName = resolvedTarget.name.trim()
-        if (resolvedTargetName.isBlank()) {
-            return true
-        }
-
-        val usePackageSourceName =
-            if (resolvedTargetName == "use_package") {
-                getParameterValue(resolvedTarget, "package_name")
-            } else {
-                null
-            }
-
-        return CliToolModeSupport.isToolNameAllowedForRoleCard(
-            toolName = resolvedTargetName,
-            usePackageSourceName = usePackageSourceName,
-            roleCardToolAccess = roleCardToolAccess
         )
     }
 
@@ -511,17 +431,6 @@ object ToolExecutionManager {
             toolHandler.registerDefaultTools()
         }
 
-        val roleCardToolAccess = if (callerCardId.isNullOrBlank()) {
-            null
-        } else {
-            runCatching {
-                CharacterCardToolAccessResolver
-                    .getInstance(context)
-                    .resolve(callerCardId, packageManager)
-            }.onFailure { error ->
-                AppLogger.e(TAG, "角色卡工具权限解析失败: callerCardId=$callerCardId", error)
-            }.getOrNull()
-        }
         val toolRuntimeContext =
             ToolRuntimeContext(
                 callerCardId = callerCardId,
@@ -548,34 +457,11 @@ object ToolExecutionManager {
             }
         }
 
-        // 2. 角色卡工具权限拦截（优先于权限弹窗与包自动激活）
-        val roleCardPermittedInvocations = mutableListOf<ToolInvocation>()
-        val roleCardDeniedResults = mutableListOf<ToolResult>()
-        for (invocation in toolExposurePermittedInvocations) {
-            val deniedResult = if (roleCardToolAccess?.customEnabled == true &&
-                !isInvocationAllowedForRoleCard(invocation, roleCardToolAccess)
-            ) {
-                buildRoleCardDeniedResult(context, invocation)
-            } else {
-                null
-            }
-
-            if (deniedResult == null) {
-                roleCardPermittedInvocations.add(invocation)
-            } else {
-                roleCardDeniedResults.add(deniedResult)
-                toolHandler.notifyToolExecutionResult(invocation.tool, deniedResult)
-                val toolResultStatusContent =
-                    ConversationMarkupManager.formatToolResultForMessage(deniedResult)
-                collector.emit(ensureEndsWithNewline(toolResultStatusContent))
-            }
-        }
-
         // 3. Hook 拦截与权限检查
         val permittedInvocations = mutableListOf<ToolInvocation>()
         val hookDeniedResults = mutableListOf<ToolResult>()
         val permissionDeniedResults = mutableListOf<ToolResult>()
-        for (invocation in roleCardPermittedInvocations) {
+        for (invocation in toolExposurePermittedInvocations) {
             toolHandler.notifyToolCallRequested(invocation.tool)
             val interceptionTool = resolveToolTarget(invocation.tool).tool
             when (val interception = toolHandler.checkToolInterception(interceptionTool)) {
@@ -677,7 +563,6 @@ object ToolExecutionManager {
 
         // 7. 组合所有结果并返回
         toolExposureDeniedResults +
-            roleCardDeniedResults +
             hookDeniedResults +
             permissionDeniedResults +
             orderedAggregated

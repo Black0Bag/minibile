@@ -166,27 +166,8 @@ class ApiConfigDelegate(
     @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     val effectiveChatConfigTarget: StateFlow<EffectiveChatConfigTarget> =
             activePromptManager.activePromptFlow
-                .flatMapLatest { prompt ->
-                    when (prompt) {
-                        is ActivePrompt.CharacterCard ->
-                            combine(
-                                characterCardManager.getCharacterCardFlow(prompt.id),
-                                activeConfigId
-                            ) { card, globalConfigId ->
-                                val lockedConfigId =
-                                    card?.takeIf {
-                                        CharacterCardChatModelBindingMode.normalize(
-                                            it.chatModelBindingMode
-                                        ) == CharacterCardChatModelBindingMode.FIXED_CONFIG
-                                    }
-                                        ?.chatModelConfigId
-                                        ?.trim()
-                                        ?.takeIf { it.isNotEmpty() }
-                                lockedConfigId ?: globalConfigId
-                            }
-
-                        is ActivePrompt.CharacterGroup -> activeConfigId
-                    }
+                .flatMapLatest { _ ->
+                    activeConfigId
                 }
                 .map { configId ->
                     EffectiveChatConfigTarget(configId = configId, isResolved = true)

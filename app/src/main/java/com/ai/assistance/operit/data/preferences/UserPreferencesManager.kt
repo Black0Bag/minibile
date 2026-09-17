@@ -903,10 +903,7 @@ class UserPreferencesManager private constructor(private val context: Context) {
     }
 
     private fun themePrefixForPrompt(target: ActivePrompt): String {
-        return when (target) {
-            is ActivePrompt.CharacterCard -> getCharacterCardThemePrefix(target.id)
-            is ActivePrompt.CharacterGroup -> getCharacterGroupThemePrefix(target.id)
-        }
+        return getCharacterCardThemePrefix(target.id)
     }
 
     private fun isVisualThemeStringKey(key: Preferences.Key<String>): Boolean {

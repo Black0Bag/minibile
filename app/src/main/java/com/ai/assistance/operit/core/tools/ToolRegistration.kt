@@ -905,12 +905,10 @@ fun registerAllTools(handler: AIToolHandler, context: Context) {
                     ?.toIntOrNull()
                     ?: CliToolModeSupport.defaultSearchLimit()
 
-                val roleCardToolAccess = resolveCurrentRoleCardToolAccess()
                 val hiddenCatalog = runBlocking {
                     CliToolModeSupport.buildHiddenToolCatalog(
                         context = context,
                         packageManager = handler.getOrCreatePackageManager(),
-                        roleCardToolAccess = roleCardToolAccess,
                         useEnglish = useEnglish
                     )
                 }
@@ -968,21 +966,6 @@ fun registerAllTools(handler: AIToolHandler, context: Context) {
                             resolvedInvocation.targetToolName,
                             useEnglish
                         )
-                    )
-                }
-
-                val roleCardToolAccess = resolveCurrentRoleCardToolAccess()
-                if (!isProxyTargetAllowedForRoleCard(
-                        targetToolName = resolvedInvocation.targetToolName,
-                        forwardedParameters = resolvedInvocation.forwardedParameters,
-                        roleCardToolAccess = roleCardToolAccess
-                    )
-                ) {
-                    return@registerTool ToolResult(
-                        toolName = resolvedInvocation.targetToolName,
-                        success = false,
-                        result = StringResultData(""),
-                        error = CliToolModeSupport.buildRoleAccessDeniedMessage(useEnglish)
                     )
                 }
 

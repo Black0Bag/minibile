@@ -317,7 +317,7 @@ class WebChatHttpBridge(
                     if (!cardExists) {
                         return@runBlocking null
                     }
-                    activePromptManager.setActivePrompt(ActivePrompt.CharacterCard(targetId))
+                    activePromptManager.setActivePrompt(ActivePrompt(targetId))
                 }
 
                 ACTIVE_PROMPT_TYPE_CHARACTER_GROUP -> {
@@ -325,7 +325,7 @@ class WebChatHttpBridge(
                     if (!groupExists) {
                         return@runBlocking null
                     }
-                    activePromptManager.setActivePrompt(ActivePrompt.CharacterGroup(targetId))
+                    activePromptManager.setActivePrompt(ActivePrompt(targetId))
                 }
 
                 else -> return@runBlocking null

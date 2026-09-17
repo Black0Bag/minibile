@@ -770,9 +770,8 @@ class MessageCoordinationDelegate(
         if (!proxySenderNameOverride.isNullOrBlank()) return false
         if (!messageTextOverride.isNullOrBlank()) return false
         if (!chatIdOverride.isNullOrBlank()) return false
-        val activePrompt = runBlocking { activePromptManager.getActivePrompt() }
-        if (activePrompt !is ActivePrompt.CharacterGroup) return false
-        return true
+        // 角色卡系统已移除：群组编排判定恒为 false
+        return false
     }
 
     private suspend fun orchestrateGroupConversation(
@@ -1200,24 +1199,7 @@ class MessageCoordinationDelegate(
     }
 
     private suspend fun resolveTargetGroupForChat(chatId: String): com.ai.assistance.operit.data.model.CharacterGroupCard? {
-        val activePrompt = activePromptManager.getActivePrompt()
-        val activeGroupId = (activePrompt as? ActivePrompt.CharacterGroup)
-            ?.id
-            ?.takeIf { it.isNotBlank() }
-        if (!activeGroupId.isNullOrBlank()) {
-            return characterGroupCardManager.getCharacterGroupCard(activeGroupId)
-        }
-
-        val boundGroupId = chatHistoryDelegate.chatHistories.value
-            .firstOrNull { it.id == chatId }
-            null
-            ?.takeIf { it.isNotBlank() }
-        if (!boundGroupId.isNullOrBlank()) {
-            AppLogger.d(
-                TAG,
-                "发送判定按当前选择执行，忽略会话绑定群组: chatId=$chatId, boundGroupId=$boundGroupId"
-            )
-        }
+        // 角色卡系统已移除：群组解析恒为 null
         return null
     }
 

@@ -201,22 +201,7 @@ class ChatMemoryRebuildManager private constructor(private val context: Context)
         history: ChatHistory,
         activeProfileId: String
     ): String {
-        if (!null.isNullOrBlank()) {
-            return activeProfileId
-        }
-        val cardName = null ?: return activeProfileId
-        val card = CharacterCardManager.getInstance(context).getAllCharacterCards()
-            .firstOrNull { it.name == cardName }
-        return if (
-            card != null &&
-                CharacterCardMemoryProfileBindingMode.normalize(card.memoryProfileBindingMode) ==
-                    CharacterCardMemoryProfileBindingMode.FIXED_PROFILE &&
-                !card.memoryProfileId.isNullOrBlank()
-        ) {
-            requireNotNull(card.memoryProfileId)
-        } else {
-            activeProfileId
-        }
+        return activeProfileId
     }
 
     private data class PlannedChat(

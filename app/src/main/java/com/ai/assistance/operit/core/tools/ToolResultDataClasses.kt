@@ -1972,6 +1972,101 @@ data class FunctionModelBindingResultData(
     }
 }
 
+/** 发送消息结果数据 */
+@Serializable
+data class MessageSendResultData(
+    val chatId: String,
+    val message: String,
+    val aiResponse: String? = null,
+    val receivedAt: Long? = null,
+    val sentAt: Long = System.currentTimeMillis()
+) : ToolResultData() {
+    override fun toString(): String {
+        val messagePreview = if (message.length > 50) {
+            "${message.take(50)}..."
+        } else {
+            message
+        }
+        val response = aiResponse
+        return if (response.isNullOrBlank()) {
+            "Message sent to chat: $chatId\nMessage content: $messagePreview"
+        } else {
+            val responsePreview = if (response.length > 200) {
+                "${response.take(200)}..."
+            } else {
+                response
+            }
+            "Message sent to chat: $chatId\nMessage content: $messagePreview\nAI Reply: $responsePreview"
+        }
+    }
+}
+
+/** 发送消息流式事件数据 */
+@Serializable
+data class MessageSendStreamEventData(
+    val type: String,
+    val chatId: String,
+    val message: String,
+    val waifu: Boolean = false,
+    val chunk: String? = null,
+    val chunkIndex: Int? = null,
+    val receivedChars: Int? = null
+) : ToolResultData() {
+    override fun toString(): String {
+        return when (type) {
+            "chunk" -> chunk.orEmpty()
+            "start" -> "Message stream started"
+            else -> "Message stream event: $type"
+        }
+    }
+}
+
+/** 记忆链接结果数据 */
+@Serializable
+data class MemoryLinkResultData(
+    val sourceTitle: String,
+    val targetTitle: String,
+    val linkType: String,
+    val weight: Float,
+    val description: String
+) : ToolResultData() {
+    override fun toString(): String {
+        return "Successfully linked memory: '$sourceTitle' -> '$targetTitle' (Type: $linkType, Strength: $weight)"
+    }
+}
+
+/** 记忆链接查询结果数据 */
+@Serializable
+data class MemoryLinkQueryResultData(
+    val totalCount: Int,
+    val links: List<LinkInfo>
+) : ToolResultData() {
+    @Serializable
+    data class LinkInfo(
+        val linkId: Long,
+        val sourceTitle: String,
+        val targetTitle: String,
+        val linkType: String,
+        val weight: Float,
+        val description: String
+    )
+
+    override fun toString(): String {
+        if (links.isEmpty()) {
+            return "No memory links found."
+        }
+        val sb = StringBuilder()
+        sb.appendLine("Memory Links ($totalCount):")
+        links.forEach { link ->
+            sb.appendLine("- #${link.linkId}: '${link.sourceTitle}' -> '${link.targetTitle}' (Type: ${link.linkType}, Weight: ${link.weight})")
+            if (link.description.isNotBlank()) {
+                sb.appendLine("  Description: ${link.description}")
+            }
+        }
+        return sb.toString().trim()
+    }
+}
+
 /** 模型配置连接测试单项 */
 @Serializable
 data class ModelConfigConnectionTestItemResultData(

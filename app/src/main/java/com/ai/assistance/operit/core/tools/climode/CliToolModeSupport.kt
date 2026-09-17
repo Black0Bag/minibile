@@ -196,7 +196,6 @@ object CliToolModeSupport {
     suspend fun buildHiddenToolCatalog(
         context: Context,
         packageManager: PackageManager,
-        roleCardToolAccess: ResolvedCharacterCardToolAccess,
         useEnglish: Boolean
     ): List<HiddenToolCatalogEntry> {
         val categories = buildBuiltinAndInternalCategories(useEnglish)
@@ -209,9 +208,6 @@ object CliToolModeSupport {
                     return@forEach
                 }
                 if (isReservedProxyTarget(tool.name) || isCliPublicTool(tool.name)) {
-                    return@forEach
-                }
-                if (!isToolNameAllowedForRoleCard(tool.name, null, roleCardToolAccess)) {
                     return@forEach
                 }
 
@@ -241,7 +237,6 @@ object CliToolModeSupport {
                 .map { it.trim() }
                 .filter { it.isNotEmpty() }
                 .filter { !packageManager.isToolPkgContainer(it) }
-                .filter { roleCardToolAccess.isExternalSourceAllowed(it) }
                 .toList()
 
         enabledPackages.forEach { packageName ->
@@ -277,7 +272,6 @@ object CliToolModeSupport {
         val skillPackages =
             SkillRepository.getInstance(context)
                 .getAiVisibleSkillPackages()
-                .filterKeys { roleCardToolAccess.isExternalSourceAllowed(it) }
 
         skillPackages.forEach { (skillName, skillPackage) ->
             addActivationEntry(
@@ -291,7 +285,6 @@ object CliToolModeSupport {
 
         val mcpServers =
             packageManager.getAvailableServerPackages()
-                .filterKeys { roleCardToolAccess.isExternalSourceAllowed(it) }
         val mcpLocalServer = MCPLocalServer.getInstance(context)
 
         mcpServers.forEach { (serverName, serverConfig) ->
@@ -443,28 +436,6 @@ object CliToolModeSupport {
             "The current role card is not allowed to access this hidden tool."
         } else {
             "The current role card is not allowed to access this hidden tool."
-        }
-    }
-
-    fun isToolNameAllowedForRoleCard(
-        toolName: String,
-        usePackageSourceName: String?,
-        roleCardToolAccess: ResolvedCharacterCardToolAccess
-    ): Boolean {
-        return when {
-            toolName == "use_package" -> {
-                if (!roleCardToolAccess.isBuiltinToolAllowed("use_package")) {
-                    false
-                } else {
-                    usePackageSourceName.isNullOrBlank() ||
-                        roleCardToolAccess.isExternalSourceAllowed(usePackageSourceName)
-                }
-            }
-            toolName.contains(':') -> {
-                val sourceName = toolName.substringBefore(':').trim()
-                sourceName.isBlank() || roleCardToolAccess.isExternalSourceAllowed(sourceName)
-            }
-            else -> roleCardToolAccess.isBuiltinToolAllowed(toolName)
         }
     }
 
