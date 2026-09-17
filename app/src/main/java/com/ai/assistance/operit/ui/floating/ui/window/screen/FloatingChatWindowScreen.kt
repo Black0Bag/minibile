@@ -80,7 +80,6 @@ import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.rememberAsyncImagePainter
-import com.ai.assistance.operit.data.preferences.CharacterCardManager
 import com.ai.assistance.operit.data.preferences.UserPreferencesManager
 import com.ai.assistance.operit.plugins.chatview.ChatViewEvent
 import com.ai.assistance.operit.plugins.chatview.ChatViewHookParams
@@ -237,7 +236,7 @@ private fun RecentChatSelectorOverlay(
     val avatarUriMap = remember { mutableStateMapOf<String, String?>() }
     LaunchedEffect(items) {
         items.forEach { history ->
-            val characterName = history.characterCardName?.takeIf { it.isNotBlank() }
+            val characterName = null?.takeIf { it.isNotBlank() }
             if (characterName != null && !avatarUriMap.containsKey(history.id)) {
                 coroutineScope.launch {
                     val card = characterCardManager.findCharacterCardByName(characterName)

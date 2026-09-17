@@ -43,7 +43,7 @@ import com.ai.assistance.operit.data.model.VibeCodingValidationRunEntity
         VibeCodingSubagentTaskEntity::class,
         VibeCodingRecoveryCheckpointEntity::class,
     ],
-    version = 24,
+    version = 25,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -763,6 +763,43 @@ abstract class AppDatabase : RoomDatabase() {
                 }
             }
 
+        // 定义从版本24到25的迁移：删除角色卡相关列
+        internal val MIGRATION_24_25 =
+            object : Migration(24, 25) {
+                override fun migrate(db: SupportSQLiteDatabase) {
+                    // SQLite 不支持 DROP COLUMN（旧版本），需要重建表
+                    db.execSQL(
+                        """
+                        CREATE TABLE IF NOT EXISTS `chats_new` (
+                            `id` TEXT NOT NULL,
+                            `title` TEXT NOT NULL,
+                            `createdAt` INTEGER NOT NULL,
+                            `updatedAt` INTEGER NOT NULL,
+                            `inputTokens` INTEGER NOT NULL,
+                            `outputTokens` INTEGER NOT NULL,
+                            `currentWindowSize` INTEGER NOT NULL,
+                            `group` TEXT,
+                            `displayOrder` INTEGER NOT NULL,
+                            `workspace` TEXT,
+                            `workspaceEnv` TEXT,
+                            `parentChatId` TEXT,
+                            `locked` INTEGER NOT NULL DEFAULT 0,
+                            `pinned` INTEGER NOT NULL DEFAULT 0,
+                            PRIMARY KEY(`id`)
+                        )
+                        """.trimIndent()
+                    )
+                    db.execSQL(
+                        """
+                        INSERT INTO `chats_new` (`id`, `title`, `createdAt`, `updatedAt`, `inputTokens`, `outputTokens`, `currentWindowSize`, `group`, `displayOrder`, `workspace`, `workspaceEnv`, `parentChatId`, `locked`, `pinned`)
+                        SELECT `id`, `title`, `createdAt`, `updatedAt`, `inputTokens`, `outputTokens`, `currentWindowSize`, `group`, `displayOrder`, `workspace`, `workspaceEnv`, `parentChatId`, `locked`, `pinned` FROM `chats`
+                        """.trimIndent()
+                    )
+                    db.execSQL("DROP TABLE `chats`")
+                    db.execSQL("ALTER TABLE `chats_new` RENAME TO `chats`")
+                }
+            }
+
         /** 获取数据库实例，单例模式 */
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE
@@ -796,7 +833,8 @@ abstract class AppDatabase : RoomDatabase() {
                                 MIGRATION_20_21,
                                 MIGRATION_21_22,
                                 MIGRATION_22_23,
-                                MIGRATION_23_24
+                                MIGRATION_23_24,
+                                MIGRATION_24_25
                             ) // 添加新的迁移
                             .build()
                     INSTANCE = instance

@@ -76,7 +76,6 @@ import com.ai.assistance.operit.data.backup.RoomDatabaseBackupManager
 import com.ai.assistance.operit.data.backup.RoomDatabaseBackupPreferences
 import com.ai.assistance.operit.data.backup.RoomDatabaseBackupScheduler
 import com.ai.assistance.operit.data.backup.RoomDatabaseRestoreManager
-import com.ai.assistance.operit.data.preferences.CharacterCardManager
 import com.ai.assistance.operit.data.preferences.UserPreferencesManager
 import com.ai.assistance.operit.data.preferences.ModelConfigManager
 import com.ai.assistance.operit.data.repository.ChatHistoryManager
@@ -84,7 +83,6 @@ import com.ai.assistance.operit.data.repository.MemoryRepository
 import com.ai.assistance.operit.data.converter.ExportFormat
 import com.ai.assistance.operit.data.converter.ChatFormat
 import com.ai.assistance.operit.ui.features.settings.components.BackupFilesStatisticsCard
-import com.ai.assistance.operit.ui.features.settings.components.CharacterCardManagementCard
 import com.ai.assistance.operit.ui.features.settings.components.ChatHistoryExportSelectionDialog
 import com.ai.assistance.operit.ui.features.settings.components.ChatHistoryOperation
 import com.ai.assistance.operit.ui.features.settings.components.DataManagementCard
@@ -105,7 +103,6 @@ import com.ai.assistance.operit.ui.features.settings.components.OverviewCard
 import com.ai.assistance.operit.ui.features.settings.components.ProfileSelectionDialog
 import com.ai.assistance.operit.ui.features.settings.components.RoomDbBackupListItem
 import com.ai.assistance.operit.ui.features.settings.components.SectionHeader
-import com.ai.assistance.operit.ui.features.settings.components.CharacterCardOperation
 import com.ai.assistance.operit.ui.main.MainActivity
 import java.io.File
 import java.text.SimpleDateFormat
@@ -334,7 +331,6 @@ fun ChatBackupSettingsScreen() {
                         val inputStream = context.contentResolver.openInputStream(uri)
                         val jsonContent = inputStream?.bufferedReader()?.use { it.readText() }
                         if (jsonContent != null) {
-                            val importResult = characterCardManager.importAllCharacterCardsFromBackupContent(jsonContent)
                             if (importResult.total > 0) {
                                 characterCardOperationState = CharacterCardOperation.IMPORTED
                                 val skippedText = if (importResult.skipped > 0) {

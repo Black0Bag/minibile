@@ -13,7 +13,6 @@ import com.ai.assistance.operit.data.model.ToolInvocation
 import com.ai.assistance.operit.data.model.ToolResult
 import com.ai.assistance.operit.core.tools.packTool.PackageManager
 import com.ai.assistance.operit.util.stream.StreamCollector
-import com.ai.assistance.operit.data.preferences.CharacterCardToolAccessResolver
 import com.ai.assistance.operit.core.vibecoding.policy.ToolExecutionContext
 import com.ai.assistance.operit.core.vibecoding.policy.ToolPolicyDecision
 import java.util.concurrent.ConcurrentHashMap

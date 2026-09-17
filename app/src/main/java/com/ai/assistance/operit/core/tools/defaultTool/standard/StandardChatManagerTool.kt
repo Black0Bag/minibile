@@ -18,7 +18,6 @@ import com.ai.assistance.operit.core.tools.ChatCreationResultData
 import com.ai.assistance.operit.core.tools.ChatFindResultData
 import com.ai.assistance.operit.core.tools.ChatListResultData
 import com.ai.assistance.operit.core.tools.ChatMessagesResultData
-import com.ai.assistance.operit.core.tools.CharacterCardListResultData
 import com.ai.assistance.operit.core.tools.ChatServiceStartResultData
 import com.ai.assistance.operit.core.tools.ChatSwitchResultData
 import com.ai.assistance.operit.core.tools.ChatTitleUpdateResultData
@@ -32,7 +31,6 @@ import com.ai.assistance.operit.data.model.ChatTurnOptions
 import com.ai.assistance.operit.data.model.InputProcessingState
 import com.ai.assistance.operit.data.model.PromptFunctionType
 import com.ai.assistance.operit.data.model.ToolResult
-import com.ai.assistance.operit.data.preferences.CharacterCardManager
 import com.ai.assistance.operit.data.preferences.WaifuPreferences
 import com.ai.assistance.operit.data.repository.ChatHistoryManager
 import com.ai.assistance.operit.services.ChatServiceCore
@@ -139,22 +137,10 @@ class StandardChatManagerTool(private val context: Context) {
         }
     }
 
-    /** 角色卡名到角色卡ID的映射，同名时取第一张，与 findCharacterCardByName 的选取一致 */
-    private suspend fun buildCharacterCardIdsByName(chats: List<ChatHistory>): Map<String, String> {
-        if (chats.none { !it.characterCardName.isNullOrBlank() }) {
-            return emptyMap()
-        }
-        return CharacterCardManager.getInstance(appContext)
-            .getAllCharacterCards()
-            .groupBy { it.name }
-            .mapValues { (_, cards) -> cards.first().id }
-    }
-
     private fun buildChatInfo(
         chat: ChatHistory,
         messageCounts: Map<String, Int>,
-        currentChatId: String?,
-        characterCardIdsByName: Map<String, String>
+        currentChatId: String?
     ): ChatListResultData.ChatInfo {
         return ChatListResultData.ChatInfo(
             id = chat.id,
@@ -164,12 +150,7 @@ class StandardChatManagerTool(private val context: Context) {
             updatedAt = chat.updatedAt.toString(),
             isCurrent = currentChatId != null && chat.id == currentChatId,
             inputTokens = chat.inputTokens,
-            outputTokens = chat.outputTokens,
-            characterCardName = chat.characterCardName,
-            characterCardId = chat.characterCardName
-                ?.takeIf { it.isNotBlank() }
-                ?.let { characterCardIdsByName[it] },
-            characterGroupId = chat.characterGroupId
+            outputTokens = chat.outputTokens
         )
     }
 
@@ -574,8 +555,7 @@ class StandardChatManagerTool(private val context: Context) {
             val chatInfo = buildChatInfo(
                 selectedChat,
                 messageCounts,
-                currentChatId,
-                buildCharacterCardIdsByName(listOf(selectedChat))
+                currentChatId
             )
             ToolResult(
                 toolName = tool.name,
@@ -1062,26 +1042,10 @@ class StandardChatManagerTool(private val context: Context) {
                 )
             }
 
-            val characterCardId =
-                tool.parameters.find { it.name == "character_card_id" }?.value?.trim()
-            if (!characterCardId.isNullOrBlank()) {
-                val roleCardManager = CharacterCardManager.getInstance(appContext)
-                val targetCard = roleCardManager.getCharacterCard(characterCardId)
-                if (targetCard == null) {
-                    return ToolResult(
-                        toolName = tool.name,
-                        success = false,
-                        result = ChatCreationResultData(chatId = ""),
-                        error = "Invalid parameter: character_card_id not found"
-                    )
-                }
-            }
-
             // 创建新对话（不切换当前对话）
             core.createNewChat(
                 group = effectiveGroup,
-                setAsCurrentChat = setAsCurrentChat,
-                characterCardId = characterCardId
+                setAsCurrentChat = setAsCurrentChat
             )
 
             val newChatId = try {
@@ -1225,9 +1189,8 @@ class StandardChatManagerTool(private val context: Context) {
                 }
 
             val visibleChats = matched.take(limit)
-            val characterCardIdsByName = buildCharacterCardIdsByName(visibleChats)
             val chatInfoList = visibleChats.map { chat ->
-                buildChatInfo(chat, messageCounts, currentChatId, characterCardIdsByName)
+                buildChatInfo(chat, messageCounts, currentChatId)
             }
 
             ToolResult(
@@ -1364,22 +1327,6 @@ class StandardChatManagerTool(private val context: Context) {
                         error = "Invalid parameter: missing message"
                     )
                 )
-            }
-
-            val roleCardManager = CharacterCardManager.getInstance(appContext)
-            val roleCardId = tool.parameters.find { it.name == "role_card_id" }?.value?.trim()
-            if (!roleCardId.isNullOrBlank()) {
-                val cardExists = runCatching { roleCardManager.getCharacterCard(roleCardId) }.isSuccess
-                if (!cardExists) {
-                    return MessageSendStreamStartResult.Failed(
-                        ToolResult(
-                            toolName = tool.name,
-                            success = false,
-                            result = MessageSendResultData(chatId = "", message = message),
-                            error = "Invalid parameter: role_card_id not found"
-                        )
-                    )
-                }
             }
 
             val senderNameParam = tool.parameters.find { it.name == "sender_name" }?.value?.trim()
@@ -1835,39 +1782,4 @@ class StandardChatManagerTool(private val context: Context) {
         }
     }
 
-    /**
-     * 列出所有角色卡
-     */
-    suspend fun listCharacterCards(tool: AITool): ToolResult {
-        return try {
-            val characterCardManager = CharacterCardManager.getInstance(appContext)
-            val cards = characterCardManager.getAllCharacterCards()
-            val result = CharacterCardListResultData(
-                totalCount = cards.size,
-                cards = cards.map { card ->
-                    CharacterCardListResultData.CharacterCardInfo(
-                        id = card.id,
-                        name = card.name,
-                        description = card.description,
-                        isDefault = card.isDefault,
-                        createdAt = card.createdAt,
-                        updatedAt = card.updatedAt
-                    )
-                }
-            )
-            ToolResult(
-                toolName = tool.name,
-                success = true,
-                result = result
-            )
-        } catch (e: Exception) {
-            AppLogger.e(TAG, "Failed to list character cards", e)
-            ToolResult(
-                toolName = tool.name,
-                success = false,
-                result = CharacterCardListResultData(totalCount = 0, cards = emptyList()),
-                error = "Error listing character cards: ${e.message}"
-            )
-        }
-    }
 }

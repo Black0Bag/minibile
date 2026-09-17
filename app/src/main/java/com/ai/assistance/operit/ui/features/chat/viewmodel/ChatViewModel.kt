@@ -59,7 +59,6 @@ import com.ai.assistance.operit.api.voice.VoiceService
 import com.ai.assistance.operit.api.voice.VoiceServiceFactory
 import com.ai.assistance.operit.data.preferences.SpeechServiceProfilesPreferences
 import com.ai.assistance.operit.data.preferences.ActivePromptManager
-import com.ai.assistance.operit.data.preferences.CharacterCardManager
 import com.ai.assistance.operit.data.model.ActivePrompt
 import com.ai.assistance.operit.util.WaifuMessageProcessor
 import com.ai.assistance.operit.ui.features.chat.webview.workspace.WorkspaceBackupManager
@@ -779,8 +778,8 @@ class ChatViewModel(private val context: Context) : ViewModel() {
         val targetHistory = chatHistories.value.firstOrNull { it.id == chatId } ?: return
         runCatching {
             activePromptManager.activateForChatBinding(
-                characterCardName = targetHistory.characterCardName,
-                characterGroupId = targetHistory.characterGroupId
+                characterCardName = null,
+                characterGroupId = null
             )
         }.onFailure { throwable ->
             AppLogger.w(TAG, "Auto switch character target failed: ${throwable.message}")
@@ -805,7 +804,7 @@ class ChatViewModel(private val context: Context) : ViewModel() {
                         chatHistories.value
                             .asSequence()
                             .filter { history ->
-                                history.characterGroupId?.trim() == targetGroupId
+                                null?.trim() == targetGroupId
                             }
                             .maxByOrNull { it.updatedAt }
                     if (latestChat != null) {
@@ -825,11 +824,11 @@ class ChatViewModel(private val context: Context) : ViewModel() {
         return chatHistories.value
             .asSequence()
             .filter { history ->
-                val historyGroupId = history.characterGroupId?.trim()?.takeIf { it.isNotBlank() }
+                val historyGroupId = null?.trim()?.takeIf { it.isNotBlank() }
                 if (!historyGroupId.isNullOrBlank()) {
                     return@filter false
                 }
-                val historyCardName = history.characterCardName?.trim()?.takeIf { it.isNotBlank() }
+                val historyCardName = null?.trim()?.takeIf { it.isNotBlank() }
                 if (targetCard.isDefault) {
                     historyCardName == null || historyCardName == targetCardName
                 } else {
@@ -898,7 +897,7 @@ class ChatViewModel(private val context: Context) : ViewModel() {
 
                 // 检查是否是群聊
                 val currentChat = chatHistoryDelegate.chatHistories.value.firstOrNull { it.id == currentChatId }
-                val isGroupChat = currentChat?.characterGroupId != null
+                val isGroupChat = null != null
                 val summaryCustomRules = messageCoordinationDelegate.readSummaryCustomRules()
 
                 val summaryMessage = AIMessageManager.summarizeMemory(

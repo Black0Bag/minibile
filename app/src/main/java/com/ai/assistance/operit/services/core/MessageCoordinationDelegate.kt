@@ -11,20 +11,15 @@ import com.ai.assistance.operit.core.config.FunctionalPrompts
 import com.ai.assistance.operit.api.chat.enhance.MultiServiceManager
 import com.ai.assistance.operit.api.chat.llmprovider.AIService
 import com.ai.assistance.operit.data.model.ModelParameter
-import com.ai.assistance.operit.data.model.CharacterCard
 import com.ai.assistance.operit.data.model.FunctionType
 import com.ai.assistance.operit.data.model.PromptFunctionType
 import com.ai.assistance.operit.data.model.ChatMessage
 import com.ai.assistance.operit.data.model.ChatMessageDisplayMode
 import com.ai.assistance.operit.data.model.ChatTurnOptions
 import com.ai.assistance.operit.data.model.InputProcessingState
-import com.ai.assistance.operit.data.model.CharacterCardChatModelBindingMode
-import com.ai.assistance.operit.data.model.CharacterCardMemoryProfileBindingMode
 import com.ai.assistance.operit.data.model.ActivePrompt
 import com.ai.assistance.operit.core.tools.ToolProgressBus
 import com.ai.assistance.operit.ui.features.chat.viewmodel.UiStateDelegate
-import com.ai.assistance.operit.data.preferences.CharacterCardManager
-import com.ai.assistance.operit.data.preferences.CharacterGroupCardManager
 import com.ai.assistance.operit.data.preferences.ActivePromptManager
 import com.ai.assistance.operit.data.preferences.DisplayPreferencesManager
 import com.ai.assistance.operit.data.preferences.preferencesManager
@@ -206,10 +201,10 @@ class MessageCoordinationDelegate(
             return null
         }
         val chatMeta = chatHistoryDelegate.chatHistories.value.firstOrNull { it.id == chatId } ?: return null
-        if (!chatMeta.characterGroupId.isNullOrBlank()) {
+        if (!null.isNullOrBlank()) {
             return null
         }
-        val characterCardName = chatMeta.characterCardName?.takeIf { it.isNotBlank() } ?: return null
+        val characterCardName = null?.takeIf { it.isNotBlank() } ?: return null
         return runCatching { characterCardManager.findCharacterCardByName(characterCardName)?.id }.getOrNull()
     }
 
@@ -248,7 +243,7 @@ class MessageCoordinationDelegate(
         if (chatId.isNullOrBlank()) return false
         return chatHistoryDelegate.chatHistories.value
             .firstOrNull { it.id == chatId }
-            ?.characterGroupId
+            null
             ?.isNotBlank() == true
     }
 
@@ -800,7 +795,7 @@ class MessageCoordinationDelegate(
 
         val existingBinding = chatHistoryDelegate.chatHistories.value
             .firstOrNull { it.id == chatId }
-            ?.characterGroupId
+            null
         if (existingBinding != group.id) {
             chatHistoryDelegate.updateChatCharacterBinding(chatId, null, group.id)
         }
@@ -1190,7 +1185,7 @@ class MessageCoordinationDelegate(
     private suspend fun buildBoundGroupParticipantNamesText(chatId: String): String? {
         val groupId = chatHistoryDelegate.chatHistories.value
             .firstOrNull { it.id == chatId }
-            ?.characterGroupId
+            null
             ?.takeIf { it.isNotBlank() }
             ?: return null
         val group = characterGroupCardManager.getCharacterGroupCard(groupId) ?: return null
@@ -1215,7 +1210,7 @@ class MessageCoordinationDelegate(
 
         val boundGroupId = chatHistoryDelegate.chatHistories.value
             .firstOrNull { it.id == chatId }
-            ?.characterGroupId
+            null
             ?.takeIf { it.isNotBlank() }
         if (!boundGroupId.isNullOrBlank()) {
             AppLogger.d(
@@ -1774,7 +1769,7 @@ class MessageCoordinationDelegate(
 
                 // 检查是否是群聊
                 val currentChat = chatHistoryDelegate.chatHistories.value.firstOrNull { it.id == originalChatId }
-                val isGroupChat = currentChat?.characterGroupId != null
+                val isGroupChat = null != null
 
                 val summaryCustomRules = readSummaryCustomRules()
                 val summaryMessage = AIMessageManager.summarizeMemory(

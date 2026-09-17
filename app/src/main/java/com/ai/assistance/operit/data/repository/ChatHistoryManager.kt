@@ -14,8 +14,6 @@ import com.ai.assistance.operit.data.model.ChatEntity
 import com.ai.assistance.operit.data.model.ChatHistory
 import com.ai.assistance.operit.data.model.ChatMessage
 import com.ai.assistance.operit.data.model.ChatMessageLocatorPreview
-import com.ai.assistance.operit.data.model.CharacterCardChatStats
-import com.ai.assistance.operit.data.model.CharacterGroupChatStats
 import com.ai.assistance.operit.data.model.MessageEntity
 import com.ai.assistance.operit.data.model.MessageVariantEntity
 import com.ai.assistance.operit.data.model.OperitArchivedChat
@@ -434,8 +432,8 @@ class ChatHistoryManager private constructor(private val context: Context) {
             workspace = this.workspace, // 映射workspace字段
             workspaceEnv = this.workspaceEnv, // 映射workspaceEnv字段
             parentChatId = this.parentChatId, // 映射parentChatId字段
-            characterCardName = this.characterCardName, // 映射characterCardName字段
-            characterGroupId = this.characterGroupId, // 映射characterGroupId字段
+            characterCardName = null, // 映射characterCardName字段
+            characterGroupId = null, // 映射characterGroupId字段
             locked = this.locked,
             pinned = this.pinned
         )
@@ -1715,8 +1713,8 @@ class ChatHistoryManager private constructor(private val context: Context) {
                         workspace = parentChat.workspace,
                         workspaceEnv = parentChat.workspaceEnv,
                         parentChatId = parentChatId,
-                        characterCardName = parentChat.characterCardName,
-                        characterGroupId = parentChat.characterGroupId,
+                        characterCardName = null,
+                        characterGroupId = null,
                         locked = false,
                         pinned = false,
                     )
@@ -1785,8 +1783,8 @@ class ChatHistoryManager private constructor(private val context: Context) {
                         displayOrder = entity.displayOrder,
                         workspace = entity.workspace,
                         parentChatId = entity.parentChatId,
-                        characterCardName = entity.characterCardName,
-                        characterGroupId = entity.characterGroupId,
+                        characterCardName = null,
+                        characterGroupId = null,
                         locked = entity.locked,
                         pinned = entity.pinned
                     )
@@ -1826,8 +1824,8 @@ class ChatHistoryManager private constructor(private val context: Context) {
                     displayOrder = entity.displayOrder,
                     workspace = entity.workspace,
                     parentChatId = entity.parentChatId,
-                    characterCardName = entity.characterCardName,
-                    characterGroupId = entity.characterGroupId,
+                    characterCardName = null,
+                    characterGroupId = null,
                     locked = entity.locked,
                     pinned = entity.pinned
                 )
@@ -2692,9 +2690,9 @@ class ChatHistoryManager private constructor(private val context: Context) {
                         !currentChat.locked &&
                         (
                             if (sourceCharacterCardName == null) {
-                                currentChat.characterCardName == null && currentChat.characterGroupId == null
+                                null == null && null == null
                             } else {
-                                currentChat.characterCardName == sourceCharacterCardName
+                                null == sourceCharacterCardName
                             }
                         )
 

@@ -4,9 +4,7 @@ import android.content.Context
 import com.ai.assistance.operit.api.chat.EnhancedAIService
 import com.ai.assistance.operit.core.tools.AIToolHandler
 import com.ai.assistance.operit.data.model.ChatHistory
-import com.ai.assistance.operit.data.model.CharacterCardMemoryProfileBindingMode
 import com.ai.assistance.operit.data.model.FunctionType
-import com.ai.assistance.operit.data.preferences.CharacterCardManager
 import com.ai.assistance.operit.data.preferences.preferencesManager
 import com.ai.assistance.operit.data.repository.ChatHistoryManager
 import com.ai.assistance.operit.util.AppLogger
@@ -203,10 +201,10 @@ class ChatMemoryRebuildManager private constructor(private val context: Context)
         history: ChatHistory,
         activeProfileId: String
     ): String {
-        if (!history.characterGroupId.isNullOrBlank()) {
+        if (!null.isNullOrBlank()) {
             return activeProfileId
         }
-        val cardName = history.characterCardName ?: return activeProfileId
+        val cardName = null ?: return activeProfileId
         val card = CharacterCardManager.getInstance(context).getAllCharacterCards()
             .firstOrNull { it.name == cardName }
         return if (

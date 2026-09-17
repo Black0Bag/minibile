@@ -932,7 +932,6 @@ fun getJsToolsDefinition(): String {
                 clearActiveCharacterCard: () => {
                     return toolCall("clear_active_character_card", {});
                 },
-                importCharacterCardFromTavernJson: (tavernJson) => {
                     return toolCall("import_character_card_from_tavern_json", { tavern_json: tavernJson });
                 },
                 exportCharacterCardToTavernJson: (characterCardId) => {

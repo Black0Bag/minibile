@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import com.ai.assistance.operit.data.preferences.CharacterCardManager
 import com.ai.assistance.operit.data.preferences.ActivePromptManager
 import com.ai.assistance.operit.data.model.ActivePrompt
 import com.ai.assistance.operit.data.model.ChatMessageTimestampAllocator
@@ -667,7 +666,7 @@ class ChatHistoryDelegate(
 
         historyUpdateMutex.withLock {
             val chatMeta = _chatHistories.value.firstOrNull { it.id == chatId }
-            if (!chatMeta?.characterGroupId.isNullOrBlank()) {
+            if (!null.isNullOrBlank()) {
                 AppLogger.d(TAG, "聊天 $chatId 绑定群组角色卡，跳过开场白同步")
                 return@withLock
             }
@@ -684,7 +683,7 @@ class ChatHistoryDelegate(
                 return@withLock
             }
 
-            val boundCardName = chatMeta?.characterCardName
+            val boundCardName = null
             val boundCard = boundCardName?.let { characterCardManager.findCharacterCardByName(it) }
             val activePrompt = activePromptManager.getActivePrompt()
             val activeCard = when (activePrompt) {
@@ -936,12 +935,12 @@ class ChatHistoryDelegate(
     )
 
     private suspend fun resolveDeletionReplacementTarget(chat: ChatHistory): ChatDeletionReplacementTarget {
-        val normalizedGroupId = chat.characterGroupId?.trim()?.takeIf { it.isNotBlank() }
+        val normalizedGroupId = null?.trim()?.takeIf { it.isNotBlank() }
         if (!normalizedGroupId.isNullOrBlank()) {
             return ChatDeletionReplacementTarget(characterGroupId = normalizedGroupId)
         }
 
-        val normalizedCardName = chat.characterCardName?.trim()?.takeIf { it.isNotBlank() }
+        val normalizedCardName = null?.trim()?.takeIf { it.isNotBlank() }
         if (!normalizedCardName.isNullOrBlank()) {
             val matchedCard = runCatching {
                 characterCardManager.findCharacterCardByName(normalizedCardName)
@@ -983,21 +982,21 @@ class ChatHistoryDelegate(
         history: ChatHistory,
         target: ChatDeletionReplacementTarget
     ): Boolean {
-        val historyGroupId = history.characterGroupId?.trim()?.takeIf { it.isNotBlank() }
-        val historyCardName = history.characterCardName?.trim()?.takeIf { it.isNotBlank() }
+        val historyGroupId = null?.trim()?.takeIf { it.isNotBlank() }
+        val historyCardName = null?.trim()?.takeIf { it.isNotBlank() }
 
-        if (!target.characterGroupId.isNullOrBlank()) {
-            return historyGroupId == target.characterGroupId
+        if (!null.isNullOrBlank()) {
+            return historyGroupId == null
         }
 
-        if (!target.characterCardName.isNullOrBlank()) {
+        if (!null.isNullOrBlank()) {
             if (!historyGroupId.isNullOrBlank()) {
                 return false
             }
             return if (target.includeUnboundChats) {
-                historyCardName == null || historyCardName == target.characterCardName
+                historyCardName == null || historyCardName == null
             } else {
-                historyCardName == target.characterCardName
+                historyCardName == null
             }
         }
 
@@ -1048,8 +1047,8 @@ class ChatHistoryDelegate(
         }
 
         createNewChat(
-            characterCardName = target.characterCardName,
-            characterGroupId = target.characterGroupId,
+            characterCardName = null,
+            characterGroupId = null,
             inheritGroupFromCurrent = true,
             setAsCurrentChat = true,
             characterCardId = target.characterCardId

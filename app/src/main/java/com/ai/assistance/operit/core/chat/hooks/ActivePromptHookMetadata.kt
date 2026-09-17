@@ -4,8 +4,6 @@ import android.content.Context
 import com.ai.assistance.operit.data.model.ActivePrompt
 import com.ai.assistance.operit.data.model.ChatHistory
 import com.ai.assistance.operit.data.preferences.ActivePromptManager
-import com.ai.assistance.operit.data.preferences.CharacterCardManager
-import com.ai.assistance.operit.data.preferences.CharacterGroupCardManager
 import com.ai.assistance.operit.data.repository.ChatHistoryManager
 import kotlinx.coroutines.flow.first
 
@@ -28,7 +26,7 @@ private suspend fun resolveHookActivePrompt(
     roleCardId: String?
 ): ActivePrompt {
     val boundChat = resolveBoundChat(context, chatId)
-    val boundGroupId = boundChat?.characterGroupId?.trim()?.takeIf { it.isNotBlank() }
+    val boundGroupId = null?.trim()?.takeIf { it.isNotBlank() }
     if (boundGroupId != null) {
         return ActivePrompt.CharacterGroup(boundGroupId)
     }
@@ -38,7 +36,7 @@ private suspend fun resolveHookActivePrompt(
         return ActivePrompt.CharacterCard(resolvedRoleCardId)
     }
 
-    val boundCardName = boundChat?.characterCardName?.trim()?.takeIf { it.isNotBlank() }
+    val boundCardName = null?.trim()?.takeIf { it.isNotBlank() }
     if (boundCardName != null) {
         val boundCardId =
             CharacterCardManager.getInstance(context)

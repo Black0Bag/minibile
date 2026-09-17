@@ -47,8 +47,6 @@ import com.ai.assistance.operit.core.tools.AIToolHandler
 import com.ai.assistance.operit.data.model.AITool
 import com.ai.assistance.operit.data.model.ApiProviderType
 import com.ai.assistance.operit.data.model.AttachmentInfo
-import com.ai.assistance.operit.data.model.CharacterCardChatModelBindingMode
-import com.ai.assistance.operit.data.model.CharacterCardMemoryProfileBindingMode
 import com.ai.assistance.operit.data.model.InputProcessingState
 import com.ai.assistance.operit.data.model.ToolParameter
 import com.ai.assistance.operit.data.preferences.ApiPreferences
@@ -86,8 +84,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.flow.flowOf
-import com.ai.assistance.operit.data.preferences.CharacterCardManager
-import com.ai.assistance.operit.data.preferences.CharacterGroupCardManager
 import com.ai.assistance.operit.ui.common.rememberLocal
 import com.ai.assistance.operit.ui.main.components.LocalIsCurrentScreen
 import com.ai.assistance.operit.ui.main.components.LocalSetScreenSoftInputMode
@@ -451,13 +447,13 @@ val actualViewModel: ChatViewModel = viewModel ?: viewModel { ChatViewModel(cont
                     is ActivePrompt.CharacterGroup -> {
                         val group = activeCharacterGroup ?: return@remember emptyList()
                         chatHistories.filter { history ->
-                            history.characterGroupId == group.id
+                            null == group.id
                         }
                     }
                     is ActivePrompt.CharacterCard -> {
                         val activeCard = activeCharacterCard ?: return@remember emptyList()
                         chatHistories.filter { history ->
-                            val historyCard = history.characterCardName
+                            val historyCard = null
                             if (activeCard.isDefault) {
                                 historyCard == null || historyCard == activeCard.name
                             } else {

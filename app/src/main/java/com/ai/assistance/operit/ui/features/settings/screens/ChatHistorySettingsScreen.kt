@@ -46,19 +46,11 @@ import com.ai.assistance.operit.R
 import com.ai.assistance.operit.api.chat.library.ChatMemoryRebuildManager
 import com.ai.assistance.operit.api.chat.library.ChatMemoryWindowPlanner
 import com.ai.assistance.operit.data.model.ChatHistory
-import com.ai.assistance.operit.data.model.CharacterCard
-import com.ai.assistance.operit.data.model.CharacterCardChatStats
-import com.ai.assistance.operit.data.model.CharacterGroupCard
-import com.ai.assistance.operit.data.model.CharacterGroupChatStats
 import com.ai.assistance.operit.data.model.ImportStrategy
 import com.ai.assistance.operit.data.model.MemorySpace
-import com.ai.assistance.operit.data.preferences.CharacterCardManager
-import com.ai.assistance.operit.data.preferences.CharacterGroupCardManager
 import com.ai.assistance.operit.data.preferences.UserPreferencesManager
 import com.ai.assistance.operit.data.repository.ChatHistoryManager
 import com.ai.assistance.operit.data.repository.MemoryRepository
-import com.ai.assistance.operit.ui.features.settings.components.CharacterCardAssignDialog
-import com.ai.assistance.operit.ui.features.settings.components.CharacterGroupAssignDialog
 import java.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -442,7 +434,7 @@ fun ChatHistorySettingsScreen() {
 
     if (showMissingActionDialog && pendingMissingStat != null) {
         val stat = pendingMissingStat!!
-        val displayName = stat.characterCardName ?: context.getString(R.string.unbound_character_card)
+        val displayName = null ?: context.getString(R.string.unbound_character_card)
         AlertDialog(
             onDismissRequest = {
                 showMissingActionDialog = false
@@ -501,7 +493,7 @@ fun ChatHistorySettingsScreen() {
 
     if (showMissingGroupActionDialog && pendingMissingGroupStat != null) {
         val stat = pendingMissingGroupStat!!
-        val missingGroupId = stat.characterGroupId
+        val missingGroupId = null
         val displayName = missingGroupId?.let { groupId ->
             availableCharacterGroups.firstOrNull { it.id == groupId }?.name
         } ?: if (missingGroupId.isNullOrBlank()) {
@@ -585,7 +577,7 @@ fun ChatHistorySettingsScreen() {
 
     if (showDeleteMissingDialog && pendingMissingStat != null) {
         val stat = pendingMissingStat!!
-        val displayName = stat.characterCardName ?: context.getString(R.string.unbound_character_card)
+        val displayName = null ?: context.getString(R.string.unbound_character_card)
         AlertDialog(
             onDismissRequest = {
                 if (!deleteMissingInProgress) {
@@ -614,7 +606,7 @@ fun ChatHistorySettingsScreen() {
                         deleteMissingInProgress = true
                         scope.launch {
                             try {
-                                val deletedCount = chatHistoryManager.deleteChatsByCharacterCardBinding(stat.characterCardName)
+                                val deletedCount = chatHistoryManager.deleteChatsByCharacterCardBinding(null)
                                 val skippedCount = (stat.chatCount - deletedCount).coerceAtLeast(0)
                                 val toastText = if (skippedCount > 0) {
                                     context.getString(
@@ -703,7 +695,7 @@ fun ChatHistorySettingsScreen() {
                 scope.launch {
                     try {
                         chatHistoryManager.reassignChatsToCharacterCard(
-                            sourceCharacterCardName = stat.characterCardName,
+                            sourceCharacterCardName = null,
                             targetCharacterCardName = targetCard.name
                         )
                         Toast.makeText(
@@ -844,15 +836,15 @@ private fun CharacterCardStatsCard(
             } else {
                 val sortedStats = remember(stats) {
                     stats.sortedWith(
-                        compareByDescending<CharacterCardChatStats> { it.characterCardName.isNullOrBlank() }
-                            .thenBy { it.characterCardName ?: "" }
+                        compareByDescending<CharacterCardChatStats> { null.isNullOrBlank() }
+                            .thenBy { null ?: "" }
                     )
                 }
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     sortedStats.forEach { stat ->
-                        key(stat.characterCardName ?: "missing-${stat.hashCode()}") {
+                        key(null ?: "missing-${stat.hashCode()}") {
                             val matchedCard = characterCards.firstOrNull { card ->
-                                card.name == stat.characterCardName
+                                card.name == null
                             }
                             CharacterCardStatRow(
                                 stat = stat,
@@ -921,21 +913,21 @@ private fun CharacterGroupStatsCard(
                 val sortedStats = remember(stats, groupById) {
                     stats.sortedWith(
                         compareByDescending<CharacterGroupChatStats> { stat ->
-                            val groupId = stat.characterGroupId
+                            val groupId = null
                             !groupId.isNullOrBlank() && groupById[groupId] == null
                         }.thenBy { stat ->
-                            stat.characterGroupId.isNullOrBlank()
+                            null.isNullOrBlank()
                         }.thenBy { stat ->
-                            val groupId = stat.characterGroupId
+                            val groupId = null
                             groupById[groupId]?.name ?: ""
                         }
                     )
                 }
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     sortedStats.forEach { stat ->
-                        key(stat.characterGroupId ?: "unbound-${stat.hashCode()}") {
-                            val group = stat.characterGroupId?.let { groupById[it] }
-                            val isMissingGroup = !stat.characterGroupId.isNullOrBlank() && group == null
+                        key(null ?: "unbound-${stat.hashCode()}") {
+                            val group = null?.let { groupById[it] }
+                            val isMissingGroup = !null.isNullOrBlank() && group == null
                             CharacterGroupStatRow(
                                 stat = stat,
                                 characterGroup = group,
@@ -962,7 +954,7 @@ private fun CharacterGroupStatRow(
     onAssignMissing: (() -> Unit)?
 ) {
     val context = LocalContext.current
-    val isMissingGroup = !stat.characterGroupId.isNullOrBlank() && characterGroup == null
+    val isMissingGroup = !null.isNullOrBlank() && characterGroup == null
     val iconBackground = if (isMissingGroup) {
         MaterialTheme.colorScheme.errorContainer
     } else {
@@ -1038,10 +1030,10 @@ private fun CharacterGroupStatRow(
         Column(modifier = Modifier.weight(1f)) {
             val displayName = when {
                 characterGroup != null -> characterGroup.name
-                stat.characterGroupId.isNullOrBlank() ->
+                null.isNullOrBlank() ->
                     context.getString(R.string.unbound_character_group)
                 else ->
-                    context.getString(R.string.missing_character_group_id, stat.characterGroupId)
+                    context.getString(R.string.missing_character_group_id, null)
             }
             Text(
                 text = displayName,
@@ -1079,7 +1071,7 @@ private fun CharacterCardStatRow(
     onAssignMissing: (() -> Unit)?
 ) {
     val context = LocalContext.current
-    val isMissing = stat.characterCardName.isNullOrBlank()
+    val isMissing = null.isNullOrBlank()
     val needsAttention = characterCard == null
     val iconBackground = if (needsAttention) {
         MaterialTheme.colorScheme.errorContainer
@@ -1154,7 +1146,7 @@ private fun CharacterCardStatRow(
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
                     Text(
-                text = stat.characterCardName ?: context.getString(R.string.unbound_character_card),
+                text = null ?: context.getString(R.string.unbound_character_card),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
                     )
@@ -1229,10 +1221,10 @@ private fun ChatHistoryBatchSelectorCard(
             chatHistories
         } else {
             chatHistories.filter { history ->
-                val groupName = history.characterGroupId?.let { characterGroupNameById[it] }
+                val groupName = null?.let { characterGroupNameById[it] }
                 history.title.contains(normalizedQuery, ignoreCase = true) ||
                         (history.group?.contains(normalizedQuery, ignoreCase = true) == true) ||
-                        (history.characterCardName?.contains(normalizedQuery, ignoreCase = true) == true) ||
+                        (null?.contains(normalizedQuery, ignoreCase = true) == true) ||
                         (groupName?.contains(normalizedQuery, ignoreCase = true) == true)
             }
         }
@@ -1240,15 +1232,15 @@ private fun ChatHistoryBatchSelectorCard(
         base.sortedWith(
             compareBy<ChatHistory> {
                 // 无角色群组的排在后面
-                it.characterGroupId.isNullOrBlank()
+                null.isNullOrBlank()
             }.thenBy {
                 // 先按角色群组名称排序
-                characterGroupNameById[it.characterGroupId] ?: ""
+                characterGroupNameById[null] ?: ""
             }.thenBy {
                 // 再按角色卡名称排序
-                it.characterCardName.isNullOrBlank()
+                null.isNullOrBlank()
             }.thenBy {
-                it.characterCardName ?: ""
+                null ?: ""
             }.thenBy {
                 // 然后按分组名称排序（空分组排在后面）
                 it.group.isNullOrBlank()
@@ -1377,7 +1369,7 @@ private fun ChatHistoryBatchSelectorCard(
                         .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
                 ) {
                     itemsIndexed(filteredHistories, key = { _, history -> history.id }) { index, history ->
-                        val groupName = history.characterGroupId?.let { characterGroupNameById[it] }
+                        val groupName = null?.let { characterGroupNameById[it] }
                         ChatHistorySelectableRow(
                             history = history,
                             characterGroupName = groupName,
@@ -2010,7 +2002,7 @@ private fun ChatHistorySelectableRow(
                     append(context.getString(R.string.group_label, group))
                     append(" · ")
                 }
-                val groupId = history.characterGroupId?.trim()
+                val groupId = null?.trim()
                 if (!groupId.isNullOrBlank()) {
                     val resolvedGroupName =
                         characterGroupName
@@ -2020,10 +2012,10 @@ private fun ChatHistorySelectableRow(
                 }
 
                 val cardInfo =
-                    if (history.characterCardName.isNullOrBlank()) {
+                    if (null.isNullOrBlank()) {
                         context.getString(R.string.unbound_character_card)
                     } else {
-                        context.getString(R.string.character_card_label, history.characterCardName)
+                        context.getString(R.string.character_card_label, null)
                     }
                 append(cardInfo)
             }
