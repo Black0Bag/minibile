@@ -49,14 +49,9 @@ import android.widget.Toast
 import android.content.ClipData
 import android.content.ClipboardManager
 import com.ai.assistance.operit.R
-import com.ai.assistance.operit.data.model.CharacterCard
-import com.ai.assistance.operit.data.model.CharacterGroupCard
 import com.ai.assistance.operit.data.model.GroupMemberConfig
 import com.ai.assistance.operit.data.model.PromptTag
 import com.ai.assistance.operit.data.model.TagType
-import com.ai.assistance.operit.data.preferences.CharacterCardBilingualData
-import com.ai.assistance.operit.data.preferences.CharacterCardManager
-import com.ai.assistance.operit.data.preferences.CharacterGroupCardManager
 import com.ai.assistance.operit.data.preferences.ActivePromptManager
 import com.ai.assistance.operit.data.model.ActivePrompt
 import com.ai.assistance.operit.data.preferences.PromptTagManager
@@ -78,7 +73,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.graphics.toArgb
-import com.ai.assistance.operit.ui.features.settings.components.CharacterCardDialog
 import com.ai.assistance.operit.ui.features.settings.components.CompactAvatarPicker
 import com.ai.assistance.operit.ui.features.settings.components.CompactTextFieldWithExpand
 import coil.compose.rememberAsyncImagePainter
@@ -278,7 +272,6 @@ fun ModelPromptsSettingsScreen(
         }
     }
 
-    suspend fun importTavernCharacterCardPng(fileUri: Uri): Result<String> {
         val result = context.contentResolver.openInputStream(fileUri).use { inputStream ->
             requireNotNull(inputStream) { context.getString(R.string.file_read_error_message) }
             characterCardManager.createCharacterCardFromTavernPng(inputStream)
@@ -315,7 +308,6 @@ fun ModelPromptsSettingsScreen(
 
                     val result = when {
                         mimeType == "image/png" || fileName.lowercase().endsWith(".png") -> {
-                            importTavernCharacterCardPng(fileUri)
                         }
                         mimeType == "application/json" || fileName.lowercase().endsWith(".json") -> {
                             context.contentResolver.openInputStream(fileUri).use { inputStream ->
@@ -335,7 +327,6 @@ fun ModelPromptsSettingsScreen(
                                 }
                             } catch (e: Exception) {
                                 // If JSON fails, try PNG
-                                importTavernCharacterCardPng(fileUri)
                             }
                         }
                     }

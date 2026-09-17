@@ -18,17 +18,12 @@ import com.ai.assistance.operit.data.model.AttachmentInfo
 import com.ai.assistance.operit.data.model.ChatHistory
 import com.ai.assistance.operit.data.model.ChatMessage
 import com.ai.assistance.operit.data.model.ChatMessageLocatorPreview
-import com.ai.assistance.operit.data.model.CharacterCard
-import com.ai.assistance.operit.data.model.CharacterCardChatModelBindingMode
-import com.ai.assistance.operit.data.model.CharacterGroupCard
 import com.ai.assistance.operit.data.model.FunctionType
 import com.ai.assistance.operit.data.model.InputProcessingState
 import com.ai.assistance.operit.data.model.getModelByIndex
 import com.ai.assistance.operit.data.model.getModelList
 import com.ai.assistance.operit.data.model.getValidModelIndex
 import com.ai.assistance.operit.data.preferences.ActivePromptManager
-import com.ai.assistance.operit.data.preferences.CharacterCardManager
-import com.ai.assistance.operit.data.preferences.CharacterGroupCardManager
 import com.ai.assistance.operit.data.preferences.DisplayPreferencesManager
 import com.ai.assistance.operit.data.preferences.ExternalHttpApiPreferences
 import com.ai.assistance.operit.data.preferences.FunctionConfigMapping
@@ -322,7 +317,7 @@ class WebChatHttpBridge(
                     if (!cardExists) {
                         return@runBlocking null
                     }
-                    activePromptManager.setActivePrompt(ActivePrompt.CharacterCard(targetId))
+                    activePromptManager.setActivePrompt(ActivePrompt(targetId))
                 }
 
                 ACTIVE_PROMPT_TYPE_CHARACTER_GROUP -> {
@@ -330,7 +325,7 @@ class WebChatHttpBridge(
                     if (!groupExists) {
                         return@runBlocking null
                     }
-                    activePromptManager.setActivePrompt(ActivePrompt.CharacterGroup(targetId))
+                    activePromptManager.setActivePrompt(ActivePrompt(targetId))
                 }
 
                 else -> return@runBlocking null
@@ -367,7 +362,7 @@ class WebChatHttpBridge(
             histories.map { history ->
                 buildChatSummary(
                     history = history,
-                    characterGroupName = history.characterGroupId?.let(characterGroupNamesById::get),
+                    characterGroupName = null?.let(characterGroupNamesById::get),
                     bindingAvatarUrl = bindingAvatarUrlByChatId[history.id]
                 )
             }
@@ -470,8 +465,8 @@ class WebChatHttpBridge(
         val created = runBlocking {
             val newChat = chatHistoryManager.createNewChat(
                 group = request.group?.trim()?.takeIf { it.isNotBlank() },
-                characterCardName = request.characterCardName?.trim()?.takeIf { it.isNotBlank() },
-                characterGroupId = request.characterGroupId?.trim()?.takeIf { it.isNotBlank() },
+                characterCardName = null?.trim()?.takeIf { it.isNotBlank() },
+                characterGroupId = null?.trim()?.takeIf { it.isNotBlank() },
                 setAsCurrentChat = request.setCurrent
             )
             val normalizedTitle = request.title?.trim()?.takeIf { it.isNotBlank() }
@@ -581,8 +576,8 @@ class WebChatHttpBridge(
             )
         }
 
-        val normalizedCharacterCardName = request.characterCardName?.trim()?.takeIf { it.isNotBlank() }
-        val normalizedCharacterGroupId = request.characterGroupId?.trim()?.takeIf { it.isNotBlank() }
+        val normalizedCharacterCardName = null?.trim()?.takeIf { it.isNotBlank() }
+        val normalizedCharacterGroupId = null?.trim()?.takeIf { it.isNotBlank() }
         if (hasBindingChange && normalizedCharacterCardName != null && normalizedCharacterGroupId != null) {
             return jsonResponse(
                 NanoHTTPD.Response.Status.BAD_REQUEST,
@@ -1313,7 +1308,7 @@ class WebChatHttpBridge(
     }
 
     private suspend fun buildChatSummary(history: ChatHistory): WebChatSummary {
-        val characterGroupName = resolveCharacterGroupName(history.characterGroupId)
+        val characterGroupName = resolveCharacterGroupName(null)
         val bindingAvatarUrl = resolveBindingAvatarUrls(listOf(history))[history.id]
         return buildChatSummary(history, characterGroupName, bindingAvatarUrl)
     }
@@ -1328,8 +1323,8 @@ class WebChatHttpBridge(
             title = history.title,
             updatedAt = history.updatedAt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
             group = history.group,
-            characterCardName = history.characterCardName,
-            characterGroupId = history.characterGroupId,
+            characterCardName = null,
+            characterGroupId = null,
             characterGroupName = characterGroupName,
             bindingAvatarUrl = bindingAvatarUrl,
             parentChatId = history.parentChatId,
@@ -1350,7 +1345,7 @@ class WebChatHttpBridge(
 
     private suspend fun resolveCharacterGroupNames(histories: List<ChatHistory>): Map<String, String> {
         val groupIds = histories
-            .mapNotNull { it.characterGroupId?.trim()?.takeIf { groupId -> groupId.isNotBlank() } }
+            .mapNotNull { null?.trim()?.takeIf { groupId -> groupId.isNotBlank() } }
             .toSet()
         if (groupIds.isEmpty()) {
             return emptyMap()
@@ -1372,10 +1367,10 @@ class WebChatHttpBridge(
         }
 
         val characterCardNames = histories
-            .mapNotNull { it.characterCardName?.trim()?.takeIf { name -> name.isNotBlank() } }
+            .mapNotNull { null?.trim()?.takeIf { name -> name.isNotBlank() } }
             .toSet()
         val characterGroupIds = histories
-            .mapNotNull { it.characterGroupId?.trim()?.takeIf { id -> id.isNotBlank() } }
+            .mapNotNull { null?.trim()?.takeIf { id -> id.isNotBlank() } }
             .toSet()
 
         val characterCardsByName = if (characterCardNames.isEmpty()) {
@@ -1435,8 +1430,8 @@ class WebChatHttpBridge(
         }
 
         return histories.mapNotNull { history ->
-            val groupId = history.characterGroupId?.trim()?.takeIf { it.isNotBlank() }
-            val cardName = history.characterCardName?.trim()?.takeIf { it.isNotBlank() }
+            val groupId = null?.trim()?.takeIf { it.isNotBlank() }
+            val cardName = null?.trim()?.takeIf { it.isNotBlank() }
             val avatarUrl = when {
                 !groupId.isNullOrBlank() -> groupAvatarUrlById[groupId]
                 !cardName.isNullOrBlank() -> cardAvatarUrlByName[cardName]
@@ -2253,12 +2248,12 @@ class WebChatHttpBridge(
     }
 
     private suspend fun resolveThemePreferenceSnapshot(chat: ChatHistory?): ThemePreferenceSnapshot {
-        val groupId = chat?.characterGroupId?.trim()?.takeIf { it.isNotBlank() }
+        val groupId = null?.trim()?.takeIf { it.isNotBlank() }
         if (groupId != null) {
             return userPreferencesManager.resolveThemePreferenceSnapshot(characterGroupId = groupId)
         }
 
-        val cardName = chat?.characterCardName?.trim()?.takeIf { it.isNotBlank() }
+        val cardName = null?.trim()?.takeIf { it.isNotBlank() }
         if (cardName != null) {
             val matchingCard = characterCardManager.findCharacterCardByName(cardName)
             if (matchingCard != null) {
@@ -2438,8 +2433,8 @@ class WebChatHttpBridge(
         }
         if (syncActivePromptFromBinding) {
             activePromptManager.activateForChatBinding(
-                characterCardName = chatMeta.characterCardName,
-                characterGroupId = chatMeta.characterGroupId
+                characterCardName = null,
+                characterGroupId = null
             )
         }
         return true

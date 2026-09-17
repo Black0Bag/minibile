@@ -80,8 +80,8 @@ data class OperitArchivedChat(
                 workspace = history.workspace,
                 workspaceEnv = history.workspaceEnv,
                 parentChatId = history.parentChatId,
-                characterCardName = history.characterCardName,
-                characterGroupId = history.characterGroupId,
+                characterCardName = null,
+                characterGroupId = null,
                 locked = history.locked,
                 pinned = history.pinned,
             )

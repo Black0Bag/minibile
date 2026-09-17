@@ -21,8 +21,6 @@ data class ChatEntity(
         val workspace: String? = null,
         val workspaceEnv: String? = null,
         val parentChatId: String? = null,
-        val characterCardName: String? = null,
-        val characterGroupId: String? = null,
         val locked: Boolean = false,
         val pinned: Boolean = false
 ) {
@@ -50,8 +48,6 @@ data class ChatEntity(
                 workspace = workspace,
                 workspaceEnv = workspaceEnv,
                 parentChatId = parentChatId,
-                characterCardName = characterCardName,
-                characterGroupId = characterGroupId,
                 locked = locked,
                 pinned = pinned
         )
@@ -84,8 +80,6 @@ data class ChatEntity(
                     workspace = chatHistory.workspace,
                     workspaceEnv = chatHistory.workspaceEnv,
                     parentChatId = chatHistory.parentChatId,
-                    characterCardName = chatHistory.characterCardName,
-                    characterGroupId = chatHistory.characterGroupId,
                     locked = chatHistory.locked,
                     pinned = chatHistory.pinned
             )

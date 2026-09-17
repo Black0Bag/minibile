@@ -13,7 +13,6 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.ai.assistance.operit.data.model.ActivePrompt
 import com.ai.assistance.operit.data.model.LegacyUserProfile
 import com.ai.assistance.operit.data.model.MemorySpace
-import com.ai.assistance.operit.data.model.CharacterCardMemoryProfileBindingMode
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -904,10 +903,7 @@ class UserPreferencesManager private constructor(private val context: Context) {
     }
 
     private fun themePrefixForPrompt(target: ActivePrompt): String {
-        return when (target) {
-            is ActivePrompt.CharacterCard -> getCharacterCardThemePrefix(target.id)
-            is ActivePrompt.CharacterGroup -> getCharacterGroupThemePrefix(target.id)
-        }
+        return getCharacterCardThemePrefix(target.id)
     }
 
     private fun isVisualThemeStringKey(key: Preferences.Key<String>): Boolean {

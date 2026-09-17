@@ -22,8 +22,6 @@ data class ChatHistory(
     val workspace: String? = null,
     val workspaceEnv: String? = null,
     val parentChatId: String? = null,
-    val characterCardName: String? = null,
-    val characterGroupId: String? = null,
     val locked: Boolean = false,
     val pinned: Boolean = false
 )

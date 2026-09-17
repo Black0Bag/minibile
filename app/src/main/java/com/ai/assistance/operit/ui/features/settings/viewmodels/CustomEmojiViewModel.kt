@@ -8,8 +8,6 @@ import com.ai.assistance.operit.R
 import com.ai.assistance.operit.data.model.ActivePrompt
 import com.ai.assistance.operit.data.model.CustomEmoji
 import com.ai.assistance.operit.data.preferences.ActivePromptManager
-import com.ai.assistance.operit.data.preferences.CharacterCardManager
-import com.ai.assistance.operit.data.preferences.CharacterGroupCardManager
 import com.ai.assistance.operit.data.preferences.CustomEmojiPreferences
 import com.ai.assistance.operit.data.repository.CustomEmojiRepository
 import com.ai.assistance.operit.util.AppLogger

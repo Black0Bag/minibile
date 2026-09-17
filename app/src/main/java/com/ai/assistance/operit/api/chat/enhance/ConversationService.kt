@@ -25,9 +25,7 @@ import com.ai.assistance.operit.core.config.FunctionalPrompts
 import com.ai.assistance.operit.data.preferences.ApiPreferences
 import com.ai.assistance.operit.data.preferences.DisplayPreferencesManager
 import com.ai.assistance.operit.data.preferences.WaifuPreferences
-import com.ai.assistance.operit.data.preferences.CharacterCardManager
 import com.ai.assistance.operit.data.preferences.ActivePromptManager
-import com.ai.assistance.operit.data.preferences.CharacterCardToolAccessResolver
 import com.ai.assistance.operit.data.model.PromptFunctionType
 import com.ai.assistance.operit.data.preferences.MemorySpaceProfileDocumentRepository
 import com.ai.assistance.operit.data.preferences.UserPreferencesManager
@@ -73,8 +71,6 @@ class ConversationService(
     private val apiPreferences = ApiPreferences.getInstance(context)
     private val displayPreferencesManager = DisplayPreferencesManager.getInstance(context)
     private val waifuPreferences = WaifuPreferences.getInstance(context)
-    private val characterCardManager = CharacterCardManager.getInstance(context)
-    private val characterCardToolAccessResolver = CharacterCardToolAccessResolver.getInstance(context)
     private val activePromptManager = ActivePromptManager.getInstance(context)
     private val memorySpaceProfileDocumentRepository =
         MemorySpaceProfileDocumentRepository.getInstance(context)
@@ -507,29 +503,9 @@ class ConversationService(
                         ?: userPreferencesManager.activeMemorySpaceIdFlow.first()
                 val userProfileMarkdown =
                     memorySpaceProfileDocumentRepository.load(effectiveMemorySpaceId).trim()
-                val proxyRolePrompt =
-                    proxySenderName
-                        ?.takeIf { it.isNotBlank() }
-                        ?.let { name -> characterCardManager.findCharacterCardByName(name) }
-                        ?.let { proxyCard ->
-                            characterCardManager.combinePrompts(
-                                proxyCard.id,
-                                promptFunctionType = promptFunctionType
-                            )
-                        }
-                        .orEmpty()
 
                 // 根据功能类型获取对应的提示词
-                val effectiveRoleCardId = roleCardId?.takeIf { it.isNotBlank() }
-                val activeCard = effectiveRoleCardId?.let {
-                    characterCardManager.getCharacterCardFlow(it).first()
-                }
-                val introPrompt = activeCard?.let {
-                    characterCardManager.combinePrompts(
-                        it.id,
-                        promptFunctionType = promptFunctionType
-                    )
-                }.orEmpty()
+                val introPrompt = ""
 
                 // 获取自定义系统提示模板
                 val finalCustomSystemPromptTemplate = customSystemPromptTemplate ?: apiPreferences.customSystemPromptTemplateFlow.first()
@@ -548,11 +524,6 @@ class ConversationService(
 
                 val useEnglish = LocaleUtils.getCurrentLanguage(context).lowercase().startsWith("en")
                 resolvedUseEnglish = useEnglish
-                val roleCardToolAccess = characterCardToolAccessResolver.resolve(
-                    roleCardId = effectiveRoleCardId,
-                    packageManager = packageManager,
-                    globalToolVisibility = toolPromptVisibility
-                )
 
                 // 获取系统提示词，现在传入workspacePath和识图配置状态
                 val systemPrompt = SystemPromptConfig.getSystemPromptWithCustomPrompts(
@@ -574,13 +545,9 @@ class ConversationService(
                     chatModelHasDirectVideo = chatModelHasDirectVideo,
                     useToolCallApi = useToolCallApi,
                     toolExposureMode = toolExposureMode,
-                    toolVisibility = roleCardToolAccess.effectiveBuiltinToolVisibility,
-                    allowedPackageNames = roleCardToolAccess.allowedPackageNames,
-                    allowedSkillNames = roleCardToolAccess.allowedSkillNames,
-                    allowedMcpServerNames = roleCardToolAccess.allowedMcpServerNames,
+                    toolVisibility = toolPromptVisibility,
                     enableGroupOrchestrationHint = enableGroupOrchestrationHint,
-                    groupOrchestrationRoleName = activeCard?.name?.takeIf { it.isNotBlank() }
-                        ?: context.getString(R.string.app_name),
+                    groupOrchestrationRoleName = context.getString(R.string.app_name),
                     groupParticipantNamesText = groupParticipantNamesText.orEmpty(),
                     hookMetadata = activePromptMetadata,
                     dispatchSystemPromptComposeHooks = dispatchSystemPromptComposeHooks,
@@ -602,11 +569,6 @@ class ConversationService(
                 val finalSystemPrompt = buildString {
                     append(avatarMoodRulesText)
                     append(systemPrompt)
-                    if (proxyRolePrompt.isNotEmpty()) {
-                        append("\n\n<assistant_role source=\"proxy_character_card\">\n")
-                        append(proxyRolePrompt)
-                        append("\n</assistant_role>")
-                    }
                     append(waifuRulesText)
                     if (!disableUserPreferenceDescription && userProfileMarkdown.isNotEmpty()) {
                         append("\n\n<user_profile source=\"memory-space/$effectiveMemorySpaceId/user.md\">\n")
@@ -616,7 +578,7 @@ class ConversationService(
                 }
 
                 // 替换提示词中的占位符
-                val aiName = activeCard?.name ?: context.getString(R.string.app_name)
+                val aiName = context.getString(R.string.app_name)
                 val finalSystemPromptWithReplacements = replacePromptPlaceholders(
                     finalSystemPrompt,
                     aiName

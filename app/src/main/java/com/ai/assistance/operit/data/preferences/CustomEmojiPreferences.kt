@@ -56,10 +56,7 @@ class CustomEmojiPreferences private constructor(private val context: Context) {
     }
 
     private fun targetPrefix(target: ActivePrompt): String {
-        return when (target) {
-            is ActivePrompt.CharacterCard -> "character_card_custom_emoji_${target.id}_"
-            is ActivePrompt.CharacterGroup -> "character_group_custom_emoji_${target.id}_"
-        }
+        return "character_card_custom_emoji_${target.id}_"
     }
 
     private fun customEmojisKey(target: ActivePrompt) =

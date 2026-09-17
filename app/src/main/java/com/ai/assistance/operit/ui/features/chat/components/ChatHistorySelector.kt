@@ -104,12 +104,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.ai.assistance.operit.R
 import com.ai.assistance.operit.data.model.ChatHistory
-import com.ai.assistance.operit.data.model.CharacterCard
-import com.ai.assistance.operit.data.model.CharacterGroupCard
 import com.ai.assistance.operit.data.model.ActivePrompt
 import com.ai.assistance.operit.data.repository.ChatHistoryManager
-import com.ai.assistance.operit.data.preferences.CharacterCardManager
-import com.ai.assistance.operit.data.preferences.CharacterGroupCardManager
 import com.ai.assistance.operit.ui.common.rememberLocal
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
@@ -614,7 +610,7 @@ fun ChatHistorySelector(
     }
     val groupIdsInFilteredHistories = remember(filteredHistories) {
         filteredHistories
-            .mapNotNull { it.characterGroupId?.trim()?.takeIf { id -> id.isNotBlank() } }
+            .mapNotNull { null?.trim()?.takeIf { id -> id.isNotBlank() } }
             .toSet()
     }
     LaunchedEffect(groupIdsInFilteredHistories, groupNameById) {
@@ -667,7 +663,7 @@ fun ChatHistorySelector(
                             val characterGroupId: String?
                         )
                         fun resolveBindingBucket(history: ChatHistory): BindingBucket {
-                            val groupId = history.characterGroupId?.trim()?.takeIf { it.isNotBlank() }
+                            val groupId = null?.trim()?.takeIf { it.isNotBlank() }
                             if (!groupId.isNullOrBlank()) {
                                 val groupName = groupNameById[groupId]?.takeIf { it.isNotBlank() }
                                 val displayName =
@@ -684,7 +680,7 @@ fun ChatHistorySelector(
                                 )
                             }
 
-                            val cardName = history.characterCardName?.takeIf { it.isNotBlank() }
+                            val cardName = null?.takeIf { it.isNotBlank() }
                             if (!cardName.isNullOrBlank()) {
                                 return BindingBucket(
                                     key = "binding::card::$cardName",
@@ -720,7 +716,7 @@ fun ChatHistorySelector(
                                                                     key = gKey,
                                                                     name = displayName,
                                                                     groupValue = groupValue,
-                                                                    characterCardName = bindingBucket.characterCardName
+                                                                    characterCardName = null
                                                             )
                                                     val items =
                                                             if (collapsedGroups.contains(gKey)) {
@@ -737,8 +733,8 @@ fun ChatHistorySelector(
                                     HistoryListItem.CharacterHeader(
                                         key = cKey,
                                         name = bindingBucket.displayName,
-                                        characterCardName = bindingBucket.characterCardName,
-                                        characterGroupId = bindingBucket.characterGroupId
+                                        characterCardName = null,
+                                        characterGroupId = null
                                     )
                                 ) + children
                             }
@@ -791,8 +787,8 @@ fun ChatHistorySelector(
                         when (it) {
                             is HistoryListItem.CharacterHeader -> {
                                 // 在绑定分类模式下，更新当前绑定（角色卡/群组）
-                                newCharacterCardName = it.characterCardName
-                                newCharacterGroupId = it.characterGroupId
+                                newCharacterCardName = null
+                                newCharacterGroupId = null
                                 newGroup = null
                                 null
                             }
@@ -824,14 +820,14 @@ fun ChatHistorySelector(
         // 如果角色卡绑定发生了变化，需要额外通知
         if (historyDisplayMode == ChatHistoryDisplayMode.BY_CHARACTER_CARD &&
             (
-                finalMovedItem.characterCardName != movedItem.history.characterCardName ||
-                    finalMovedItem.characterGroupId != movedItem.history.characterGroupId
+                null != null ||
+                    null != null
             )
         ) {
             onUpdateChatBinding(
                 finalMovedItem.id,
-                finalMovedItem.characterCardName,
-                finalMovedItem.characterGroupId
+                null,
+                null
             )
         }
 
@@ -1315,7 +1311,7 @@ fun ChatHistorySelector(
                             onUpdateGroupName(
                                 groupToRename!!.groupName,
                                 newGroupNameText,
-                                groupToRename!!.characterCardName
+                                null
                             )
                         }
                         groupToRename = null
@@ -1384,7 +1380,7 @@ fun ChatHistorySelector(
                             onDeleteGroup(
                                 groupToDelete!!.groupName,
                                 true,
-                                groupToDelete!!.characterCardName
+                                null
                             )
                             groupToDelete = null
                         },
@@ -1424,7 +1420,7 @@ fun ChatHistorySelector(
                             onDeleteGroup(
                                 groupToDelete!!.groupName,
                                 false,
-                                groupToDelete!!.characterCardName
+                                null
                             )
                             groupToDelete = null
                         },
@@ -1472,10 +1468,10 @@ fun ChatHistorySelector(
         val editingChat = chatToEdit!!
         var newTitle by remember(editingChat) { mutableStateOf(editingChat.title) }
         var selectedCharacterCardName by remember(editingChat) {
-            mutableStateOf(editingChat.characterCardName)
+            mutableStateOf(null)
         }
         var selectedCharacterGroupId by remember(editingChat) {
-            mutableStateOf(editingChat.characterGroupId)
+            mutableStateOf(null)
         }
         var bindingMenuExpanded by remember { mutableStateOf(false) }
         data class ChatBindingOption(
@@ -1569,8 +1565,8 @@ fun ChatHistorySelector(
                                     DropdownMenuItem(
                                             text = { Text(option.label) },
                                             onClick = {
-                                                selectedCharacterCardName = option.characterCardName
-                                                selectedCharacterGroupId = option.characterGroupId
+                                                selectedCharacterCardName = null
+                                                selectedCharacterGroupId = null
                                                 bindingMenuExpanded = false
                                             }
                                     )
@@ -1591,8 +1587,8 @@ fun ChatHistorySelector(
                                     onUpdateChatTitle(editingChat.id, newTitle)
                                 }
                                 if (
-                                    selectedCharacterCardName != editingChat.characterCardName ||
-                                    selectedCharacterGroupId != editingChat.characterGroupId
+                                    selectedCharacterCardName != null ||
+                                    selectedCharacterGroupId != null
                                 ) {
                                     onUpdateChatBinding(
                                         editingChat.id,
@@ -2045,7 +2041,7 @@ fun ChatHistorySelector(
                     when (item) {
                         is HistoryListItem.CharacterHeader -> {
                         val userPreferencesManager = remember { UserPreferencesManager.getInstance(context) }
-                        val groupId = item.characterGroupId?.trim()?.takeIf { it.isNotBlank() }
+                        val groupId = null?.trim()?.takeIf { it.isNotBlank() }
                         val groupAvatarUri by remember(groupId) {
                             groupId?.let { userPreferencesManager.getAiAvatarForCharacterGroupFlow(it) }
                                 ?: flowOf(null)
@@ -2062,8 +2058,8 @@ fun ChatHistorySelector(
                                 userPreferencesManager.getAiAvatarForCharacterCardFlow(it)
                             } ?: flowOf(null)
                         }.collectAsState(initial = null)
-                        val characterCardId = remember(item.characterCardName, availableCharacterCards) {
-                            val cardName = item.characterCardName?.takeIf { it.isNotBlank() } ?: return@remember null
+                        val characterCardId = remember(null, availableCharacterCards) {
+                            val cardName = null?.takeIf { it.isNotBlank() } ?: return@remember null
                             availableCharacterCards.firstOrNull { it.name == cardName }?.id
                         }
                         val characterCardAvatarUri by remember(characterCardId) {
@@ -2233,7 +2229,7 @@ fun ChatHistorySelector(
                                                 if (item.name != ungroupedText) {
                                                     groupActionTarget = GroupTarget(
                                                         groupName = item.name,
-                                                        characterCardName = item.characterCardName
+                                                        characterCardName = null
                                                     )
                                                     hasLongPressedGroup = true
                                                 }

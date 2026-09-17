@@ -24,8 +24,8 @@ internal class WebChatManagementBridge(
     ): WebChatSummary? {
         val normalizedTitle = request.title?.trim()?.takeIf { it.isNotBlank() }
         val normalizedGroup = request.group?.trim()?.takeIf { it.isNotBlank() }
-        val normalizedCharacterCardName = request.characterCardName?.trim()?.takeIf { it.isNotBlank() }
-        val normalizedCharacterGroupId = request.characterGroupId?.trim()?.takeIf { it.isNotBlank() }
+        val normalizedCharacterCardName = null?.trim()?.takeIf { it.isNotBlank() }
+        val normalizedCharacterGroupId = null?.trim()?.takeIf { it.isNotBlank() }
 
         if (normalizedTitle != null) {
             chatHistoryManager.updateChatTitle(chatId, normalizedTitle)
@@ -77,7 +77,7 @@ internal class WebChatManagementBridge(
         chatHistoryManager.updateGroupName(
             oldName = request.oldName.trim(),
             newName = request.newName.trim(),
-            characterCardName = request.characterCardName?.trim()?.takeIf { it.isNotBlank() }
+            characterCardName = null?.trim()?.takeIf { it.isNotBlank() }
         )
     }
 
@@ -85,7 +85,7 @@ internal class WebChatManagementBridge(
         chatHistoryManager.deleteGroup(
             groupName = request.groupName.trim(),
             deleteChats = request.deleteChats,
-            characterCardName = request.characterCardName?.trim()?.takeIf { it.isNotBlank() }
+            characterCardName = null?.trim()?.takeIf { it.isNotBlank() }
         )
     }
 }

@@ -79,8 +79,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import com.ai.assistance.operit.data.repository.CustomEmojiRepository
-import com.ai.assistance.operit.data.preferences.CharacterCardManager
-import com.ai.assistance.operit.data.preferences.CharacterCardToolAccessResolver
 import com.ai.assistance.operit.data.preferences.UserPreferencesManager
 import com.ai.assistance.operit.data.preferences.preferencesManager
 import com.ai.assistance.operit.data.repository.MemoryAutoSaveCandidateRepository
@@ -409,7 +407,6 @@ class EnhancedAIService private constructor(private val context: Context) {
 
     // Api Preferences for settings
     private val apiPreferences = ApiPreferences.getInstance(context)
-    private val characterCardToolAccessResolver = CharacterCardToolAccessResolver.getInstance(context)
 
     // Execution context for a single sendMessage call to achieve concurrency
     private data class ModelExecutionSnapshot(
@@ -2884,11 +2881,6 @@ class EnhancedAIService private constructor(private val context: Context) {
             val toolPromptVisibility = runCatching {
                 apiPreferences.toolPromptVisibilityFlow.first()
             }.getOrElse { emptyMap() }
-            val roleCardToolAccess = characterCardToolAccessResolver.resolve(
-                roleCardId = roleCardId,
-                packageManager = packageManager,
-                globalToolVisibility = toolPromptVisibility
-            )
 
             if (!enableTools) {
                 AppLogger.d(TAG, "全局设置已禁用工具，本次调用不提供任何Tool Call工具")
@@ -2949,11 +2941,7 @@ class EnhancedAIService private constructor(private val context: Context) {
                     )
                 }
 
-                categories.flatMap { it.tools }.toMutableList().apply {
-                    retainAll { tool ->
-                        roleCardToolAccess.isBuiltinToolAllowed(tool.name)
-                    }
-                }
+                categories.flatMap { it.tools }.toMutableList()
             }
 
             if (toolExposureMode == ToolExposureMode.CLI) {
@@ -2999,7 +2987,7 @@ class EnhancedAIService private constructor(private val context: Context) {
 
             AppLogger.d(
                 TAG,
-                "Tool Call已启用，提供 ${hookedTools.size} 个工具 (base=${selectedTools.size}, enableTools=$enableTools, visibleToolOverrides=${toolPromptVisibility.size}, roleCardCustomTools=${roleCardToolAccess.customEnabled})"
+                "Tool Call已启用，提供 ${hookedTools.size} 个工具 (base=${selectedTools.size}, enableTools=$enableTools, visibleToolOverrides=${toolPromptVisibility.size})"
             )
             hookedTools
         } catch (e: Exception) {

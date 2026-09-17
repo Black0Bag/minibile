@@ -17,8 +17,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Color
 import com.ai.assistance.operit.R
 import com.ai.assistance.operit.data.preferences.ApiPreferences
-import com.ai.assistance.operit.data.preferences.CharacterCardManager
-import com.ai.assistance.operit.data.preferences.CharacterGroupCardManager
 import com.ai.assistance.operit.data.preferences.ActivePromptManager
 import com.ai.assistance.operit.data.preferences.WaifuPreferences
 import com.ai.assistance.operit.data.model.ActivePrompt

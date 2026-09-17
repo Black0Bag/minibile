@@ -261,34 +261,6 @@ class CustomEmojiRepository private constructor(private val context: Context) {
         preferences.setCustomEmojis(target, copiedEmojis)
         preferences.setBuiltinEmojisInitialized(target, true)
     }
-
-    suspend fun deleteTarget(target: ActivePrompt) = withContext(Dispatchers.IO) {
-        preferences.deleteTarget(target)
-        getTargetBaseDir(target).deleteRecursively()
-    }
-
-    suspend fun cloneEmojisBetweenCharacterCards(sourceCharacterCardId: String, targetCharacterCardId: String) {
-        cloneEmojiSet(
-            ActivePrompt.CharacterCard(sourceCharacterCardId),
-            ActivePrompt.CharacterCard(targetCharacterCardId)
-        )
-    }
-
-    suspend fun deleteCharacterCardEmojis(characterCardId: String) {
-        deleteTarget(ActivePrompt.CharacterCard(characterCardId))
-    }
-
-    suspend fun cloneEmojisBetweenCharacterGroups(sourceGroupId: String, targetGroupId: String) {
-        cloneEmojiSet(
-            ActivePrompt.CharacterGroup(sourceGroupId),
-            ActivePrompt.CharacterGroup(targetGroupId)
-        )
-    }
-
-    suspend fun deleteCharacterGroupEmojis(characterGroupId: String) {
-        deleteTarget(ActivePrompt.CharacterGroup(characterGroupId))
-    }
-
     fun isValidCategoryName(categoryName: String): Boolean {
         return categoryName.matches(Regex("^[a-z0-9_]+$"))
     }
@@ -342,10 +314,7 @@ class CustomEmojiRepository private constructor(private val context: Context) {
     }
 
     private fun getTargetScopeDirName(target: ActivePrompt): String {
-        return when (target) {
-            is ActivePrompt.CharacterCard -> "character_card_${target.id}"
-            is ActivePrompt.CharacterGroup -> "character_group_${target.id}"
-        }
+        return "character_card_${target.id}"
     }
 
     private suspend fun purgeLegacyGlobalStorage() {
